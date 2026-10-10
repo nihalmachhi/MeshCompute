@@ -1,0 +1,72 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: meshcompute
+      POSTGRES_USER: meshcompute
+      POSTGRES_PASSWORD: meshcompute
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U meshcompute -d meshcompute"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - meshcompute-data:/var/lib/postgresql/data
+  coordinator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    environment:
+      MESH_COMPUTE_DATABASE_URL: postgresql+psycopg://meshcompute:meshcompute@db:5432/meshcompute
+    command: ["sh", "-c", "alembic upgrade head && uvicorn meshcompute.coordinator.main:app --host 0.0.0.0 --port 8000"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/data:ro
+    depends_on:
+      db:
+        condition: service_healthy
+  worker-1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    environment:
+      MESH_COMPUTE_DATABASE_URL: postgresql+psycopg://meshcompute:meshcompute@db:5432/meshcompute
+      MESH_COMPUTE_COORDINATOR_URL: http://coordinator:8000
+      MESH_COMPUTE_WORKER_ID: worker-1
+      MESH_COMPUTE_DATA_DIR: /data
+    volumes:
+      - ./data:/data:ro
+    command: ["python", "-m", "meshcompute.worker"]
+    depends_on:
+      - coordinator
+  worker-2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    environment:
+      MESH_COMPUTE_DATABASE_URL: postgresql+psycopg://meshcompute:meshcompute@db:5432/meshcompute
+      MESH_COMPUTE_COORDINATOR_URL: http://coordinator:8000
+      MESH_COMPUTE_WORKER_ID: worker-2
+      MESH_COMPUTE_DATA_DIR: /data
+    volumes:
+      - ./data:/data:ro
+    command: ["python", "-m", "meshcompute.worker"]
+    depends_on:
+      - coordinator
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    environment:
+      NEXT_PUBLIC_COORDINATOR_URL: http://localhost:8000/api/v1
+      NEXT_PUBLIC_WS_URL: ws://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - coordinator
+volumes:
+  meshcompute-data:
