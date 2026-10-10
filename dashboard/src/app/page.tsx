@@ -1,0 +1,9 @@
+"use client";
+import { useState } from "react";
+import { JobDetail } from "@/components/JobDetail";
+import { JobsTable } from "@/components/JobsTable";
+import { OverviewMetrics } from "@/components/OverviewMetrics";
+import { WorkersPanel } from "@/components/WorkersPanel";
+import { useDashboard } from "@/hooks/useDashboard";
+import type { JobView } from "@/lib/types";
+export default function DashboardPage(){const data=useDashboard();const [selected,setSelected]=useState<JobView|null>(null);const selectedJob=data.jobs.find((job)=>job.id===selected?.id)??selected;const connectionColor=data.connection==="live"?"bg-accent":"bg-warning";return <main className="mx-auto min-h-screen max-w-7xl px-5 pb-14 pt-8 md:px-10"><header className="mb-8 flex items-center justify-between"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">MeshCompute / Operations</p><h1 className="mt-2 text-2xl font-semibold tracking-tight">Workload overview</h1></div><div className="flex items-center gap-2 text-xs text-muted"><span className={"h-2 w-2 rounded-full "+connectionColor}/>{data.connection==="live"?"Live events":data.connection}</div></header>{data.error&&<div role="alert" className="mb-5 border-l-2 border-danger bg-white px-4 py-3 text-sm text-danger">{data.error}</div>}<OverviewMetrics metrics={data.metrics}/><div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1.7fr)_minmax(250px,0.8fr)]"><section><div className="mb-3 flex items-baseline justify-between"><h2 className="text-sm font-semibold">Recent jobs</h2><span className="text-xs text-muted">Select a row for task leases</span></div><JobsTable jobs={data.jobs} onSelect={setSelected}/>{selectedJob&&<JobDetail job={selectedJob} onClose={()=>setSelected(null)}/>}</section><WorkersPanel workers={data.workers}/></div><footer className="mt-12 border-t border-line pt-4 text-xs text-muted">At-least-once execution with fenced, idempotent result commits.</footer></main>;}

@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root { color-scheme: light; }
+html { background: #f4f5f2; }
+body { margin: 0; color: #172331; font-family: Arial, Helvetica, sans-serif; }
+button, a { -webkit-tap-highlight-color: transparent; }
+::selection { background: #b8dacc; color: #172331; }
+
+.task-progress { height: 6px; appearance: none; border: 0; border-radius: 999px; background: #dce1dc; overflow: hidden; }
+.task-progress::-webkit-progress-bar { background: #dce1dc; border-radius: 999px; }
+.task-progress::-webkit-progress-value { background: #136d5a; border-radius: 999px; }
+.task-progress::-moz-progress-bar { background: #136d5a; border-radius: 999px; }
