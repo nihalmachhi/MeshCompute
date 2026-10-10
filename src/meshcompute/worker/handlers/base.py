@@ -1,0 +1,9 @@
+"""Typed contract each independent job handler must implement."""
+from typing import Protocol
+
+JsonObject=dict[str,object]
+class JobHandler(Protocol):
+    """Splits, executes, and merges one registered workload type."""
+    def split(self,input_ref: str,options: JsonObject) -> list[JsonObject]: ...
+    def execute(self,payload: JsonObject) -> JsonObject: ...
+    def merge(self,results: list[JsonObject]) -> JsonObject: ...
