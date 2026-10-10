@@ -1,0 +1,2 @@
+MeshCompute durable distributed task processing. Clean systems recover after worker failures.
+Workers execute registered tasks and report safe results.
