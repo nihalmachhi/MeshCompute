@@ -2,7 +2,7 @@
 
 ```mermaid
 flowchart LR
-    UI[Next.js dashboard] -->|REST and WebSocket| API[FastAPI coordinator]
+    UI[React and Vite dashboard] -->|REST and WebSocket| API[FastAPI coordinator]
     API --> S[Job and task services]
     S --> R[Repositories and unit of work]
     R --> DB[(PostgreSQL durable queue)]

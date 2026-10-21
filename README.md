@@ -22,7 +22,7 @@ Compose starts PostgreSQL, applies migrations, starts the coordinator, and launc
 - `src/meshcompute/coordinator`: HTTP API, orchestration services, persistence, and reaper.
 - `src/meshcompute/worker`: HTTP client, heartbeat, process-isolated handler execution.
 - `src/meshcompute/common`: shared settings, errors, clock, and logging.
-- `dashboard`: read-mostly Next.js operations view.
+- `dashboard`: read-mostly React operations view, bundled with Vite and served as static assets.
 - `migrations`: versioned database schema.
 - `tests`: domain, handler, API, and opt-in PostgreSQL recovery coverage.
 - `docs`: architecture and design decisions.
@@ -32,7 +32,7 @@ Task handlers are explicitly registered, pure functions; the API never accepts e
 
 ## Development
 
-Use `make install` to create a local virtual environment and install development dependencies, `make check` to run lint, type checks, and tests, and `make migrate` to apply migrations against your configured database. See the project guide PDF in `output/pdf` for a walkthrough and diagrams.
+Use `make install` to create a local virtual environment and install development dependencies, `make check` to run lint, type checks, and tests, and `make migrate` to apply migrations against your configured database. The system model is in `docs/architecture.md`; operating instructions are in `docs/operations.md`.
 
 Configuration is supplied through `MESH_COMPUTE_*` environment variables. The defaults and descriptions live in `src/meshcompute/common/settings.py`.
 
