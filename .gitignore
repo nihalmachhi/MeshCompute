@@ -12,7 +12,6 @@ htmlcov/
 dist/
 build/
 node_modules/
-.next/
 output/benchmarks/
 output/images/
 *.log
