@@ -1,18 +1,12 @@
-FROM node:22-alpine AS dependencies
-WORKDIR /app
-COPY package.json package-lock.json* ./
-RUN npm install
 FROM node:22-alpine AS build
 WORKDIR /app
-COPY --from=dependencies /app/node_modules ./node_modules
+COPY package.json package-lock.json ./
+RUN npm ci
 COPY . .
-ARG NEXT_PUBLIC_COORDINATOR_URL=http://localhost:8000/api/v1
-ARG NEXT_PUBLIC_WS_URL=ws://localhost:8000
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL NEXT_PUBLIC_WS_URL=$NEXT_PUBLIC_WS_URL
+ARG VITE_COORDINATOR_URL=http://localhost:8000/api/v1
+ENV VITE_COORDINATOR_URL=$VITE_COORDINATOR_URL
 RUN npm run build
-FROM node:22-alpine AS runtime
-WORKDIR /app
-ENV NODE_ENV=production
-COPY --from=build /app ./
-EXPOSE 3000
-CMD ["npm", "run", "start"]
+
+FROM nginx:stable-alpine AS runtime
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80

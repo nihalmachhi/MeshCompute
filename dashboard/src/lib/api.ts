@@ -1,5 +1,5 @@
 import type { JobPage, JobView, Metrics, TaskView, WorkerView } from "@/lib/types";
-const baseUrl = process.env.NEXT_PUBLIC_COORDINATOR_URL ?? "http://localhost:8000/api/v1";
+const baseUrl = import.meta.env.VITE_COORDINATOR_URL ?? "http://localhost:8000/api/v1";
 async function request<T>(path: string): Promise<T> { const response = await fetch(baseUrl + path, { cache: "no-store" }); if (!response.ok) throw new Error("Coordinator returned " + response.status); return response.json() as Promise<T>; }
 export function loadJobs(): Promise<JobPage> { return request("/jobs?limit=50"); }
 export function loadWorkers(): Promise<WorkerView[]> { return request("/workers"); }

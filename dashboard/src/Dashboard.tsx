@@ -1,4 +1,3 @@
-"use client";
 import { useState } from "react";
 import { JobDetail } from "@/components/JobDetail";
 import { JobsTable } from "@/components/JobsTable";

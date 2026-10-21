@@ -1,6 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #172331;
+  --color-paper: #f4f5f2;
+  --color-muted: #667481;
+  --color-line: #dce1dc;
+  --color-accent: #136d5a;
+  --color-warning: #a35c16;
+  --color-danger: #a63e3e;
+  --font-sans: Arial, Helvetica, sans-serif;
+}
 :root { color-scheme: light; }
 html { background: #f4f5f2; }
 body { margin: 0; color: #172331; font-family: Arial, Helvetica, sans-serif; }
