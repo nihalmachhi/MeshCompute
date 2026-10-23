@@ -2,6 +2,24 @@
 
 MeshCompute is an educational, production-shaped distributed task processor. It accepts jobs through a FastAPI coordinator, stores tasks durably in PostgreSQL, and assigns them to independently running worker processes over HTTP.
 
+## How it works
+
+MeshCompute splits an accepted job into durable tasks. Workers claim tasks through the coordinator; PostgreSQL coordinates claims and tracks leases so abandoned work can be retried.
+
+```mermaid
+flowchart LR
+  A[Client submits job] --> B[FastAPI coordinator validates handler]
+  B --> C[PostgreSQL job and task records]
+  C --> D[Worker claims leased task]
+  D --> E[Registered handler in isolated process]
+  E --> F[Completion event]
+  F --> C
+  C --> G[Aggregated result and status]
+  G --> H[React operations dashboard]
+```
+
+The API accepts registered handler names rather than executable user code. Lease recovery provides at-least-once attempts, so handler side effects must be idempotent; the system does not promise exactly-once execution.
+
 ## Quick start
 
 Requirements: Docker Desktop with its engine running, Docker Compose, and (for local development) Python 3.12+ and Node.js 20+.
@@ -39,3 +57,4 @@ Configuration is supplied through `MESH_COMPUTE_*` environment variables. The de
 ## Scope and limitations
 
 This is a compact reference system, not a drop-in managed cloud queue. It uses PostgreSQL as its durable queue, keeps WebSocket fanout in coordinator memory, and does not promise exactly-once side effects: handlers must be idempotent because lease recovery can cause retries. Run integration and failure tests with a working Docker engine before relying on a deployment.
+
