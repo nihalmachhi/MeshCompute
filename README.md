@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/readme-icon.png" alt="MeshCompute icon" width="112" />
+</p>
+
 # MeshCompute
 
 MeshCompute is an educational, production-shaped distributed task processor. It accepts jobs through a FastAPI coordinator, stores tasks durably in PostgreSQL, and assigns them to independently running worker processes over HTTP.
