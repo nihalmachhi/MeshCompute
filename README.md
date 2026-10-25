@@ -11,18 +11,15 @@ MeshCompute is an educational, production-shaped distributed task processor. It 
 MeshCompute splits an accepted job into durable tasks. Workers claim tasks through the coordinator; PostgreSQL coordinates claims and tracks leases so abandoned work can be retried.
 
 ```mermaid
-flowchart TD
-  A[Client submits job] --> B[Coordinator validates registered handler]
-  B --> C[(PostgreSQL job and task records)]
-  C --> D[Worker claims pending task with lease]
-  D --> E[Registered handler runs in worker process]
-  E --> F[Persist completion event]
+flowchart LR
+  A[Client submits job] --> B[FastAPI coordinator validates handler]
+  B --> C[PostgreSQL job and task records]
+  C --> D[Worker claims leased task]
+  D --> E[Registered handler in isolated process]
+  E --> F[Completion event]
   F --> C
-  C --> G[Coordinator aggregates task results]
-  G --> H[Job status and result API]
-  H --> I[React operations dashboard]
-  C --> J[Lease reaper finds abandoned work]
-  J --> D
+  C --> G[Aggregated result and status]
+  G --> H[React operations dashboard]
 ```
 
 The API accepts registered handler names rather than executable user code. Lease recovery provides at-least-once attempts, so handler side effects must be idempotent; the system does not promise exactly-once execution.
