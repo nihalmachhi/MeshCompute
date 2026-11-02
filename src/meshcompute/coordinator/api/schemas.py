@@ -56,7 +56,7 @@ class WorkerRegistered(BaseModel):
 
     worker_id: UUID
     heartbeat_interval_seconds: int
-    worker_token: str | None = None
+    worker_token: str
 
 
 class HeartbeatRequest(BaseModel):

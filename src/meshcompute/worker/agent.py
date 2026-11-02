@@ -8,8 +8,8 @@ from uuid import UUID
 
 import httpx
 
-from meshcompute.common.errors import TaskExecutionError
-from meshcompute.common.settings import get_settings
+from meshcompute.core.errors import TaskExecutionError
+from meshcompute.core.settings import get_settings
 from meshcompute.worker.coordinator_client import CoordinatorClient
 from meshcompute.worker.executor import execute_with_timeout
 from meshcompute.worker.heartbeat import HeartbeatLoop

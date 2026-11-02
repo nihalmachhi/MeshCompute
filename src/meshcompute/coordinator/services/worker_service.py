@@ -1,5 +1,7 @@
 """Worker registration and heartbeat application services."""
 
+import hashlib
+import secrets
 from uuid import UUID
 
 from meshcompute.coordinator.db.unit_of_work import UnitOfWork
@@ -18,8 +20,8 @@ class WorkerService:
 
     def register(self, uow: UnitOfWork, name: str) -> dict:
         """Create a worker identity and expose the configured heartbeat cadence."""
-        token = __import__("secrets").token_urlsafe(32)
-        token_hash = __import__("hashlib").sha256(token.encode()).hexdigest()
+        token = secrets.token_urlsafe(32)
+        token_hash = hashlib.sha256(token.encode()).hexdigest()
         worker = uow.workers.register(name, self.clock.now(), token_hash)
         uow.commit()
         event_hub.publish(

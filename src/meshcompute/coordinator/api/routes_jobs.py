@@ -4,6 +4,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
 
+from meshcompute.coordinator.api.auth import require_admin
 from meshcompute.coordinator.api.deps import get_uow
 from meshcompute.coordinator.api.schemas import (
     JobAccepted,
@@ -18,7 +19,12 @@ from meshcompute.coordinator.services.job_service import JobService
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 
 
-@router.post("", response_model=JobAccepted, status_code=status.HTTP_202_ACCEPTED)
+@router.post(
+    "",
+    response_model=JobAccepted,
+    status_code=status.HTTP_202_ACCEPTED,
+    dependencies=[Depends(require_admin)],
+)
 def submit_job(request: JobSubmission, uow: UnitOfWork = Depends(get_uow)):
     """Accept a registered job and return its identifier immediately."""
     return JobService().submit(uow, request)
@@ -52,7 +58,7 @@ def get_job_result(job_id: UUID, uow: UnitOfWork = Depends(get_uow)):
     return JobService().result(uow, job_id)
 
 
-@router.post("/{job_id}/cancel")
+@router.post("/{job_id}/cancel", dependencies=[Depends(require_admin)])
 def cancel_job(job_id: UUID, uow: UnitOfWork = Depends(get_uow)):
     """Cancel a submitted or running job."""
     return JobService().cancel(uow, job_id)

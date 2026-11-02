@@ -12,8 +12,12 @@ class CoordinatorClient:
     """Typed HTTP adapter with a shared timeout-configured client."""
 
     def __init__(self, base_url: str | None = None):
+        settings = get_settings()
+        headers = (
+            {"Authorization": f"Bearer {settings.admin_token}"} if settings.admin_token else {}
+        )
         self._client = httpx.Client(
-            base_url=base_url or get_settings().coordinator_url, timeout=10.0
+            base_url=base_url or settings.coordinator_url, timeout=10.0, headers=headers
         )
         self._token: str | None = None
 
