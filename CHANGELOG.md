@@ -28,6 +28,7 @@
 - Prometheus scrape endpoint exposes queue, worker, retry, lease-expiry, and task-duration metrics.
 - Retries use bounded deterministic exponential backoff with jitter; exhausted work is persisted for admin review.
 - Job submission supports persisted idempotency keys with canonical request fingerprints.
+- Linux worker child processes enforce configurable CPU, address-space, file-size, wall-time, and serialized-result limits.
 - Coordinator replicas use PostgreSQL `LISTEN`/`NOTIFY` to wake independent durable outbox cursors; a blocking listener thread supports Windows' default asyncio loop.
 
 ### Decisions

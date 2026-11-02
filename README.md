@@ -40,7 +40,7 @@ Compose starts PostgreSQL, applies migrations, starts the coordinator, and launc
 
 ## API and safety
 
-`POST /api/v1/jobs` accepts a registered handler name and input reference. Workers claim one task at a time using PostgreSQL row locks. Each lease carries an attempt number used to fence stale results. The coordinator reaper retries expired work. Worker registration requires the admin bearer token and issues a per-worker bearer token; only its hash is stored. Admin job submission, cancellation, and worker listing also require the admin token.
+`POST /api/v1/jobs` accepts a registered handler name and input reference. Workers claim one task at a time using PostgreSQL row locks. Each lease carries an attempt number used to fence stale results. The coordinator reaper retries expired work. Worker registration requires the admin bearer token and issues a per-worker bearer token; only its hash is stored. Admin job submission, cancellation, and worker listing also require the admin token. In Linux worker containers, handlers run in child processes with configurable CPU, address-space, file-size, wall-time, and output-size limits.
 
 Task results are capped by `MESH_COMPUTE_MAX_RESULT_BYTES` (10 MB by default). Terminal jobs expire after the configured result-retention period (7 days by default), and inactive workers transition through `STALE` to `OFFLINE` before old identities are purged. State-change notifications and PostgreSQL `LISTEN`/`NOTIFY` wakeups are written in the same transaction as the state change. Each coordinator reads the durable outbox with its own cursor and fans events out to its local WebSocket clients; reconnects and missed notifications are recovered by polling the outbox.
 

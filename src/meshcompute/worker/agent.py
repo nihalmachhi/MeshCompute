@@ -55,7 +55,16 @@ def run_worker(name: str | None = None, stop_event=None) -> None:
             attempt = int(task["attempt"])
             heartbeat.set_task(task_id, attempt)
             try:
-                _execute_task(client, worker_id, task, settings.task_timeout_seconds)
+                _execute_task(
+                    client,
+                    worker_id,
+                    task,
+                    settings.task_timeout_seconds,
+                    settings.task_cpu_seconds,
+                    settings.task_memory_bytes,
+                    settings.task_file_bytes,
+                    settings.max_result_bytes,
+                )
             finally:
                 heartbeat.set_task(None, None)
     finally:
@@ -76,14 +85,25 @@ def _register_with_retry(client: CoordinatorClient, name: str, attempts: int = 5
     return {}
 
 
-def _execute_task(client: CoordinatorClient, worker_id: UUID, task: dict, timeout: int) -> None:
+def _execute_task(
+    client: CoordinatorClient,
+    worker_id: UUID,
+    task: dict,
+    timeout: int,
+    cpu: int,
+    memory: int,
+    file_bytes: int,
+    result_bytes: int,
+) -> None:
     """Run one claimed task and report exactly one completion or failure."""
     task_id = UUID(task["task_id"])
     attempt = int(task["attempt"])
     try:
         client.start(task_id, worker_id, attempt)
         started = time.perf_counter()
-        output = execute_with_timeout(task["job_type"], task["payload"], timeout)
+        output = execute_with_timeout(
+            task["job_type"], task["payload"], timeout, cpu, memory, file_bytes, result_bytes
+        )
         duration_ms = (time.perf_counter() - started) * 1000
         _post_with_retry(lambda: client.complete(task_id, worker_id, attempt, output, duration_ms))
         logger.info(

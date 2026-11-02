@@ -14,6 +14,7 @@ Use `Authorization: Bearer <MESH_COMPUTE_ADMIN_TOKEN>` for job submission, job c
 ## Limits and retention
 
 - `MESH_COMPUTE_MAX_RESULT_BYTES` caps serialized task output (default 10,000,000 bytes). Oversized output returns HTTP 413 without committing task completion.
+- `MESH_COMPUTE_TASK_CPU_SECONDS`, `MESH_COMPUTE_TASK_MEMORY_BYTES`, and `MESH_COMPUTE_TASK_FILE_BYTES` apply POSIX limits to each handler child process (defaults: 300 CPU seconds, 1 GiB address space, and 10,000,000 bytes written). `MESH_COMPUTE_TASK_TIMEOUT_SECONDS` remains the wall-clock limit. These OS limits are applied in the Linux containers used by Compose; native Windows worker processes do not provide equivalent enforcement.
 - `MESH_COMPUTE_RESULT_RETENTION_SECONDS` sets terminal job/result retention (default 604,800 seconds). A background purger deletes expired terminal job data and dependent rows.
 - `MESH_COMPUTE_WORKER_STALE_SECONDS` marks silent workers stale; `MESH_COMPUTE_WORKER_OFFLINE_SECONDS` moves long-stale workers offline; `MESH_COMPUTE_WORKER_RETENTION_SECONDS` removes old offline records when they no longer own a task.
 - `MESH_COMPUTE_LEASE_TTL_SECONDS` controls the worker lease. A task can finish after its timestamp expires while it still owns the same attempt; once reaped and reassigned, the incremented attempt fences the old worker.
