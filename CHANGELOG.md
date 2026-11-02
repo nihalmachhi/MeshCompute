@@ -28,7 +28,8 @@
 - Prometheus scrape endpoint exposes queue, worker, retry, lease-expiry, and task-duration metrics.
 - Retries use bounded deterministic exponential backoff with jitter; exhausted work is persisted for admin review.
 - Job submission supports persisted idempotency keys with canonical request fingerprints.
+- Coordinator replicas use PostgreSQL `LISTEN`/`NOTIFY` to wake independent durable outbox cursors; a blocking listener thread supports Windows' default asyncio loop.
 
 ### Decisions
-- Delivery from the database outbox to process-local WebSocket subscribers is at least once; duplicate notifications are possible after a crash.
+- PostgreSQL notifications are wakeups only. Each replica reads the durable outbox after its own cursor, so missed wakeups are recovered by polling; local WebSocket delivery remains at least once.
 - The service remains at-least-once and does not claim exactly-once side effects.

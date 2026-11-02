@@ -172,20 +172,12 @@ class OutboxEventRecord(Base):
     """Persist state notifications atomically with the domain transaction."""
 
     __tablename__ = "outbox_events"
-    __table_args__ = (
-        Index(
-            "ix_outbox_events_pending",
-            "created_at",
-            "id",
-            postgresql_where=text("published_at IS NULL"),
-        ),
-    )
+    __table_args__ = (Index("ix_outbox_events_cursor", "created_at", "id"),)
     id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
     payload: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-    published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class TaskEventRecord(Base):

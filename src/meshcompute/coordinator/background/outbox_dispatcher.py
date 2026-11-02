@@ -1,39 +1,67 @@
-"""Deliver committed outbox events to the process-local live event hub."""
+"""Deliver transactional outbox events to every coordinator via PostgreSQL."""
 
 import asyncio
+import contextlib
 import logging
-from datetime import UTC, datetime
+import threading
+from datetime import datetime
+from uuid import UUID
+
+import psycopg
 
 from meshcompute.coordinator.db.unit_of_work import UnitOfWork
 from meshcompute.coordinator.events import event_hub
+from meshcompute.core.settings import get_settings
 
 logger = logging.getLogger(__name__)
+Cursor = tuple[datetime, UUID] | None
 
 
-def dispatch_once(limit: int = 100) -> int:
-    """Publish one locked batch and mark it delivered in its own transaction.
-
-    Delivery is at least once: a crash after publication but before commit may
-    produce a duplicate notification, while never losing the committed event.
-    """
+def latest_cursor() -> Cursor:
+    """Start a coordinator at the current outbox head; future events are consumed locally."""
     with UnitOfWork() as uow:
-        records = uow.outbox.claim_pending(limit)
+        return uow.outbox.latest_cursor()
+
+
+def dispatch_since(cursor: Cursor, limit: int = 100) -> tuple[int, Cursor]:
+    """Publish a batch after one process-local cursor without globally claiming rows."""
+    with UnitOfWork() as uow:
+        records = uow.outbox.after_cursor(cursor, limit)
         for record in records:
             event_hub.publish(record.payload)
-            record.published_at = datetime.now(UTC)
         if records:
-            uow.commit()
-        return len(records)
+            last = records[-1]
+            cursor = (last.created_at, last.id)
+        return len(records), cursor
+
+
+def _listen(stop: threading.Event, interval_seconds: float) -> None:
+    """Listen in a thread so psycopg works with Windows' default event loop too."""
+    cursor: Cursor = None
+    conninfo = get_settings().sync_database_url.replace("postgresql+psycopg://", "postgresql://")
+    while not stop.is_set():
+        try:
+            if cursor is None:
+                cursor = latest_cursor()
+            with psycopg.connect(conninfo, autocommit=True) as connection:
+                connection.execute("LISTEN meshcompute_events")
+                _, cursor = dispatch_since(cursor)
+                while not stop.is_set():
+                    notifications = connection.notifies(timeout=interval_seconds, stop_after=1)
+                    next(notifications, None)
+                    _, cursor = dispatch_since(cursor)
+        except Exception:
+            logger.exception("outbox listener failed")
+            stop.wait(interval_seconds)
 
 
 async def run_outbox_dispatcher(stop: asyncio.Event, interval_seconds: float = 0.5) -> None:
-    """Drain durable notifications until the coordinator shuts down."""
-    while not stop.is_set():
-        try:
-            await asyncio.to_thread(dispatch_once)
-        except Exception:
-            logger.exception("outbox dispatcher failed")
-        try:
-            await asyncio.wait_for(stop.wait(), timeout=interval_seconds)
-        except TimeoutError:
-            continue
+    """Listen for committed notifications and poll the durable log as a recovery path."""
+    thread_stop = threading.Event()
+    listener = asyncio.create_task(asyncio.to_thread(_listen, thread_stop, interval_seconds))
+    try:
+        await stop.wait()
+    finally:
+        thread_stop.set()
+        with contextlib.suppress(asyncio.CancelledError):
+            await listener

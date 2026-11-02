@@ -1,5 +1,6 @@
 """Own one database transaction and its repositories per application operation."""
 
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from meshcompute.coordinator.db.session import session_factory
@@ -32,8 +33,10 @@ class UnitOfWork:
             self._committed = True
 
     def enqueue_event(self, event: dict):
-        """Persist a notification in the same transaction as its state change."""
-        return self.outbox.enqueue(event)
+        """Persist and notify listeners atomically with the domain state change."""
+        record = self.outbox.enqueue(event)
+        self.session.execute(select(func.pg_notify("meshcompute_events", str(record.id))))
+        return record
 
     def __exit__(self, exc_type, exc_value, traceback):
         try:

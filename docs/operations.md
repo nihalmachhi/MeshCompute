@@ -21,7 +21,7 @@ Use `Authorization: Bearer <MESH_COMPUTE_ADMIN_TOKEN>` for job submission, job c
 
 ## Failure behavior
 
-Attempts are at least once. A worker may repeat a handler after a lease expires, so external side effects must be idempotent. Results use attempt fencing and a unique task-result key. Outbox events are committed with state changes and delivered at least once; a crash after a live notification but before marking the outbox row can cause a duplicate. WebSocket subscribers are process-local, so run one coordinator instance for this demo.
+Attempts are at least once. A worker may repeat a handler after a lease expires, so external side effects must be idempotent. Results use attempt fencing and a unique task-result key. Outbox rows and PostgreSQL `NOTIFY` wakeups are committed atomically with state changes. Each coordinator replica has its own durable-read cursor and local WebSocket fanout; notifications only wake readers, while polling after the cursor recovers missed wakeups and reconnects. WebSocket subscribers remain local to the coordinator handling their connection.
 
 ## Task dependency graphs
 

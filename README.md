@@ -42,7 +42,7 @@ Compose starts PostgreSQL, applies migrations, starts the coordinator, and launc
 
 `POST /api/v1/jobs` accepts a registered handler name and input reference. Workers claim one task at a time using PostgreSQL row locks. Each lease carries an attempt number used to fence stale results. The coordinator reaper retries expired work. Worker registration requires the admin bearer token and issues a per-worker bearer token; only its hash is stored. Admin job submission, cancellation, and worker listing also require the admin token.
 
-Task results are capped by `MESH_COMPUTE_MAX_RESULT_BYTES` (10 MB by default). Terminal jobs expire after the configured result-retention period (7 days by default), and inactive workers transition through `STALE` to `OFFLINE` before old identities are purged. State-change notifications are written to a PostgreSQL outbox in the same transaction as the state change. The in-process WebSocket fanout is best effort and is not a distributed event bus.
+Task results are capped by `MESH_COMPUTE_MAX_RESULT_BYTES` (10 MB by default). Terminal jobs expire after the configured result-retention period (7 days by default), and inactive workers transition through `STALE` to `OFFLINE` before old identities are purged. State-change notifications and PostgreSQL `LISTEN`/`NOTIFY` wakeups are written in the same transaction as the state change. Each coordinator reads the durable outbox with its own cursor and fans events out to its local WebSocket clients; reconnects and missed notifications are recovered by polling the outbox.
 
 ## Repository map
 
@@ -66,6 +66,7 @@ Use `uv sync --frozen --extra dev --all-extras` to install dependencies. Run `uv
 | Multi-megabyte handler results return before the worker timeout | `tests/unit/test_executor_large_result.py` |
 | Admin and worker tokens fail closed when missing or invalid | `tests/unit/test_auth.py` |
 | Committed events are visible through the outbox | `tests/unit/test_outbox.py`, `tests/integration/test_outbox_integration.py` |
+| Committed outbox events reach a coordinator's local subscribers after a database notification | `tests/integration/test_outbox_integration.py` |
 | CSV chunks use record-aware byte ranges, including quoted newlines | `tests/unit/test_handlers.py` |
 | An expired-but-not-reassigned lease can complete; a stale attempt is rejected | `tests/unit/test_lease_grace.py` |
 | Oversized results are rejected; expired terminal jobs are purged | `tests/unit/test_result_limit.py`, `tests/integration/test_job_retention.py` |

@@ -1,5 +1,6 @@
-from types import SimpleNamespace
+from datetime import UTC, datetime
 from unittest.mock import MagicMock
+from uuid import uuid4
 
 import pytest
 
@@ -24,10 +25,10 @@ async def test_reaper_runs_sync_database_work_outside_active_event_loop(monkeypa
     assert await lease_reaper._reap_once() == 3
 
 
-def test_outbox_dispatch_publishes_and_marks_records(monkeypatch):
-    record = SimpleNamespace(payload={"type": "task.completed"}, published_at=None)
+def test_outbox_dispatch_publishes_from_a_process_local_cursor(monkeypatch):
+    record = MagicMock(payload={"type": "task.completed"}, created_at=datetime.now(UTC), id=uuid4())
     uow = MagicMock()
-    uow.outbox.claim_pending.return_value = [record]
+    uow.outbox.after_cursor.return_value = [record]
 
     class Context:
         def __enter__(self):
@@ -38,7 +39,7 @@ def test_outbox_dispatch_publishes_and_marks_records(monkeypatch):
 
     monkeypatch.setattr(outbox_dispatcher, "UnitOfWork", Context)
     monkeypatch.setattr(outbox_dispatcher.event_hub, "publish", MagicMock())
-    assert outbox_dispatcher.dispatch_once() == 1
+    count, cursor = outbox_dispatcher.dispatch_since(None)
+    assert count == 1
+    assert cursor == (record.created_at, record.id)
     outbox_dispatcher.event_hub.publish.assert_called_once_with(record.payload)
-    assert record.published_at is not None
-    uow.commit.assert_called_once()
