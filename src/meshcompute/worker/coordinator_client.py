@@ -25,9 +25,12 @@ class CoordinatorClient:
         """Close the worker HTTP connection pool."""
         self._client.close()
 
-    def register(self, name: str) -> dict[str, Any]:
+    def register(self, name: str, capabilities: list[str] | None = None) -> dict[str, Any]:
         """Register the worker process and receive its UUID."""
-        result = self._post("/api/v1/workers/register", {"name": name})
+        result = self._post(
+            "/api/v1/workers/register",
+            {"name": name, "capabilities": capabilities or ["python"]},
+        )
         self._token = result.get("worker_token")
         if self._token:
             self._client.headers["Authorization"] = f"Bearer {self._token}"

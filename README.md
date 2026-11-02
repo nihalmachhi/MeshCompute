@@ -75,6 +75,8 @@ Use `uv sync --frozen --extra dev --all-extras` to install dependencies. Run `uv
 | Generated vision/text duplicate reports and image decoding bounds | `tests/unit/test_evaluation.py` |
 | Liveness remains up while readiness fails without PostgreSQL | `tests/unit/test_readiness.py` |
 | Browser DAG builder prevents cycles and calculates its displayed critical path | `site/src/features/simulator/dag.test.ts` |
+| Aged priorities and capability filtering are applied to queued claims | `tests/integration/test_scheduler_policies.py` |
+| Chunk-size model selects a lower makespan candidate with overhead and parallelism | `tests/unit/test_evaluation.py` |
 
 ## Scope
 

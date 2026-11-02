@@ -20,6 +20,7 @@ class TaskQueryService:
                 "status": task.status,
                 "attempt": task.attempt,
                 "max_attempts": task.max_attempts,
+                "required_capabilities": task.required_capabilities,
                 "worker_id": task.worker_id,
                 "lease_expires_at": task.lease_expires_at,
                 "queued_at": task.queued_at,

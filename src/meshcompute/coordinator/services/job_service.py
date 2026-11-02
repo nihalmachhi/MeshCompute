@@ -63,12 +63,14 @@ class JobService:
             input_ref=request.input_ref,
             chunk_count=len(chunks),
             status=JobStatus.SUBMITTED.value,
+            priority=request.priority,
         )
         tasks = [
             TaskRecord(
                 job_id=job.id,
                 task_index=index,
                 payload=payload,
+                required_capabilities=request.required_capabilities,
                 status=TaskStatus.PENDING.value,
                 attempt=0,
                 max_attempts=self.settings.max_task_attempts,

@@ -1,5 +1,10 @@
 {
   "handler_evaluation": {
+    "chunk_size_optimization": {
+      "chunk_size_bytes": 2097152,
+      "estimated_makespan_seconds": 2.25,
+      "task_count": 4
+    },
     "synthetic": true,
     "text_duplicate_detection": {
       "false_negatives": 1,

@@ -16,6 +16,8 @@ class JobSubmission(BaseModel):
     input_ref: str = Field(min_length=1, max_length=1024)
     options: dict[str, Any] = Field(default_factory=dict)
     task_dependencies: list[tuple[int, int]] = Field(default_factory=list, max_length=10_000)
+    priority: int = Field(default=0, ge=0, le=10)
+    required_capabilities: list[str] = Field(default_factory=list, max_length=32)
 
 
 class JobAccepted(BaseModel):
@@ -50,6 +52,7 @@ class WorkerRegistration(BaseModel):
     """Worker self-description sent during registration."""
 
     name: str = Field(min_length=1, max_length=120)
+    capabilities: list[str] = Field(default_factory=list, max_length=32)
 
 
 class WorkerRegistered(BaseModel):
@@ -132,6 +135,7 @@ class TaskPageItem(BaseModel):
     status: str
     attempt: int
     max_attempts: int
+    required_capabilities: list[str]
     worker_id: UUID | None
     lease_expires_at: datetime | None
     queued_at: datetime
@@ -148,3 +152,4 @@ class WorkerView(BaseModel):
     last_heartbeat_at: datetime
     heartbeat_age_seconds: int
     current_task_id: UUID | None
+    capabilities: list[str]

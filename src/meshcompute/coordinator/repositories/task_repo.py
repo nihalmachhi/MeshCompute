@@ -18,10 +18,20 @@ class TaskRepository:
         self.session = session
 
     def claim_next(
-        self, worker_id: UUID, now: datetime, lease_until: datetime
+        self,
+        worker_id: UUID,
+        now: datetime,
+        lease_until: datetime,
+        capabilities: list[str] | None = None,
+        aging_seconds: int = 30,
     ) -> TaskRecord | None:
-        """Lock and assign the next pending task with per-job fair round-robin."""
+        """Claim a ready, compatible task using aging priority and per-job fairness."""
         from sqlalchemy import func
+
+        from meshcompute.coordinator.db.tables import JobRecord
+        from meshcompute.coordinator.domain.scheduling import effective_priority
+
+        available = capabilities or []
 
         blocked_tasks = (
             select(TaskDependencyRecord.task_id)
@@ -35,6 +45,7 @@ class TaskRepository:
                 .where(
                     TaskRecord.status == TaskStatus.PENDING.value,
                     TaskRecord.id.not_in(blocked_tasks),
+                    TaskRecord.required_capabilities.contained_by(available),
                 )
                 .distinct()
             )
@@ -42,8 +53,17 @@ class TaskRepository:
         if not pending_jobs:
             return None
         best_job = None
-        best_active = None
+        best_rank = None
         for job_id in pending_jobs:
+            job = self.session.get(JobRecord, job_id)
+            oldest_queued = self.session.scalar(
+                select(func.min(TaskRecord.queued_at)).where(
+                    TaskRecord.job_id == job_id,
+                    TaskRecord.status == TaskStatus.PENDING.value,
+                    TaskRecord.id.not_in(blocked_tasks),
+                    TaskRecord.required_capabilities.contained_by(available),
+                )
+            )
             active = (
                 self.session.scalar(
                     select(func.count())
@@ -57,8 +77,18 @@ class TaskRepository:
                 )
                 or 0
             )
-            if best_active is None or active < best_active:
-                best_active = active
+            if oldest_queued is None:
+                continue
+            score = effective_priority(
+                job.priority if job is not None else 0, oldest_queued, now, aging_seconds
+            )
+            rank = (
+                score,
+                -active,
+                -oldest_queued.timestamp(),
+            )
+            if best_rank is None or rank > best_rank:
+                best_rank = rank
                 best_job = job_id
         statement = (
             select(TaskRecord)
@@ -66,6 +96,7 @@ class TaskRepository:
                 TaskRecord.status == TaskStatus.PENDING.value,
                 TaskRecord.job_id == best_job,
                 TaskRecord.id.not_in(blocked_tasks),
+                TaskRecord.required_capabilities.contained_by(available),
             )
             .order_by(TaskRecord.queued_at, TaskRecord.task_index)
             .limit(1)

@@ -4,6 +4,7 @@ export function Results() {
   const entries = Object.entries(report.scheduler_comparison);
   const vision = report.handler_evaluation.vision_duplicate_detection;
   const text = report.handler_evaluation.text_duplicate_detection;
+  const chunking = report.handler_evaluation.chunk_size_optimization;
   const maximum = Math.max(
     ...entries.flatMap(([, runs]) => [runs.normal.makespan, runs.worker_failure.makespan]),
   );
@@ -49,6 +50,15 @@ export function Results() {
             </article>
           ))}
         </div>
+        <article className="rc chunk-model">
+          <h3>Chunk-size model</h3>
+          <p>Generated estimate for an 8 MiB input on four workers; fixed overhead and throughput are model assumptions.</p>
+          <div className="metric-grid">
+            <div><span>CHUNK SIZE</span><strong>{Math.round(chunking.chunk_size_bytes / 1024)} KiB</strong></div>
+            <div><span>TASK COUNT</span><strong>{chunking.task_count}</strong></div>
+            <div><span>MODELED ETA</span><strong>{chunking.estimated_makespan_seconds}s</strong></div>
+          </div>
+        </article>
         <p className="note">{report.note}</p>
         <p className="note">The handler evaluation uses small generated inputs and does not represent general image or language understanding.</p>
       </div>

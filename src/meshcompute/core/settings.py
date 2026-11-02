@@ -31,6 +31,7 @@ class Settings(BaseSettings):
     worker_retention_seconds: int = Field(default=86_400, ge=1)
     result_retention_seconds: int = Field(default=604_800, ge=1)
     max_result_bytes: int = Field(default=10_000_000, ge=1024)
+    priority_aging_seconds: int = Field(default=30, ge=1)
     api_host: str = "0.0.0.0"
     api_port: int = Field(default=8000, ge=1)
     admin_token: str | None = None

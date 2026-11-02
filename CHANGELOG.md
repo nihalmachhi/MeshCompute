@@ -23,6 +23,8 @@
 - Readiness endpoint checks PostgreSQL independently from liveness.
 - Pillow handlers enforce image format and pixel-count bounds for JPEG, PNG, and BMP inputs.
 - Site cluster lab includes a cycle-safe three-stage DAG builder with a fixed-duration critical-path estimate.
+- Job claims include priority aging and declared worker-capability matching.
+- Synthetic results include a tested chunk-size choice from a fixed overhead/parallelism model.
 
 ### Decisions
 - Delivery from the database outbox to process-local WebSocket subscribers is at least once; duplicate notifications are possible after a crash.

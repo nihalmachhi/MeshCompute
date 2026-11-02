@@ -5,6 +5,7 @@ from PIL import Image
 
 from meshcompute.evaluation import evaluate_text_duplicates, evaluate_vision_duplicates
 from meshcompute.handlers.vision.safety import open_safe_image
+from meshcompute.sim.chunk_optimizer import choose_chunk_size
 
 
 def test_text_duplicate_report_is_generated_and_bounded() -> None:
@@ -36,3 +37,18 @@ def test_image_decoder_rejects_unsupported_format_and_pixel_bomb(tmp_path) -> No
     Image.new("RGB", (5000, 4000)).save(large)
     with pytest.raises(ValueError, match="pixel limit"):
         open_safe_image(large)
+
+
+def test_chunk_optimizer_models_overhead_and_worker_parallelism() -> None:
+    result = choose_chunk_size(
+        total_bytes=8_000_000,
+        worker_count=4,
+        bytes_per_second=1_000_000,
+        fixed_overhead_seconds=1,
+        candidates=(1_000_000, 2_000_000, 4_000_000),
+    )
+    assert result == {
+        "chunk_size_bytes": 2_000_000,
+        "task_count": 4,
+        "estimated_makespan_seconds": 3.0,
+    }

@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from meshcompute.handlers.nlp.minhash_dedupe import jaccard_estimate, minhash_signature, shingles
+from meshcompute.sim.chunk_optimizer import choose_chunk_size
 
 
 def _pair_metrics(labels: list[bool], predictions: list[bool]) -> dict[str, float | int]:
@@ -115,6 +116,12 @@ def generate_evaluation(seed: int = 42) -> dict[str, object]:
     del seed  # The fixed synthetic data itself is deterministic and has no random choices.
     return {
         "synthetic": True,
+        "chunk_size_optimization": choose_chunk_size(
+            total_bytes=8 * 1024 * 1024,
+            worker_count=4,
+            bytes_per_second=1024 * 1024,
+            fixed_overhead_seconds=0.25,
+        ),
         "vision_duplicate_detection": evaluate_vision_duplicates(),
         "text_duplicate_detection": evaluate_text_duplicates(),
     }

@@ -28,7 +28,7 @@ def list_workers(uow: UnitOfWork = Depends(get_uow)):
 @router.post("/register", response_model=WorkerRegistered, dependencies=[Depends(require_admin)])
 def register_worker(request: WorkerRegistration, uow: UnitOfWork = Depends(get_uow)):
     """Register an HTTP-only worker process."""
-    return WorkerService().register(uow, request.name)
+    return WorkerService().register(uow, request.name, request.capabilities)
 
 
 @router.post("/{worker_id}/heartbeat", response_model=WorkerHeartbeatResponse)

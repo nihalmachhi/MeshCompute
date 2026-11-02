@@ -116,3 +116,4 @@ details{border-top:1px solid var(--ln);padding:16px 0}details:last-of-type{borde
 @media(prefers-reduced-motion:reduce){.flow *,.pulse{animation:none!important}.flow circle{display:none}.rv-wrap.arm .rv{opacity:1;transform:none;filter:none;transition:none}}
 @media(prefers-reduced-motion:reduce){.rise,.v s,.v b,.grow{animation-duration:.01s;animation-delay:0s}.cv{transition:none}.bar{display:none}}
 .skip-link{position:absolute;left:-9999px;top:0}.skip-link:focus{left:16px;top:16px;z-index:100;background:var(--wh);color:#111;padding:8px 12px;border-radius:8px}
+.chunk-model{margin-top:14px}

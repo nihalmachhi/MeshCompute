@@ -26,6 +26,16 @@ Attempts are at least once. A worker may repeat a handler after a lease expires,
 
 `POST /api/v1/jobs` accepts optional `task_dependencies` pairs of task indices. Indices refer to the deterministic chunks returned by the selected handler's planner. Use the same `input_ref` and `options` you submit to estimate chunking; malformed indices, duplicate edges, and cycles are rejected. A dependent task becomes claimable only after every prerequisite completes. A terminal prerequisite failure cancels queued descendants. This is ordering only: task outputs are not injected into downstream task inputs. `GET /api/v1/jobs/{job_id}/dag` reports edges and a unit-cost critical path, not a runtime forecast.
 
+## Queue priority and worker capabilities
+
+`POST /api/v1/jobs` may set integer `priority` from 0 through 10 and a list of
+`required_capabilities`. Worker registration includes a declared capability list; the
+claim query only assigns tasks whose requirements are a subset of that declaration. The
+default worker advertises `python`. These are operator-provided labels, not hardware
+attestation. The coordinator adds one priority level per `MESH_COMPUTE_PRIORITY_AGING_SECONDS`
+of queue wait, with a default interval of 30 seconds; jobs at the same effective priority
+continue to use per-job fairness.
+
 ## Verification
 
 Run `uv run pytest -q --cov=meshcompute --cov-fail-under=80`, `uv run alembic upgrade head && uv run alembic check`, and `docker compose config -q`. The PostgreSQL integration tests require a reachable PostgreSQL database configured by `MESH_COMPUTE_DATABASE_URL`.

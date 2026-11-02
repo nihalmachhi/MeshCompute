@@ -17,7 +17,13 @@ class WorkerRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def register(self, name: str, now: datetime, token_hash: str | None = None) -> WorkerRecord:
+    def register(
+        self,
+        name: str,
+        now: datetime,
+        token_hash: str | None = None,
+        capabilities: list[str] | None = None,
+    ) -> WorkerRecord:
         """Create a worker identity with an initial heartbeat."""
         worker = WorkerRecord(
             id=uuid4(),
@@ -26,6 +32,7 @@ class WorkerRepository:
             registered_at=now,
             last_heartbeat_at=now,
             token_hash=token_hash,
+            capabilities=capabilities or [],
         )
         self.session.add(worker)
         self.session.flush()

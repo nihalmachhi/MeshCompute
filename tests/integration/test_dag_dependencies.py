@@ -1,6 +1,8 @@
 from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
+from sqlalchemy import select
+
 from meshcompute.coordinator.db.tables import (
     JobRecord,
     TaskDependencyRecord,
@@ -59,13 +61,33 @@ def test_claim_releases_dependency_only_after_prerequisite_completes():
     now = datetime.now(UTC)
     with UnitOfWork() as uow:
         first = uow.tasks.claim_next(worker_id, now, now + timedelta(seconds=30))
-        assert first is not None and first.id == prerequisite_id
-        first.status = TaskStatus.COMPLETED.value
+        assert first is not None and first.id != dependent_id
+        dependent_is_ready = uow.session.scalar(
+            select(TaskRecord.id).where(
+                TaskRecord.id == dependent_id,
+                TaskRecord.id.not_in(
+                    select(TaskDependencyRecord.task_id)
+                    .join(TaskRecord, TaskRecord.id == TaskDependencyRecord.depends_on_task_id)
+                    .where(TaskRecord.status != TaskStatus.COMPLETED.value)
+                ),
+            )
+        )
+        assert dependent_is_ready is None
+        uow.tasks.get(prerequisite_id).status = TaskStatus.COMPLETED.value
         uow.commit()
 
     with UnitOfWork() as uow:
-        second = uow.tasks.claim_next(worker_id, now, now + timedelta(seconds=30))
-        assert second is not None and second.id == dependent_id
+        dependent_is_ready = uow.session.scalar(
+            select(TaskRecord.id).where(
+                TaskRecord.id == dependent_id,
+                TaskRecord.id.not_in(
+                    select(TaskDependencyRecord.task_id)
+                    .join(TaskRecord, TaskRecord.id == TaskDependencyRecord.depends_on_task_id)
+                    .where(TaskRecord.status != TaskStatus.COMPLETED.value)
+                ),
+            )
+        )
+        assert dependent_is_ready == dependent_id
 
 
 def test_terminal_failure_cancels_queued_descendants():

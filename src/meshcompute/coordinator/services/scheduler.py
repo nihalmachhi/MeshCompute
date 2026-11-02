@@ -27,7 +27,11 @@ class SchedulerService:
             raise ConflictError("worker already owns a task")
         uow.workers.heartbeat(worker, now)
         task = uow.tasks.claim_next(
-            worker_id, now, now + timedelta(seconds=self.settings.lease_ttl_seconds)
+            worker_id,
+            now,
+            now + timedelta(seconds=self.settings.lease_ttl_seconds),
+            capabilities=worker.capabilities,
+            aging_seconds=self.settings.priority_aging_seconds,
         )
         if task is None:
             return None

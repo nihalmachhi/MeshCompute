@@ -11,3 +11,5 @@ with small edits plus unrelated negatives. Precision and recall are pairwise and
 these small fixtures only; they do not establish general detection quality. The text report
 uses MinHash signatures and a fixed similarity cutoff, not an external language model.
 The browser DAG builder uses fixed illustrative stage durations; it is not a measured ETA.
+The chunk-size estimate is a deterministic model with assumed per-task overhead and input
+throughput; it is not an empirical calibration against a live cluster.

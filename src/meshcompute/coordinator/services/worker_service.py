@@ -17,11 +17,11 @@ class WorkerService:
         self.settings = settings or get_settings()
         self.clock = clock or SystemClock()
 
-    def register(self, uow: UnitOfWork, name: str) -> dict:
+    def register(self, uow: UnitOfWork, name: str, capabilities: list[str] | None = None) -> dict:
         """Create a worker identity and expose the configured heartbeat cadence."""
         token = secrets.token_urlsafe(32)
         token_hash = hashlib.sha256(token.encode()).hexdigest()
-        worker = uow.workers.register(name, self.clock.now(), token_hash)
+        worker = uow.workers.register(name, self.clock.now(), token_hash, capabilities)
         uow.enqueue_event(
             {"type": "worker.registered", "worker_id": str(worker.id), "name": worker.name}
         )
@@ -45,6 +45,7 @@ class WorkerService:
                     0, int((now - worker.last_heartbeat_at).total_seconds())
                 ),
                 "current_task_id": worker.current_task_id,
+                "capabilities": worker.capabilities,
             }
             for worker in uow.workers.all()
         ]
