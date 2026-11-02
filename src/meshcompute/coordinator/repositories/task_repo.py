@@ -6,7 +6,12 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.orm import Session, aliased
 
-from meshcompute.coordinator.db.tables import TaskDependencyRecord, TaskEventRecord, TaskRecord
+from meshcompute.coordinator.db.tables import (
+    DeadLetterRecord,
+    TaskDependencyRecord,
+    TaskEventRecord,
+    TaskRecord,
+)
 from meshcompute.coordinator.domain.models import TaskStatus
 from meshcompute.coordinator.domain.states import transition
 
@@ -44,6 +49,7 @@ class TaskRepository:
                 select(TaskRecord.job_id)
                 .where(
                     TaskRecord.status == TaskStatus.PENDING.value,
+                    TaskRecord.available_at <= now,
                     TaskRecord.id.not_in(blocked_tasks),
                     TaskRecord.required_capabilities.contained_by(available),
                 )
@@ -60,6 +66,7 @@ class TaskRepository:
                 select(func.min(TaskRecord.queued_at)).where(
                     TaskRecord.job_id == job_id,
                     TaskRecord.status == TaskStatus.PENDING.value,
+                    TaskRecord.available_at <= now,
                     TaskRecord.id.not_in(blocked_tasks),
                     TaskRecord.required_capabilities.contained_by(available),
                 )
@@ -94,6 +101,7 @@ class TaskRepository:
             select(TaskRecord)
             .where(
                 TaskRecord.status == TaskStatus.PENDING.value,
+                TaskRecord.available_at <= now,
                 TaskRecord.job_id == best_job,
                 TaskRecord.id.not_in(blocked_tasks),
                 TaskRecord.required_capabilities.contained_by(available),
@@ -227,6 +235,30 @@ class TaskRepository:
                 .where(TaskRecord.status == TaskStatus.PENDING.value)
             )
             or 0
+        )
+
+    def add_dead_letter(self, task: TaskRecord, reason: str, now: datetime) -> None:
+        """Persist an exhausted task's original payload and bounded error summary."""
+        self.session.add(
+            DeadLetterRecord(
+                task_id=task.id,
+                job_id=task.job_id,
+                payload=task.payload,
+                attempts=task.attempt,
+                reason=reason[:1000],
+                created_at=now,
+            )
+        )
+        self.session.flush()
+
+    def dead_letters(self, limit: int = 100) -> list[DeadLetterRecord]:
+        """Return recent dead-letter entries with a strict page limit."""
+        from sqlalchemy import desc
+
+        return list(
+            self.session.scalars(
+                select(DeadLetterRecord).order_by(desc(DeadLetterRecord.created_at)).limit(limit)
+            )
         )
 
     def pending_by_job_priority(self) -> list[tuple[UUID, int, int]]:

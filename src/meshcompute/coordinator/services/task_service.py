@@ -9,6 +9,7 @@ from meshcompute.coordinator.services.aggregation_service import AggregationServ
 from meshcompute.coordinator.services.scheduler import _validate_owner
 from meshcompute.core.clock import Clock, SystemClock
 from meshcompute.core.errors import ConflictError, NotFoundError, PayloadTooLargeError
+from meshcompute.core.retry import retry_available_at
 from meshcompute.core.settings import Settings, get_settings
 
 
@@ -71,6 +72,17 @@ class TaskService:
         )
         target = TaskStatus.PENDING if retry else TaskStatus.FAILED
         uow.tasks.set_status(task, target, now, worker_id)
+        if retry:
+            task.available_at = retry_available_at(
+                task.id,
+                attempt,
+                now,
+                self.settings.retry_base_seconds,
+                self.settings.retry_max_seconds,
+                self.settings.retry_jitter_fraction,
+            )
+        else:
+            uow.tasks.add_dead_letter(task, error, now)
         worker = uow.workers.get(worker_id, lock=True)
         if worker is not None and worker.current_task_id == task.id:
             worker.current_task_id = None

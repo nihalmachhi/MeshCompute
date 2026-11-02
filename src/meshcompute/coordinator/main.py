@@ -10,6 +10,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from meshcompute.coordinator.api import (
+    routes_dead_letters,
     routes_jobs,
     routes_metrics,
     routes_tasks,
@@ -56,6 +57,7 @@ def create_app() -> FastAPI:
         allow_headers=["Content-Type"],
     )
     app.include_router(routes_jobs.router, prefix="/api/v1")
+    app.include_router(routes_dead_letters.router, prefix="/api/v1")
     app.include_router(routes_workers.router, prefix="/api/v1")
     app.include_router(routes_tasks.router, prefix="/api/v1")
     app.include_router(routes_metrics.router, prefix="/api/v1")

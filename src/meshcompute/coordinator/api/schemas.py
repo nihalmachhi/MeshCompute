@@ -153,3 +153,14 @@ class WorkerView(BaseModel):
     heartbeat_age_seconds: int
     current_task_id: UUID | None
     capabilities: list[str]
+
+
+class DeadLetterView(BaseModel):
+    """Exhausted task retained for authenticated operator review."""
+
+    task_id: UUID
+    job_id: UUID
+    payload: dict[str, Any]
+    attempts: int
+    reason: str
+    created_at: datetime

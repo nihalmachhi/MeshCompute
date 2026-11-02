@@ -9,6 +9,7 @@ from meshcompute.coordinator.services.aggregation_service import AggregationServ
 from meshcompute.coordinator.services.scheduler import _validate_owner
 from meshcompute.core.clock import Clock, SystemClock
 from meshcompute.core.errors import ConflictError, NotFoundError
+from meshcompute.core.retry import retry_available_at
 from meshcompute.core.settings import Settings, get_settings
 
 
@@ -60,6 +61,17 @@ class LeaseManager:
                 {"attempt": task.attempt, "requeued": target == TaskStatus.PENDING},
             )
             uow.tasks.set_status(task, target, now, former_worker)
+            if target == TaskStatus.PENDING:
+                task.available_at = retry_available_at(
+                    task.id,
+                    task.attempt,
+                    now,
+                    self.settings.retry_base_seconds,
+                    self.settings.retry_max_seconds,
+                    self.settings.retry_jitter_fraction,
+                )
+            else:
+                uow.tasks.add_dead_letter(task, "lease expired after maximum attempts", now)
             affected.add(task.job_id)
             uow.enqueue_event(
                 {"type": "task.lease_expired", "task_id": str(task.id), "job_id": str(task.job_id)}

@@ -17,6 +17,7 @@ Use `Authorization: Bearer <MESH_COMPUTE_ADMIN_TOKEN>` for job submission, job c
 - `MESH_COMPUTE_RESULT_RETENTION_SECONDS` sets terminal job/result retention (default 604,800 seconds). A background purger deletes expired terminal job data and dependent rows.
 - `MESH_COMPUTE_WORKER_STALE_SECONDS` marks silent workers stale; `MESH_COMPUTE_WORKER_OFFLINE_SECONDS` moves long-stale workers offline; `MESH_COMPUTE_WORKER_RETENTION_SECONDS` removes old offline records when they no longer own a task.
 - `MESH_COMPUTE_LEASE_TTL_SECONDS` controls the worker lease. A task can finish after its timestamp expires while it still owns the same attempt; once reaped and reassigned, the incremented attempt fences the old worker.
+- `MESH_COMPUTE_RETRY_BASE_SECONDS`, `MESH_COMPUTE_RETRY_MAX_SECONDS`, and `MESH_COMPUTE_RETRY_JITTER_FRACTION` control deterministic exponential retry delays. Retries remain pending but are not claimable until `available_at`.
 
 ## Failure behavior
 
@@ -44,6 +45,10 @@ completion/retry/failure/lease-expiry totals, and a 24-hour task-duration histog
 JSON `/api/v1/metrics/summary` also includes a one-minute drain hint derived from recent
 completions per active worker. That hint is heuristic and should not be treated as a
 capacity guarantee.
+
+Tasks that exhaust their attempt budget are copied to the persistent dead-letter table.
+Administrators can inspect a bounded page at `GET /api/v1/dead-letters`; the entry retains
+the task payload and a bounded failure reason until its parent job is purged.
 
 ## Verification
 
