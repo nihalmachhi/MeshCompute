@@ -15,6 +15,7 @@ from meshcompute.coordinator.api import (
     ws_events,
 )
 from meshcompute.coordinator.background.lease_reaper import run_reaper
+from meshcompute.coordinator.background.outbox_dispatcher import run_outbox_dispatcher
 from meshcompute.core.errors import (
     BackpressureError,
     ConflictError,
@@ -34,9 +35,10 @@ def create_app() -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         reaper = asyncio.create_task(run_reaper(stop))
+        dispatcher = asyncio.create_task(run_outbox_dispatcher(stop))
         yield
         stop.set()
-        await reaper
+        await asyncio.gather(reaper, dispatcher)
 
     app = FastAPI(title=settings.app_name, version="0.1.0", lifespan=lifespan)
     app.add_middleware(

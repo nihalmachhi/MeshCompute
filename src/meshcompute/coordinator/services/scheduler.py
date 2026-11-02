@@ -5,7 +5,6 @@ from uuid import UUID
 
 from meshcompute.coordinator.db.unit_of_work import UnitOfWork
 from meshcompute.coordinator.domain.models import JobStatus, TaskStatus
-from meshcompute.coordinator.events import event_hub
 from meshcompute.core.clock import Clock, SystemClock
 from meshcompute.core.errors import ConflictError, NotFoundError
 from meshcompute.core.settings import Settings, get_settings
@@ -38,8 +37,8 @@ class SchedulerService:
         if job.status == JobStatus.SUBMITTED.value:
             uow.jobs.set_status(job, JobStatus.RUNNING)
         worker.current_task_id = task.id
+        uow.enqueue_event({"type": "task.assigned", "job_id": str(job.id), "task_id": str(task.id)})
         uow.commit()
-        event_hub.publish({"type": "task.assigned", "job_id": str(job.id), "task_id": str(task.id)})
         return {
             "task_id": task.id,
             "job_id": job.id,
@@ -59,10 +58,10 @@ class SchedulerService:
         if task.status != TaskStatus.ASSIGNED.value:
             raise ConflictError("task is not awaiting start")
         uow.tasks.set_status(task, TaskStatus.RUNNING, self.clock.now(), worker_id)
-        uow.commit()
-        event_hub.publish(
+        uow.enqueue_event(
             {"type": "task.running", "task_id": str(task.id), "job_id": str(task.job_id)}
         )
+        uow.commit()
         return {"task_id": task.id, "status": task.status}
 
 

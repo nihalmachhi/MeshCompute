@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from meshcompute.coordinator.db.session import session_factory
 from meshcompute.coordinator.repositories.job_repo import JobRepository
+from meshcompute.coordinator.repositories.outbox_repo import OutboxRepository
 from meshcompute.coordinator.repositories.result_repo import ResultRepository
 from meshcompute.coordinator.repositories.task_repo import TaskRepository
 from meshcompute.coordinator.repositories.worker_repo import WorkerRepository
@@ -20,8 +21,8 @@ class UnitOfWork:
         self.tasks = TaskRepository(self.session)
         self.workers = WorkerRepository(self.session)
         self.results = ResultRepository(self.session)
+        self.outbox = OutboxRepository(self.session)
         self._committed = False
-        self._events: list[dict] = []
         return self
 
     def commit(self) -> None:
@@ -30,17 +31,9 @@ class UnitOfWork:
             self._transaction.commit()
             self._committed = True
 
-    def collect_event(self, event: dict) -> None:
-        """Collect an event for publication after commit (transactional outbox)."""
-        self._events.append(event)
-
-    def publish_collected(self) -> None:
-        """Publish collected events after a successful commit."""
-        from meshcompute.coordinator.events import event_hub
-
-        for event in self._events:
-            event_hub.publish(event)
-        self._events.clear()
+    def enqueue_event(self, event: dict):
+        """Persist a notification in the same transaction as its state change."""
+        return self.outbox.enqueue(event)
 
     def __exit__(self, exc_type, exc_value, traceback):
         try:

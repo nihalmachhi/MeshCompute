@@ -5,7 +5,6 @@ from uuid import UUID
 
 from meshcompute.coordinator.db.unit_of_work import UnitOfWork
 from meshcompute.coordinator.domain.models import TaskStatus
-from meshcompute.coordinator.events import event_hub
 from meshcompute.coordinator.services.aggregation_service import AggregationService
 from meshcompute.coordinator.services.scheduler import _validate_owner
 from meshcompute.core.clock import Clock, SystemClock
@@ -62,7 +61,7 @@ class LeaseManager:
             )
             uow.tasks.set_status(task, target, now, former_worker)
             affected.add(task.job_id)
-            event_hub.publish(
+            uow.enqueue_event(
                 {"type": "task.lease_expired", "task_id": str(task.id), "job_id": str(task.job_id)}
             )
         _mark_stale_workers(uow, now - timedelta(seconds=self.settings.worker_stale_seconds))
@@ -78,4 +77,4 @@ def _mark_stale_workers(uow: UnitOfWork, cutoff) -> None:
 
     for worker in uow.workers.stale_before(cutoff):
         uow.workers.set_status(worker, WorkerStatus.STALE)
-        event_hub.publish({"type": "worker.stale", "worker_id": str(worker.id)})
+        uow.enqueue_event({"type": "worker.stale", "worker_id": str(worker.id)})

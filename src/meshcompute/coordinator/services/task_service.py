@@ -4,7 +4,6 @@ from uuid import UUID
 
 from meshcompute.coordinator.db.unit_of_work import UnitOfWork
 from meshcompute.coordinator.domain.models import TaskStatus
-from meshcompute.coordinator.events import event_hub
 from meshcompute.coordinator.services.aggregation_service import AggregationService
 from meshcompute.coordinator.services.scheduler import _validate_owner
 from meshcompute.core.clock import Clock, SystemClock
@@ -44,10 +43,10 @@ class TaskService:
         if worker is not None and worker.current_task_id == task.id:
             worker.current_task_id = None
         AggregationService(self.clock).finalize_if_ready(uow, task.job_id)
-        uow.commit()
-        event_hub.publish(
+        uow.enqueue_event(
             {"type": "task.completed", "task_id": str(task.id), "job_id": str(task.job_id)}
         )
+        uow.commit()
         return {"task_id": task.id, "status": task.status, "idempotent": False}
 
     def fail(
@@ -71,14 +70,14 @@ class TaskService:
             worker.current_task_id = None
         if not retry:
             AggregationService(self.clock).finalize_if_ready(uow, task.job_id)
-        uow.commit()
-        event_hub.publish(
+        uow.enqueue_event(
             {
                 "type": "task.retry" if retry else "task.failed",
                 "task_id": str(task.id),
                 "job_id": str(task.job_id),
             }
         )
+        uow.commit()
         return {"task_id": task.id, "status": task.status, "idempotent": False}
 
     @staticmethod

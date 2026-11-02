@@ -6,10 +6,28 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      MESH_COMPUTE_DATABASE_URL: postgresql+psycopg://meshcompute:meshcompute@localhost:5432/meshcompute
+      MESH_COMPUTE_ADMIN_TOKEN: ci-admin-token-for-tests-only
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: meshcompute
+          POSTGRES_USER: meshcompute
+          POSTGRES_PASSWORD: meshcompute
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U meshcompute -d meshcompute"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 20
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
       - run: uv sync --frozen --all-extras
+      - run: uv run alembic upgrade head && uv run alembic check
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: uv run mypy src

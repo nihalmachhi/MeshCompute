@@ -17,7 +17,7 @@ async def _reap_once() -> int:
         with UnitOfWork() as uow:
             return LeaseManager().reap(uow)
 
-    return asyncio.run(run())
+    return await asyncio.to_thread(run)
 
 
 async def run_reaper(stop: asyncio.Event) -> None:

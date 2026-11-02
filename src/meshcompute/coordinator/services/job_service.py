@@ -7,7 +7,6 @@ from meshcompute.coordinator.api.schemas import JobSubmission
 from meshcompute.coordinator.db.tables import JobRecord, TaskRecord
 from meshcompute.coordinator.db.unit_of_work import UnitOfWork
 from meshcompute.coordinator.domain.models import JobStatus, TaskStatus
-from meshcompute.coordinator.events import event_hub
 from meshcompute.core.clock import Clock, SystemClock
 from meshcompute.core.errors import BackpressureError, NotFoundError
 from meshcompute.core.settings import Settings, get_settings
@@ -50,10 +49,10 @@ class JobService:
             for index, payload in enumerate(chunks)
         ]
         uow.jobs.add(job, tasks)
-        uow.commit()
-        event_hub.publish(
+        uow.enqueue_event(
             {"type": "job.submitted", "job_id": str(job.id), "task_count": len(tasks)}
         )
+        uow.commit()
         return {"job_id": job.id, "status": job.status, "task_count": len(tasks)}
 
     def get(self, uow: UnitOfWork, job_id: UUID) -> dict:
@@ -95,6 +94,7 @@ class JobService:
         if job is None:
             raise NotFoundError(f"job {job_id} not found")
         uow.jobs.set_status(job, JobStatus.CANCELLED, self.clock.now())
+        uow.enqueue_event({"type": "job.cancelled", "job_id": str(job.id)})
         uow.commit()
         return {"job_id": job.id, "status": job.status}
 

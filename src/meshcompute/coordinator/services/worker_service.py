@@ -5,7 +5,6 @@ import secrets
 from uuid import UUID
 
 from meshcompute.coordinator.db.unit_of_work import UnitOfWork
-from meshcompute.coordinator.events import event_hub
 from meshcompute.coordinator.services.lease_manager import LeaseManager
 from meshcompute.core.clock import Clock, SystemClock
 from meshcompute.core.settings import Settings, get_settings
@@ -23,10 +22,10 @@ class WorkerService:
         token = secrets.token_urlsafe(32)
         token_hash = hashlib.sha256(token.encode()).hexdigest()
         worker = uow.workers.register(name, self.clock.now(), token_hash)
-        uow.commit()
-        event_hub.publish(
+        uow.enqueue_event(
             {"type": "worker.registered", "worker_id": str(worker.id), "name": worker.name}
         )
+        uow.commit()
         return {
             "worker_id": worker.id,
             "heartbeat_interval_seconds": self.settings.heartbeat_interval_seconds,

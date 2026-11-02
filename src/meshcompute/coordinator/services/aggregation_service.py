@@ -26,14 +26,7 @@ class AggregationService:
             outputs = uow.results.outputs_for_job(job_id)
             job.result = get_handler(job.job_type).merge(outputs)
             uow.jobs.set_status(job, JobStatus.COMPLETED, self.clock.now())
-            _publish("job.completed", job_id)
+            uow.enqueue_event({"type": "job.completed", "job_id": str(job_id)})
         elif completed + failed == job.chunk_count and failed:
             uow.jobs.set_status(job, JobStatus.FAILED, self.clock.now())
-            _publish("job.failed", job_id)
-
-
-def _publish(event_type: str, job_id) -> None:
-    """Publish a concise state notification without task payloads."""
-    from meshcompute.coordinator.events import event_hub
-
-    event_hub.publish({"type": event_type, "job_id": str(job_id)})
+            uow.enqueue_event({"type": "job.failed", "job_id": str(job_id)})
