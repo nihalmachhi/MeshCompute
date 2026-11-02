@@ -34,6 +34,8 @@ The critical-path estimate uses one unit per task rather than observed runtime d
 ## Delivery guarantees
 
 Attempts are at least once. A lease reaper can cause a handler to run again; task attempt
-numbers fence stale completions. Outbox delivery is also at least once, and live WebSocket
-fanout stays in coordinator memory. The outbox is durable, but it is not a cross-replica
-WebSocket broadcast mechanism.
+numbers fence stale completions. Outbox delivery is also at least once. Each coordinator
+replica listens for transactional PostgreSQL notifications, reads newly committed rows from
+its own durable cursor, and fans them out to its local WebSocket subscribers. Polling after
+the cursor recovers missed notifications and listener reconnects; subscribers connected to
+different replicas do not share one in-memory socket hub.
