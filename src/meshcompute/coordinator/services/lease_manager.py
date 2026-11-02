@@ -65,6 +65,10 @@ class LeaseManager:
                 {"type": "task.lease_expired", "task_id": str(task.id), "job_id": str(task.job_id)}
             )
         _mark_stale_workers(uow, now - timedelta(seconds=self.settings.worker_stale_seconds))
+        _mark_offline_workers(uow, now - timedelta(seconds=self.settings.worker_offline_seconds))
+        uow.workers.purge_offline_before(
+            now - timedelta(seconds=self.settings.worker_retention_seconds)
+        )
         aggregator = AggregationService(self.clock)
         for job_id in affected:
             aggregator.finalize_if_ready(uow, job_id)
@@ -78,3 +82,12 @@ def _mark_stale_workers(uow: UnitOfWork, cutoff) -> None:
     for worker in uow.workers.stale_before(cutoff):
         uow.workers.set_status(worker, WorkerStatus.STALE)
         uow.enqueue_event({"type": "worker.stale", "worker_id": str(worker.id)})
+
+
+def _mark_offline_workers(uow: UnitOfWork, cutoff) -> None:
+    """Move long-stale workers offline before the retention purge."""
+    from meshcompute.coordinator.domain.models import WorkerStatus
+
+    for worker in uow.workers.offline_before(cutoff):
+        uow.workers.set_status(worker, WorkerStatus.OFFLINE)
+        uow.enqueue_event({"type": "worker.offline", "worker_id": str(worker.id)})

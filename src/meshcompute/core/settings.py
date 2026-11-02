@@ -27,6 +27,10 @@ class Settings(BaseSettings):
     task_timeout_seconds: int = Field(default=300, ge=1)
     worker_poll_interval_seconds: float = Field(default=1.0, ge=0.1)
     worker_stale_seconds: int = Field(default=45, ge=1)
+    worker_offline_seconds: int = Field(default=300, ge=1)
+    worker_retention_seconds: int = Field(default=86_400, ge=1)
+    result_retention_seconds: int = Field(default=604_800, ge=1)
+    max_result_bytes: int = Field(default=10_000_000, ge=1024)
     api_host: str = "0.0.0.0"
     api_port: int = Field(default=8000, ge=1)
     admin_token: str | None = None

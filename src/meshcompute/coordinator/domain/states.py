@@ -4,11 +4,22 @@ from meshcompute.coordinator.domain.models import JobStatus, TaskStatus, WorkerS
 from meshcompute.core.errors import InvalidTransitionError
 
 TASK_TRANSITIONS = {
-    TaskStatus.PENDING: {TaskStatus.ASSIGNED},
-    TaskStatus.ASSIGNED: {TaskStatus.RUNNING, TaskStatus.PENDING, TaskStatus.FAILED},
-    TaskStatus.RUNNING: {TaskStatus.COMPLETED, TaskStatus.PENDING, TaskStatus.FAILED},
+    TaskStatus.PENDING: {TaskStatus.ASSIGNED, TaskStatus.CANCELLED},
+    TaskStatus.ASSIGNED: {
+        TaskStatus.RUNNING,
+        TaskStatus.PENDING,
+        TaskStatus.FAILED,
+        TaskStatus.CANCELLED,
+    },
+    TaskStatus.RUNNING: {
+        TaskStatus.COMPLETED,
+        TaskStatus.PENDING,
+        TaskStatus.FAILED,
+        TaskStatus.CANCELLED,
+    },
     TaskStatus.COMPLETED: set(),
     TaskStatus.FAILED: set(),
+    TaskStatus.CANCELLED: set(),
 }
 JOB_TRANSITIONS = {
     JobStatus.SUBMITTED: {

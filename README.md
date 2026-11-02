@@ -9,68 +9,73 @@
 
 <h1 align="center">MeshCompute</h1>
 
-MeshCompute is an educational, production-shaped distributed task processor. It accepts jobs through a FastAPI coordinator, stores tasks durably in PostgreSQL, and assigns them to independently running worker processes over HTTP.
+MeshCompute is a learning project for durable, distributed task processing. A FastAPI coordinator stores allow-listed work in PostgreSQL and leases tasks to worker processes over HTTP.
 
 ## How it works
 
-MeshCompute splits an accepted job into durable tasks. Workers claim tasks through the coordinator; PostgreSQL coordinates claims and tracks leases so abandoned work can be retried.
-
 ```mermaid
 flowchart LR
-  A[Client submits job] --> B[FastAPI coordinator validates handler]
+  A[Client] --> B[Coordinator API]
   B --> C[PostgreSQL job and task records]
-  C --> D[Worker claims leased task]
-  D --> E[Registered handler in isolated process]
-  E --> F[Completion event]
-  F --> C
-  C --> G[Aggregated result and status]
-  G --> H[React operations dashboard]
+  C --> D[Authenticated worker claims a lease]
+  D --> E[Allow-listed handler in child process]
+  E --> F[Fenced result commit]
+  F --> G[Aggregation and outbox event]
+  G --> C
+  C --> H[HTTP API and live site simulator]
+  R[Lease reaper] -->|requeue expired attempts| C
 ```
 
-The API accepts registered handler names rather than executable user code. Lease recovery provides at-least-once attempts, so handler side effects must be idempotent; the system does not promise exactly-once execution.
+The API never accepts executable user code. Execution is at least once: lease recovery can repeat a handler attempt, and MeshCompute does not promise exactly-once side effects.
 
 ## Quick start
 
-Requirements: Docker Desktop with its engine running, Docker Compose, and (for local development) Python 3.12+ and Node.js 20+.
+Requirements: Docker Desktop with its engine running.
 
-1. Copy `.env.example` to `.env`.
-2. Start the stack: `docker compose up --build`.
-3. Open the dashboard at http://localhost:3000 and API docs at http://localhost:8000/docs.
+1. Copy `.env.example` to `.env` and replace `MESH_COMPUTE_ADMIN_TOKEN` with a long random value.
+2. Start the stack with `docker compose up --build`.
+3. Open the coordinator API at http://localhost:8000/docs. The project site is [live on GitHub Pages](https://nihalmachhi.github.io/MeshCompute/).
 
-Compose starts PostgreSQL, applies migrations, starts the coordinator, and launches two workers. Stop with `docker compose down`; add `-v` only when you intend to delete stored database data.
+Compose starts PostgreSQL, applies migrations, starts the coordinator, and launches two workers. Stop it with `docker compose down`; add `-v` only when you intend to delete database data.
 
-## What happens to a job
+## API and safety
 
-`POST /api/v1/jobs` validates a registered handler and splits its input into durable tasks. Workers claim one task at a time; PostgreSQL row locking prevents two workers from claiming the same pending task. Leases, attempt numbers, and a coordinator reaper recover work after a worker disappears. Completion events are persisted and aggregated into a result. The dashboard reads status and receives best-effort live updates over WebSocket.
+`POST /api/v1/jobs` accepts a registered handler name and input reference. Workers claim one task at a time using PostgreSQL row locks. Each lease carries an attempt number used to fence stale results. The coordinator reaper retries expired work. Worker registration requires the admin bearer token and issues a per-worker bearer token; only its hash is stored. Admin job submission, cancellation, and worker listing also require the admin token.
 
-## Architecture
+Task results are capped by `MESH_COMPUTE_MAX_RESULT_BYTES` (10 MB by default). Terminal jobs expire after the configured result-retention period (7 days by default), and inactive workers transition through `STALE` to `OFFLINE` before old identities are purged. State-change notifications are written to a PostgreSQL outbox in the same transaction as the state change. The in-process WebSocket fanout is best effort and is not a distributed event bus.
 
-- `src/meshcompute/domain`: state transitions and framework-independent models.
-- `src/meshcompute/coordinator`: HTTP API, orchestration services, persistence, and reaper.
-- `src/meshcompute/worker`: HTTP client, heartbeat, process-isolated handler execution.
-- `src/meshcompute/common`: shared settings, errors, clock, and logging.
-- `dashboard`: read-mostly React operations view, bundled with Vite and served as static assets.
-- `migrations`: versioned database schema.
-- `tests`: domain, handler, API, and opt-in PostgreSQL recovery coverage.
-- `docs`: architecture and design decisions.
-- `benchmarks`: repeatable load harness; benchmark output is generated locally, not checked in as a claimed measurement.
+## Repository map
 
-Task handlers are explicitly registered, pure functions; the API never accepts executable user code. The sample image handler supports uncompressed 24-bit BMP input without adding native image processing dependencies.
+- `src/meshcompute/core`: settings, errors, clock, and logging.
+- `src/meshcompute/handlers`: registered word-count, CSV aggregation, graph, and NLP handlers.
+- `src/meshcompute/coordinator`: API, domain, PostgreSQL repositories, outbox, and background workers.
+- `src/meshcompute/worker`: HTTP client, heartbeat loop, and process-isolated handler execution.
+- `src/meshcompute/sim`: seeded scheduler simulator and report generator.
+- `site`: static project site and browser-based cluster simulator.
+- `migrations`: frozen schema revisions.
+- `tests`: unit and PostgreSQL integration tests.
 
 ## Development
 
-Use `make install` to create a local virtual environment and install development dependencies, `make check` to run lint, type checks, and tests, and `make migrate` to apply migrations against your configured database. The system model is in `docs/architecture.md`; operating instructions are in `docs/operations.md`.
-
-Configuration is supplied through `MESH_COMPUTE_*` environment variables. The defaults and descriptions live in `src/meshcompute/common/settings.py`.
+Use `uv sync --frozen --extra dev --all-extras` to install dependencies. Run `uv run ruff check .`, `uv run ruff format --check .`, `uv run mypy src`, `uv run pytest -q --cov=meshcompute --cov-fail-under=80`, and `uv run alembic upgrade head && uv run alembic check`. The site commands are `npm ci`, `npm run lint`, `npm run typecheck`, `npm test -- --run`, and `npm run build` from `site/`.
 
 ## Claims -> proof
 
 | Claim | Proof |
 |---|---|
-| At-least-once recovery | tests/unit/test_domain_states.py |
-| Worker large results | tests/unit/test_coverage.py |
+| Multi-megabyte handler results return before the worker timeout | `tests/unit/test_executor_large_result.py` |
+| Admin and worker tokens fail closed when missing or invalid | `tests/unit/test_auth.py` |
+| Committed events are visible through the outbox | `tests/unit/test_outbox.py`, `tests/integration/test_outbox_integration.py` |
+| CSV chunks use record-aware byte ranges, including quoted newlines | `tests/unit/test_handlers.py` |
+| An expired-but-not-reassigned lease can complete; a stale attempt is rejected | `tests/unit/test_lease_grace.py` |
+| Oversized results are rejected; expired terminal jobs are purged | `tests/unit/test_result_limit.py`, `tests/integration/test_job_retention.py` |
+| Cancellation fences active attempts and clears worker ownership | `tests/integration/test_job_cancel.py` |
+| Stale workers transition offline and expire from storage | `tests/integration/test_worker_retention.py` |
 
-## Scope and limitations
+## Scope
 
-This is a compact reference system, not a drop-in managed cloud queue. It uses PostgreSQL as its durable queue, keeps WebSocket fanout in coordinator memory, and does not promise exactly-once side effects: handlers must be idempotent because lease recovery can cause retries. Run integration and failure tests with a working Docker engine before relying on a deployment.
+This is an educational single-coordinator system, not a managed queue. It requires PostgreSQL, uses in-memory WebSocket fanout, and does not implement exactly-once side effects, arbitrary user code, or production-scale benchmarking. The simulator and generated report data are synthetic.
 
+## License
+
+MeshCompute is distributed under the [MIT License](LICENSE).

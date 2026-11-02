@@ -87,6 +87,21 @@ class TaskRepository:
             statement = statement.with_for_update()
         return self.session.scalar(statement)
 
+    def cancel_for_job(self, job_id: UUID) -> list[TaskRecord]:
+        """Lock all queued and leased tasks so cancellation fences old attempts."""
+        statement = (
+            select(TaskRecord)
+            .where(
+                TaskRecord.job_id == job_id,
+                TaskRecord.status.in_(
+                    [TaskStatus.PENDING.value, TaskStatus.ASSIGNED.value, TaskStatus.RUNNING.value]
+                ),
+            )
+            .order_by(TaskRecord.task_index)
+            .with_for_update()
+        )
+        return list(self.session.scalars(statement))
+
     def expired(self, now: datetime) -> list[TaskRecord]:
         """Lock expired assigned and running tasks without blocking other reapers."""
         statement = (
@@ -129,11 +144,16 @@ class TaskRepository:
     ) -> None:
         """Validate status changes and persist one matching audit event."""
         task.status = transition(task.status, target).value
-        if target in {TaskStatus.PENDING, TaskStatus.COMPLETED, TaskStatus.FAILED}:
+        if target in {
+            TaskStatus.PENDING,
+            TaskStatus.COMPLETED,
+            TaskStatus.FAILED,
+            TaskStatus.CANCELLED,
+        }:
             task.lease_expires_at = None
         if target == TaskStatus.RUNNING:
             task.started_at = now
-        if target in {TaskStatus.COMPLETED, TaskStatus.FAILED}:
+        if target in {TaskStatus.COMPLETED, TaskStatus.FAILED, TaskStatus.CANCELLED}:
             task.finished_at = now
         if target == TaskStatus.PENDING:
             task.worker_id = None

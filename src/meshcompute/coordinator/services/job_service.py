@@ -1,6 +1,7 @@
 """Job submission, admission control, and read-side job summaries."""
 
 import threading
+from datetime import timedelta
 from uuid import UUID
 
 from meshcompute.coordinator.api.schemas import JobSubmission
@@ -90,10 +91,25 @@ class JobService:
 
     def cancel(self, uow: UnitOfWork, job_id: UUID) -> dict:
         """Cancel a submitted or running job."""
+        job = uow.jobs.get(job_id)
+        if job is None:
+            raise NotFoundError(f"job {job_id} not found")
+        # Match completion's task-then-job lock order and invalidate active attempts.
+        tasks = uow.tasks.cancel_for_job(job_id)
+        finished_at = self.clock.now()
+        for task in tasks:
+            worker_id = task.worker_id
+            task.attempt += 1
+            uow.tasks.set_status(task, TaskStatus.CANCELLED, finished_at, worker_id)
+            if worker_id is not None:
+                worker = uow.workers.get(worker_id, lock=True)
+                if worker is not None and worker.current_task_id == task.id:
+                    worker.current_task_id = None
         job = uow.jobs.get(job_id, lock=True)
         if job is None:
             raise NotFoundError(f"job {job_id} not found")
-        uow.jobs.set_status(job, JobStatus.CANCELLED, self.clock.now())
+        uow.jobs.set_status(job, JobStatus.CANCELLED, finished_at)
+        job.expires_at = finished_at + timedelta(seconds=self.settings.result_retention_seconds)
         uow.enqueue_event({"type": "job.cancelled", "job_id": str(job.id)})
         uow.commit()
         return {"job_id": job.id, "status": job.status}

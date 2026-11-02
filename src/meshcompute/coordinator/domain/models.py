@@ -9,6 +9,7 @@ class TaskStatus(StrEnum):
     RUNNING = "RUNNING"
     COMPLETED = "COMPLETED"
     FAILED = "FAILED"
+    CANCELLED = "CANCELLED"
 
 
 class JobStatus(StrEnum):

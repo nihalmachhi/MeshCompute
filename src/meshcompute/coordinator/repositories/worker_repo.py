@@ -3,7 +3,7 @@
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from meshcompute.coordinator.db.tables import WorkerRecord
@@ -33,8 +33,6 @@ class WorkerRepository:
 
     def get_by_token_hash(self, token_hash: str) -> WorkerRecord | None:
         """Look up a worker by its hashed bearer token."""
-        from sqlalchemy import select
-
         return self.session.scalar(
             select(WorkerRecord).where(WorkerRecord.token_hash == token_hash)
         )
@@ -80,6 +78,31 @@ class WorkerRepository:
             .with_for_update(skip_locked=True)
         )
         return list(self.session.scalars(statement))
+
+    def offline_before(self, cutoff: datetime) -> list[WorkerRecord]:
+        """Lock stale workers old enough to mark offline."""
+        statement = (
+            select(WorkerRecord)
+            .where(
+                WorkerRecord.status == WorkerStatus.STALE.value,
+                WorkerRecord.last_heartbeat_at < cutoff,
+            )
+            .with_for_update(skip_locked=True)
+        )
+        return list(self.session.scalars(statement))
+
+    def purge_offline_before(self, cutoff: datetime) -> int:
+        """Delete expired offline identities that no longer own a task."""
+        deleted_ids = self.session.scalars(
+            delete(WorkerRecord)
+            .where(
+                WorkerRecord.status == WorkerStatus.OFFLINE.value,
+                WorkerRecord.last_heartbeat_at < cutoff,
+                WorkerRecord.current_task_id.is_(None),
+            )
+            .returning(WorkerRecord.id)
+        )
+        return len(list(deleted_ids))
 
     def set_status(self, worker: WorkerRecord, target: WorkerStatus) -> None:
         """Apply a legal worker status transition."""

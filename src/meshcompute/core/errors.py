@@ -23,3 +23,7 @@ class InvalidTransitionError(MeshComputeError):
 
 class TaskExecutionError(MeshComputeError):
     """A registered worker handler failed or timed out."""
+
+
+class PayloadTooLargeError(MeshComputeError):
+    """A serialized worker result exceeds the configured persistence limit."""

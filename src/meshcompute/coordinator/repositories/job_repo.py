@@ -2,7 +2,7 @@
 
 from uuid import UUID
 
-from sqlalchemy import func, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
 from meshcompute.coordinator.db.tables import JobRecord, TaskRecord
@@ -55,6 +55,19 @@ class JobRepository:
             .group_by(TaskRecord.status)
         )
         return {status: count for status, count in rows}
+
+    def purge_expired(self, cutoff) -> int:
+        """Delete terminal jobs whose configured result-retention window elapsed."""
+        deleted_ids = self.session.scalars(
+            delete(JobRecord)
+            .where(
+                JobRecord.status.in_(["COMPLETED", "FAILED", "CANCELLED"]),
+                JobRecord.expires_at.is_not(None),
+                JobRecord.expires_at <= cutoff,
+            )
+            .returning(JobRecord.id)
+        )
+        return len(list(deleted_ids))
 
     def queue_size(self) -> int:
         """Count pending tasks for admission control."""

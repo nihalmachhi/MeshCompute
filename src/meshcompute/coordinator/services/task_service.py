@@ -1,5 +1,6 @@
 """Task start, result fencing, retry, and job finalization workflows."""
 
+import json
 from uuid import UUID
 
 from meshcompute.coordinator.db.unit_of_work import UnitOfWork
@@ -7,14 +8,16 @@ from meshcompute.coordinator.domain.models import TaskStatus
 from meshcompute.coordinator.services.aggregation_service import AggregationService
 from meshcompute.coordinator.services.scheduler import _validate_owner
 from meshcompute.core.clock import Clock, SystemClock
-from meshcompute.core.errors import ConflictError, NotFoundError
+from meshcompute.core.errors import ConflictError, NotFoundError, PayloadTooLargeError
+from meshcompute.core.settings import Settings, get_settings
 
 
 class TaskService:
     """Validate task ownership and commit results idempotently."""
 
-    def __init__(self, clock: Clock | None = None):
+    def __init__(self, clock: Clock | None = None, settings: Settings | None = None):
         self.clock = clock or SystemClock()
+        self.settings = settings or get_settings()
 
     def complete(
         self,
@@ -36,6 +39,9 @@ class TaskService:
                 return {"task_id": task.id, "status": task.status, "idempotent": True}
             raise ConflictError("task was completed by a different attempt")
         self._assert_active(task, attempt)
+        encoded_result = json.dumps(output, separators=(",", ":"), ensure_ascii=False).encode()
+        if len(encoded_result) > self.settings.max_result_bytes:
+            raise PayloadTooLargeError("task result exceeds the configured size limit")
         now = self.clock.now()
         uow.tasks.set_status(task, TaskStatus.COMPLETED, now, worker_id)
         uow.results.add(task.id, attempt, output, duration_ms, now)
