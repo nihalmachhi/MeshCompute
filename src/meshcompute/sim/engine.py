@@ -23,11 +23,7 @@ def simulate(
         raise ValueError(f"unknown scheduler: {scheduler_name}") from exc
 
     del seed  # The workload generator owns seeded task durations.
-    remaining = [
-        dict(task)
-        for job in jobs
-        for task in job["tasks"]
-    ]
+    remaining = [dict(task) for job in jobs for task in job["tasks"]]
     worker_available = [0.0] * num_workers
     task_start: dict[int, float] = {}
     task_end: dict[int, float] = {}
@@ -73,12 +69,7 @@ def simulate(
         if not in_flight:
             break
         next_completion = min(item["end"] for item in in_flight)
-        if (
-            kill_worker
-            and not killed
-            and now < 2.0 <= next_completion
-            and worker_available
-        ):
+        if kill_worker and not killed and now < 2.0 <= next_completion and worker_available:
             now = 2.0
             killed = True
             kill_time = now
@@ -105,13 +96,8 @@ def simulate(
                 still.append(item)
         in_flight = still
 
-
     makespan = max(task_end.values(), default=0.0)
-    waits = [
-        task_start[task["task_id"]] - task["arrival"]
-        for job in jobs
-        for task in job["tasks"]
-    ]
+    waits = [task_start[task["task_id"]] - task["arrival"] for job in jobs for task in job["tasks"]]
     sorted_waits = sorted(waits)
     mean_wait = sum(waits) / len(waits) if waits else 0.0
     p95_wait = sorted_waits[int(0.95 * (len(sorted_waits) - 1))] if waits else 0.0
