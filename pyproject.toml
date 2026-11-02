@@ -22,6 +22,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+vision = ["Pillow>=10", "opencv-python-headless>=4.10"]
+nlp = []
 dev = [
   "pytest>=8.3,<9",
   "pytest-asyncio>=0.24,<1",
