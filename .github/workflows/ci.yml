@@ -15,5 +15,8 @@ jobs:
       - run: uv run mypy src
       - run: uv run pytest -q --cov=meshcompute --cov-fail-under=80
       - run: docker compose config -q && docker compose build
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - working-directory: site
         run: npm ci && npm run lint && npm run typecheck && npm test -- --run && npm run build
