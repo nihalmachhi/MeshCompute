@@ -2,7 +2,7 @@
 
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Header, Query, status
 
 from meshcompute.coordinator.api.auth import require_admin
 from meshcompute.coordinator.api.deps import get_uow
@@ -25,9 +25,13 @@ router = APIRouter(prefix="/jobs", tags=["jobs"])
     status_code=status.HTTP_202_ACCEPTED,
     dependencies=[Depends(require_admin)],
 )
-def submit_job(request: JobSubmission, uow: UnitOfWork = Depends(get_uow)):
+def submit_job(
+    request: JobSubmission,
+    idempotency_key: str | None = Header(default=None, alias="Idempotency-Key", max_length=256),
+    uow: UnitOfWork = Depends(get_uow),
+):
     """Accept a registered job and return its identifier immediately."""
-    return JobService().submit(uow, request)
+    return JobService().submit(uow, request, idempotency_key)
 
 
 @router.get("", response_model=JobPage)

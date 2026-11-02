@@ -27,6 +27,7 @@
 - Synthetic results include a tested chunk-size choice from a fixed overhead/parallelism model.
 - Prometheus scrape endpoint exposes queue, worker, retry, lease-expiry, and task-duration metrics.
 - Retries use bounded deterministic exponential backoff with jitter; exhausted work is persisted for admin review.
+- Job submission supports persisted idempotency keys with canonical request fingerprints.
 
 ### Decisions
 - Delivery from the database outbox to process-local WebSocket subscribers is at least once; duplicate notifications are possible after a crash.

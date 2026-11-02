@@ -154,6 +154,20 @@ class DeadLetterRecord(Base):
     )
 
 
+class JobIdempotencyRecord(Base):
+    """Bind a hashed client idempotency key to one canonical job request."""
+
+    __tablename__ = "job_idempotency_keys"
+    key_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    request_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    job_id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True), ForeignKey("jobs.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+
 class OutboxEventRecord(Base):
     """Persist state notifications atomically with the domain transaction."""
 

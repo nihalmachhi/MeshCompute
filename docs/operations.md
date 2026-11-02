@@ -27,6 +27,11 @@ Attempts are at least once. A worker may repeat a handler after a lease expires,
 
 `POST /api/v1/jobs` accepts optional `task_dependencies` pairs of task indices. Indices refer to the deterministic chunks returned by the selected handler's planner. Use the same `input_ref` and `options` you submit to estimate chunking; malformed indices, duplicate edges, and cycles are rejected. A dependent task becomes claimable only after every prerequisite completes. A terminal prerequisite failure cancels queued descendants. This is ordering only: task outputs are not injected into downstream task inputs. `GET /api/v1/jobs/{job_id}/dag` reports edges and a unit-cost critical path, not a runtime forecast.
 
+Job submissions may include an `Idempotency-Key` header (up to 256 characters). A repeated
+key with the same canonical request returns the original job; using that key with different
+request content returns HTTP 409. The coordinator stores only a SHA-256 digest of the key.
+The binding is removed when its parent job expires and is purged.
+
 ## Queue priority and worker capabilities
 
 `POST /api/v1/jobs` may set integer `priority` from 0 through 10 and a list of

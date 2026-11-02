@@ -2,10 +2,15 @@
 
 from uuid import UUID
 
-from sqlalchemy import delete, func, select
+from sqlalchemy import delete, func, select, text
 from sqlalchemy.orm import Session
 
-from meshcompute.coordinator.db.tables import JobRecord, TaskDependencyRecord, TaskRecord
+from meshcompute.coordinator.db.tables import (
+    JobIdempotencyRecord,
+    JobRecord,
+    TaskDependencyRecord,
+    TaskRecord,
+)
 from meshcompute.coordinator.domain.models import JobStatus
 from meshcompute.coordinator.domain.states import transition_job
 
@@ -32,6 +37,24 @@ class JobRepository:
                 depends_on_task_id=tasks[prerequisite].id,
             )
             for prerequisite, dependent in dependencies or []
+        )
+        self.session.flush()
+
+    def lock_idempotency_key(self, key_hash: str) -> None:
+        """Serialize concurrent submissions using the same hashed key."""
+        self.session.execute(
+            text("SELECT pg_advisory_xact_lock(hashtextextended(:key_hash, 0))"),
+            {"key_hash": key_hash},
+        )
+
+    def get_idempotency_key(self, key_hash: str) -> JobIdempotencyRecord | None:
+        """Find a prior submission binding for one client key digest."""
+        return self.session.get(JobIdempotencyRecord, key_hash)
+
+    def add_idempotency_key(self, key_hash: str, request_hash: str, job_id: UUID) -> None:
+        """Persist the key binding in the same transaction as the new job."""
+        self.session.add(
+            JobIdempotencyRecord(key_hash=key_hash, request_hash=request_hash, job_id=job_id)
         )
         self.session.flush()
 

@@ -1,8 +1,10 @@
 """Job submission, admission control, and read-side job summaries."""
 
+import hashlib
+import json
 import threading
 from datetime import timedelta
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from meshcompute.coordinator.api.schemas import JobSubmission
 from meshcompute.coordinator.db.tables import JobRecord, TaskRecord
@@ -10,7 +12,7 @@ from meshcompute.coordinator.db.unit_of_work import UnitOfWork
 from meshcompute.coordinator.domain.dag import Stage, plan_dag
 from meshcompute.coordinator.domain.models import JobStatus, TaskStatus
 from meshcompute.core.clock import Clock, SystemClock
-from meshcompute.core.errors import BackpressureError, InvalidDAGError, NotFoundError
+from meshcompute.core.errors import BackpressureError, ConflictError, InvalidDAGError, NotFoundError
 from meshcompute.core.settings import Settings, get_settings
 from meshcompute.handlers.registry import get_handler
 
@@ -24,8 +26,31 @@ class JobService:
         self.settings = settings or get_settings()
         self.clock = clock or SystemClock()
 
-    def submit(self, uow: UnitOfWork, request: JobSubmission) -> dict:
+    def submit(
+        self, uow: UnitOfWork, request: JobSubmission, idempotency_key: str | None = None
+    ) -> dict:
         """Split a registered handler workload and enqueue within queue limits."""
+        key_hash = None
+        request_hash = None
+        if idempotency_key is not None:
+            if not idempotency_key.strip():
+                raise ConflictError("Idempotency-Key must not be empty")
+            key_hash = hashlib.sha256(idempotency_key.encode()).hexdigest()
+            request_bytes = json.dumps(
+                request.model_dump(mode="json"), sort_keys=True, separators=(",", ":")
+            ).encode()
+            request_hash = hashlib.sha256(request_bytes).hexdigest()
+            uow.jobs.lock_idempotency_key(key_hash)
+            prior = uow.jobs.get_idempotency_key(key_hash)
+            if prior is not None:
+                if prior.request_hash != request_hash:
+                    raise ConflictError("Idempotency-Key was already used for a different request")
+                job = uow.jobs.get(prior.job_id)
+                if job is None:
+                    raise ConflictError("Idempotency-Key refers to an expired job")
+                uow.commit()
+                return {"job_id": job.id, "status": job.status, "task_count": job.chunk_count}
+
         handler = get_handler(request.job_type)
         chunks = handler.split(request.input_ref, request.options)
         if not chunks:
@@ -59,6 +84,7 @@ class JobService:
             if uow.tasks.pending_count() + len(chunks) > self.settings.max_pending_tasks:
                 raise BackpressureError("pending task limit reached")
         job = JobRecord(
+            id=uuid4(),
             job_type=request.job_type,
             input_ref=request.input_ref,
             chunk_count=len(chunks),
@@ -78,6 +104,8 @@ class JobService:
             for index, payload in enumerate(chunks)
         ]
         uow.jobs.add(job, tasks, dependencies)
+        if key_hash is not None and request_hash is not None:
+            uow.jobs.add_idempotency_key(key_hash, request_hash, job.id)
         uow.enqueue_event(
             {"type": "job.submitted", "job_id": str(job.id), "task_count": len(tasks)}
         )
