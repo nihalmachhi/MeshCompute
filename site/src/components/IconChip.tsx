@@ -1,21 +1,19 @@
-import type { ReactNode } from "react";
-
-export function IconChip({ children }: { children: ReactNode }) {
+export function IconChip({ color, children }: { color: string; children: React.ReactNode }) {
   return (
-    <span
+    <div
       style={{
-        display: "inline-flex",
-        width: 32,
-        height: 32,
+        width: 46,
+        height: 46,
+        borderRadius: 14,
+        background: color,
+        display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: 8,
-        background: "var(--p2)",
-        border: "1px solid var(--ln)",
-        color: "var(--accent)",
+        marginBottom: 18,
+        color: "#fff",
       }}
     >
       {children}
-    </span>
+    </div>
   );
 }

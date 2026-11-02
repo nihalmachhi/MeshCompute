@@ -1,50 +1,57 @@
 {
-  "fifo": {
-    "makespan": 48.695,
-    "mean_wait": 25.244,
-    "p95_wait": 43.514,
-    "utilization": 0.973,
-    "fairness": 0.643,
-    "tasks": 72
+  "random_split": {
+    "macro_f1": 0.992162223741171,
+    "std": 0.0
   },
-  "fifo_kill": {
-    "makespan": 63.379,
-    "mean_wait": 33.652,
-    "p95_wait": 57.616,
-    "utilization": 0.997,
-    "fairness": 0.643,
-    "tasks": 72
+  "cross_environment": {
+    "macro_f1": 0.9444088987676841,
+    "std": 0.00551422685617025
   },
-  "fair": {
-    "makespan": 48.688,
-    "mean_wait": 24.69,
-    "p95_wait": 43.467,
-    "utilization": 0.973,
-    "fairness": 0.643,
-    "tasks": 72
+  "robustness": {
+    "clean": {
+      "macro_f1": 0.9388846447669977,
+      "accuracy": 0.9266666666666666
+    },
+    "padding_10pct": {
+      "macro_f1": 0.9388846447669977,
+      "accuracy": 0.9266666666666666
+    },
+    "padding_30pct": {
+      "macro_f1": 0.9333148096693527,
+      "accuracy": 0.92
+    },
+    "padding_50pct": {
+      "macro_f1": 0.9333148096693527,
+      "accuracy": 0.92
+    },
+    "jitter_50ms": {
+      "macro_f1": 0.9054964908623445,
+      "accuracy": 0.8866666666666667
+    },
+    "jitter_200ms": {
+      "macro_f1": 0.9166608792277241,
+      "accuracy": 0.9
+    },
+    "jitter_500ms": {
+      "macro_f1": 0.9720650883441581,
+      "accuracy": 0.9666666666666667
+    },
+    "first_4_packets": {
+      "macro_f1": 0.6196520061214984,
+      "accuracy": 0.72
+    },
+    "first_8_packets": {
+      "macro_f1": 0.9388846447669977,
+      "accuracy": 0.9266666666666666
+    },
+    "first_16_packets": {
+      "macro_f1": 0.9388846447669977,
+      "accuracy": 0.9266666666666666
+    },
+    "first_32_packets": {
+      "macro_f1": 0.9388846447669977,
+      "accuracy": 0.9266666666666666
+    }
   },
-  "fair_kill": {
-    "makespan": 63.438,
-    "mean_wait": 32.983,
-    "p95_wait": 57.675,
-    "utilization": 0.996,
-    "fairness": 0.643,
-    "tasks": 72
-  },
-  "sjf": {
-    "makespan": 49.233,
-    "mean_wait": 16.415,
-    "p95_wait": 38.102,
-    "utilization": 0.962,
-    "fairness": 0.643,
-    "tasks": 72
-  },
-  "sjf_kill": {
-    "makespan": 65.199,
-    "mean_wait": 21.94,
-    "p95_wait": 51.996,
-    "utilization": 0.969,
-    "fairness": 0.643,
-    "tasks": 72
-  }
+  "data_kind": "synthetic"
 }

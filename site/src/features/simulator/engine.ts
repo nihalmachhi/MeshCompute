@@ -1,122 +1,57 @@
-export function mulberry32(seed: number): () => number {
-  let state = seed >>> 0;
-  return function () {
-    state = (state + 0x6d2b79f5) >>> 0;
-    let t = (state ^ (state >>> 15)) * (1 | state);
-    t >>>= 0;
-
-    return (((t ^ (t >>> 14)) >>> 0) / 4294967296);
-  };
+export interface PeriodicityResult {
+  score: number;
+  period_s: number;
+  interval_cv: number;
+  within_ten_percent: number;
+  mad_s: number;
+  robust_cv: number;
+  autocorrelation: number;
 }
 
-export type Task = { task_id: number; job_id: string; duration: number; arrival: number };
+function median(values: number[]): number {
+  if (values.length === 0) return 0;
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+}
 
-export function simulate(numWorkers: number, tasks: Task[], scheduler: string, killWorker: boolean = false) {
-  const remaining = tasks.map((t) => ({ ...t }));
-  let workerAvailable = Array.from({ length: numWorkers }, () => 0);
-  const taskStart: Record<number, number> = {};
-  const taskEnd: Record<number, number> = {};
-  const completedByJob: Record<string, number> = {};
-  for (const t of tasks) completedByJob[t.job_id] = 0;
-  let completed = 0;
-  const total = tasks.length;
-  const inFlight: { end: number; w: number; task: Task }[] = [];
-  let now = 0;
-  let killed = false;
+function lagAutocorrelation(values: number[], lag = 1): number {
+  if (values.length <= lag) return 0;
+  const left = values.slice(0, values.length - lag);
+  const right = values.slice(lag);
+  const lm = left.reduce((a, b) => a + b, 0) / left.length;
+  const rm = right.reduce((a, b) => a + b, 0) / right.length;
+  const num = left.reduce((s, v, i) => s + (v - lm) * (right[i] - rm), 0);
+  const lv = left.reduce((s, v) => s + (v - lm) ** 2, 0);
+  const rv = right.reduce((s, v) => s + (v - rm) ** 2, 0);
+  const den = Math.sqrt(lv * rv);
+  if (den === 0) return 1;
+  return Math.max(-1, Math.min(1, num / den));
+}
 
-  function pickBatch(pending: Task[], idleCount: number): Task[] {
-    if (scheduler === "sjf") {
-      return [...pending].sort((a, b) => a.duration - b.duration || a.arrival - b.arrival || a.task_id - b.task_id).slice(0, idleCount);
-    }
-    if (scheduler === "fair") {
-      const jobCounts: Record<string, number> = {};
-      for (const t of pending) jobCounts[t.job_id] = (jobCounts[t.job_id] || 0) + 1;
-      const orderedJobs = Object.keys(jobCounts).sort();
-      const result: Task[] = [];
-      const remaining2 = [...pending];
-      for (let i = 0; i < idleCount; i++) {
-        let progressed = false;
-        for (const job of orderedJobs) {
-          const cand = remaining2.filter((t) => t.job_id === job);
-          if (cand.length) {
-            const chosen = cand.reduce((a, b) => (a.arrival < b.arrival || (a.arrival === b.arrival && a.task_id < b.task_id) ? a : b));
-            result.push(chosen);
-            const idx = remaining2.indexOf(chosen);
-            remaining2.splice(idx, 1);
-            progressed = true;
-            if (result.length >= idleCount) break;
-          }
-        }
-        if (!progressed || result.length >= idleCount) break;
-      }
-      return result;
-    }
-    // fifo
-    return [...pending].sort((a, b) => a.arrival - b.arrival || a.task_id - b.task_id).slice(0, idleCount);
+export function periodicityScore(times: number[]): PeriodicityResult {
+  const ordered = [...times].sort((a, b) => a - b);
+  const intervals = ordered.slice(1).map((v, i) => v - ordered[i]);
+  if (intervals.length < 3) {
+    return { score: 0, period_s: 0, interval_cv: 0, within_ten_percent: 0, mad_s: 0, robust_cv: 0, autocorrelation: 0 };
   }
-
-  while (completed < total) {
-    const idle = workerAvailable.map((v, i) => (v <= now + 1e-9 ? i : -1)).filter((i) => i >= 0);
-    if (idle.length > 0 && remaining.length > 0) {
-      const batch = pickBatch(remaining, idle.length);
-      for (let k = 0; k < batch.length; k++) {
-        const task = batch[k];
-        const w = idle[k];
-        const idx = remaining.indexOf(task);
-        if (idx >= 0) remaining.splice(idx, 1);
-        const start = Math.max(now, workerAvailable[w]);
-        const end = start + task.duration;
-        taskStart[task.task_id] = start;
-        taskEnd[task.task_id] = end;
-        workerAvailable[w] = end;
-        inFlight.push({ end, w, task });
-      }
-      continue;
-    }
-    if (inFlight.length === 0) break;
-    const nextTime = Math.min(...inFlight.map((x) => x.end));
-    now = nextTime;
-    const still: typeof inFlight = [];
-    for (const item of inFlight) {
-      if (item.end <= now + 1e-9) {
-        completed += 1;
-        completedByJob[item.task.job_id] = (completedByJob[item.task.job_id] || 0) + 1;
-      } else {
-        still.push(item);
-      }
-    }
-    // kill worker
-    if (killWorker && !killed && now >= 2.0) {
-      killed = true;
-      const toRequeue = inFlight.filter((x) => x.w === workerAvailable.length - 1).map((x) => x.task);
-      const filtered = inFlight.filter((x) => x.w !== workerAvailable.length - 1);
-      inFlight.length = 0;
-      inFlight.push(...filtered);
-      for (const t of toRequeue) remaining.push(t);
-      workerAvailable = workerAvailable.slice(0, -1);
-    }
-    inFlight.length = 0;
-    inFlight.push(...still);
-  }
-
-  const makespan = Math.max(...Object.values(taskEnd));
-  const waits = tasks.map((t) => taskStart[t.task_id] - t.arrival);
-  const meanWait = waits.reduce((a, b) => a + b, 0) / waits.length;
-  const sortedWaits = [...waits].sort((a, b) => a - b);
-  const p95 = sortedWaits[Math.floor(0.95 * (sortedWaits.length - 1))];
-  const totalWork = tasks.reduce((a, t) => a + t.duration, 0);
-  const util = totalWork / ((workerAvailable.length || 1) * makespan);
-  const jobValues = Object.values(completedByJob);
-  const ssum = jobValues.reduce((a, b) => a + b, 0);
-  const sq = jobValues.reduce((a, b) => a + b * b, 0);
-  const n = jobValues.length;
-  const jain = sq > 0 ? (ssum * ssum) / (n * sq) : 0;
+  const center = median(intervals);
+  const deviations = intervals.map((v) => Math.abs(v - center));
+  const mad = median(deviations);
+  const robust_cv = center ? (1.4826 * mad) / center : 0;
+  const mean = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+  const variance = intervals.reduce((s, v) => s + (v - mean) ** 2, 0) / intervals.length;
+  const classic_cv = center ? Math.sqrt(variance) / center : 0;
+  const regular = intervals.filter((v) => Math.abs(v - center) <= center * 0.1).length / intervals.length;
+  const autocorrelation = lagAutocorrelation(intervals);
+  const score = 0.55 * regular + 0.3 * (1 - Math.min(robust_cv, 1)) + 0.15 * Math.max(0, autocorrelation);
   return {
-    makespan: +makespan.toFixed(3),
-    mean_wait: +meanWait.toFixed(3),
-    p95_wait: +p95.toFixed(3),
-    utilization: +util.toFixed(3),
-    fairness: +jain.toFixed(3),
-    tasks: total,
+    score: Math.max(0, Math.min(1, Number(score.toFixed(4)))),
+    period_s: Number(center.toFixed(3)),
+    interval_cv: Number(classic_cv.toFixed(4)),
+    within_ten_percent: Number(regular.toFixed(4)),
+    mad_s: Number(mad.toFixed(4)),
+    robust_cv: Number(robust_cv.toFixed(4)),
+    autocorrelation: Number(autocorrelation.toFixed(4)),
   };
 }

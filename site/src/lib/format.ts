@@ -1,3 +1,3 @@
-export function formatNumber(n: number): string {
-  return n.toLocaleString();
+export function pct(n: number) {
+  return `${Math.round(n * 100)}%`;
 }

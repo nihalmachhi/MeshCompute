@@ -1,5 +1,9 @@
 import type { ReactNode } from "react";
 
-export function Section({ children, id }: { children: ReactNode; id?: string }) {
-  return <section id={id}>{children}</section>;
+export function Section({ id, children }: { id: string; children: ReactNode }) {
+  return (
+    <section id={id} style={{ padding: "84px 0 20px" }}>
+      <div className="wrap">{children}</div>
+    </section>
+  );
 }
