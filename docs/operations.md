@@ -36,6 +36,15 @@ attestation. The coordinator adds one priority level per `MESH_COMPUTE_PRIORITY_
 of queue wait, with a default interval of 30 seconds; jobs at the same effective priority
 continue to use per-job fairness.
 
+## Metrics and readiness
+
+`/health` reports process liveness; `/ready` runs `SELECT 1` against PostgreSQL.
+Prometheus can scrape `/metrics` for queue depth by job and priority, workers by status,
+completion/retry/failure/lease-expiry totals, and a 24-hour task-duration histogram. The
+JSON `/api/v1/metrics/summary` also includes a one-minute drain hint derived from recent
+completions per active worker. That hint is heuristic and should not be treated as a
+capacity guarantee.
+
 ## Verification
 
 Run `uv run pytest -q --cov=meshcompute --cov-fail-under=80`, `uv run alembic upgrade head && uv run alembic check`, and `docker compose config -q`. The PostgreSQL integration tests require a reachable PostgreSQL database configured by `MESH_COMPUTE_DATABASE_URL`.

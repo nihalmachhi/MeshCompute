@@ -229,6 +229,21 @@ class TaskRepository:
             or 0
         )
 
+    def pending_by_job_priority(self) -> list[tuple[UUID, int, int]]:
+        """Return pending queue depth grouped by job identity and priority."""
+        from sqlalchemy import func
+
+        from meshcompute.coordinator.db.tables import JobRecord
+
+        rows = self.session.execute(
+            select(JobRecord.id, JobRecord.priority, func.count(TaskRecord.id))
+            .join(TaskRecord, TaskRecord.job_id == JobRecord.id)
+            .where(TaskRecord.status == TaskStatus.PENDING.value)
+            .group_by(JobRecord.id, JobRecord.priority)
+            .order_by(JobRecord.priority.desc(), JobRecord.id)
+        )
+        return [(job_id, priority, count) for job_id, priority, count in rows]
+
     def set_status(
         self, task: TaskRecord, target: TaskStatus, now: datetime, worker_id: UUID | None = None
     ) -> None:

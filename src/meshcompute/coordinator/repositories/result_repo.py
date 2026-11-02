@@ -72,10 +72,26 @@ class ResultRepository:
             )
             or 0
         )
+        lease_expiries = (
+            self.session.scalar(
+                select(func.count())
+                .select_from(TaskEventRecord)
+                .where(TaskEventRecord.event_type == "lease_expired")
+            )
+            or 0
+        )
         mean = self.session.scalar(select(func.avg(TaskResultRecord.duration_ms))) or 0.0
         return {
             "completed_last_minute": completed,
             "retries": retries,
             "failures": failed,
+            "lease_expiries": lease_expiries,
             "mean_task_duration_ms": round(float(mean), 2),
         }
+
+    def durations_since(self, since: datetime) -> list[float]:
+        """Return bounded-window task runtimes for Prometheus histogram buckets."""
+        rows = self.session.scalars(
+            select(TaskResultRecord.duration_ms).where(TaskResultRecord.committed_at >= since)
+        )
+        return [float(duration) for duration in rows]
