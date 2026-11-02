@@ -1,4 +1,5 @@
 """Submit a small word-count workload to a running local coordinator."""
+
 import json
 import urllib.request
 

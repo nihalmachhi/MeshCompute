@@ -15,3 +15,6 @@ node_modules/
 output/benchmarks/
 output/images/
 *.log
+site/dist/
+htmlcov/
+coverage.xml

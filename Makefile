@@ -1,23 +1,28 @@
 PYTHON ?= python
-PIP ?= $(PYTHON) -m pip
 
-.PHONY: install up down migrate lint typecheck test check demo bench
+.PHONY: install up down migrate lint typecheck test check demo bench bench-sim reproduce site-fixtures
 install:
-	$(PIP) install -e ".[dev]"
+	uv sync --extra dev
 up:
 	docker compose up --build
 down:
 	docker compose down
 migrate:
-	alembic upgrade head
+	uv run alembic upgrade head
 lint:
-	ruff check src tests scripts benchmarks
+	uv run ruff check .
 typecheck:
-	mypy src
+	uv run mypy src
 test:
-	pytest
+	uv run pytest
 check: lint typecheck test
 demo:
-	$(PYTHON) scripts/run_demo.py
+	uv run python scripts/run_demo.py
 bench:
-	$(PYTHON) -m benchmarks.run_benchmark
+	uv run python -m benchmarks.run_benchmark
+bench-sim:
+	uv run python -m meshcompute.sim.report
+reproduce:
+	uv run python -m meshcompute.sim.report
+site-fixtures:
+	python site/scripts/export_fixtures.py

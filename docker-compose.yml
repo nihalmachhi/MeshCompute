@@ -10,8 +10,11 @@ services:
       interval: 5s
       timeout: 3s
       retries: 20
+    ports:
+      - "5433:5432"
     volumes:
       - meshcompute-data:/var/lib/postgresql/data
+    restart: unless-stopped
   coordinator:
     build:
       context: .
@@ -19,14 +22,17 @@ services:
     env_file: .env
     environment:
       MESH_COMPUTE_DATABASE_URL: postgresql+psycopg://meshcompute:meshcompute@db:5432/meshcompute
-    command: ["sh", "-c", "alembic upgrade head && uvicorn meshcompute.coordinator.main:app --host 0.0.0.0 --port 8000"]
+      MESH_COMPUTE_OUTPUT_DIR: /output
+    command: ["sh", "-c", "alembic upgrade head && uvicorn meshcompute.coordinator.main:create_app --factory --host 0.0.0.0 --port 8000"]
     ports:
       - "8000:8000"
     volumes:
       - ./data:/data:ro
+      - meshcompute-output:/output
     depends_on:
       db:
         condition: service_healthy
+    restart: unless-stopped
   worker-1:
     build:
       context: .
@@ -37,11 +43,15 @@ services:
       MESH_COMPUTE_COORDINATOR_URL: http://coordinator:8000
       MESH_COMPUTE_WORKER_ID: worker-1
       MESH_COMPUTE_DATA_DIR: /data
+      MESH_COMPUTE_OUTPUT_DIR: /output
     volumes:
       - ./data:/data:ro
+      - meshcompute-output:/output
     command: ["python", "-m", "meshcompute.worker"]
     depends_on:
-      - coordinator
+      coordinator:
+        condition: service_healthy
+    restart: unless-stopped
   worker-2:
     build:
       context: .
@@ -52,20 +62,15 @@ services:
       MESH_COMPUTE_COORDINATOR_URL: http://coordinator:8000
       MESH_COMPUTE_WORKER_ID: worker-2
       MESH_COMPUTE_DATA_DIR: /data
+      MESH_COMPUTE_OUTPUT_DIR: /output
     volumes:
       - ./data:/data:ro
+      - meshcompute-output:/output
     command: ["python", "-m", "meshcompute.worker"]
     depends_on:
-      - coordinator
-  dashboard:
-    build:
-      context: ./dashboard
-      dockerfile: Dockerfile
-      args:
-        VITE_COORDINATOR_URL: http://localhost:8000/api/v1
-    ports:
-      - "3000:80"
-    depends_on:
-      - coordinator
+      coordinator:
+        condition: service_healthy
+    restart: unless-stopped
 volumes:
   meshcompute-data:
+  meshcompute-output:

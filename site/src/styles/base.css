@@ -1,0 +1,56 @@
+@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource-variable/instrument-sans";
+@import "@fontsource/jetbrains-mono";
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--fb);
+}
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+section {
+  padding: 84px 0 20px;
+}
+h1 {
+  font-family: var(--fd);
+  font-size: clamp(2.1rem, 4.9vw, 3.9rem);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+}
+h2 {
+  font-family: var(--fd);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  letter-spacing: -0.035em;
+}
+.pill {
+  border-radius: 99px;
+  border: 1px solid var(--ln);
+  padding: 8px 16px;
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+}
+.pill.primary {
+  background: var(--wh);
+  color: #0c0c0d;
+}
+.card {
+  background: var(--p);
+  border: 1px solid var(--ln);
+  border-radius: 16px;
+  padding: 20px;
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

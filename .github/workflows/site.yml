@@ -1,0 +1,24 @@
+name: site
+on:
+  push:
+    branches: [main]
+    paths: ["site/**"]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - working-directory: site
+        run: npm ci && npm run lint && npm run typecheck && npm test -- --run && npm run build
+        env:
+          VITE_BASE: /MeshCompute/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+      - uses: actions/deploy-pages@v4

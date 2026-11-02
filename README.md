@@ -2,6 +2,11 @@
   <img src="assets/readme-icon.png" alt="MeshCompute icon" width="112" />
 </p>
 
+<p align="center">
+  <img alt="CI" src="https://github.com/nihalmachhi/MeshCompute/actions/workflows/ci.yml/badge.svg" />
+  <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg" />
+</p>
+
 <h1 align="center">MeshCompute</h1>
 
 MeshCompute is an educational, production-shaped distributed task processor. It accepts jobs through a FastAPI coordinator, stores tasks durably in PostgreSQL, and assigns them to independently running worker processes over HTTP.
@@ -57,6 +62,13 @@ Task handlers are explicitly registered, pure functions; the API never accepts e
 Use `make install` to create a local virtual environment and install development dependencies, `make check` to run lint, type checks, and tests, and `make migrate` to apply migrations against your configured database. The system model is in `docs/architecture.md`; operating instructions are in `docs/operations.md`.
 
 Configuration is supplied through `MESH_COMPUTE_*` environment variables. The defaults and descriptions live in `src/meshcompute/common/settings.py`.
+
+## Claims -> proof
+
+| Claim | Proof |
+|---|---|
+| At-least-once recovery | tests/unit/test_domain_states.py |
+| Worker large results | tests/unit/test_coverage.py |
 
 ## Scope and limitations
 

@@ -1,8 +1,12 @@
 """Read-only live event stream for dashboard clients."""
-from fastapi import APIRouter,WebSocket,WebSocketDisconnect
+
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+
 from meshcompute.coordinator.events import event_hub
 
-router=APIRouter()
+router = APIRouter()
+
+
 @router.websocket("/ws/events")
 async def websocket_events(socket: WebSocket):
     """Push compact state-change events to one dashboard connection."""
@@ -10,7 +14,7 @@ async def websocket_events(socket: WebSocket):
     try:
         async with event_hub.subscribe() as queue:
             while True:
-                event=await queue.get()
+                event = await queue.get()
                 await socket.send_json(event)
     except WebSocketDisconnect:
         return
