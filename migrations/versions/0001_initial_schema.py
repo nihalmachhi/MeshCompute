@@ -1,4 +1,5 @@
 """Initial durable coordinator schema (frozen DDL)."""
+
 from alembic import op
 
 revision = "0001_initial"
