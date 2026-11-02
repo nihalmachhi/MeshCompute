@@ -7,9 +7,10 @@ from uuid import UUID
 from meshcompute.coordinator.api.schemas import JobSubmission
 from meshcompute.coordinator.db.tables import JobRecord, TaskRecord
 from meshcompute.coordinator.db.unit_of_work import UnitOfWork
+from meshcompute.coordinator.domain.dag import Stage, plan_dag
 from meshcompute.coordinator.domain.models import JobStatus, TaskStatus
 from meshcompute.core.clock import Clock, SystemClock
-from meshcompute.core.errors import BackpressureError, NotFoundError
+from meshcompute.core.errors import BackpressureError, InvalidDAGError, NotFoundError
 from meshcompute.core.settings import Settings, get_settings
 from meshcompute.handlers.registry import get_handler
 
@@ -29,6 +30,31 @@ class JobService:
         chunks = handler.split(request.input_ref, request.options)
         if not chunks:
             raise ValueError("job input produced no tasks")
+        dependencies = request.task_dependencies
+        try:
+            if len(set(dependencies)) != len(dependencies):
+                raise ValueError("dependency edges must be unique")
+            if any(
+                source < 0
+                or target < 0
+                or source >= len(chunks)
+                or target >= len(chunks)
+                or source == target
+                for source, target in dependencies
+            ):
+                raise ValueError("dependency task index is outside the planned task range")
+            plan_dag(
+                [
+                    Stage(
+                        str(index),
+                        1.0,
+                        tuple(str(source) for source, target in dependencies if target == index),
+                    )
+                    for index in range(len(chunks))
+                ]
+            )
+        except ValueError as exc:
+            raise InvalidDAGError(str(exc)) from exc
         with _ADMISSION_LOCK:
             if uow.tasks.pending_count() + len(chunks) > self.settings.max_pending_tasks:
                 raise BackpressureError("pending task limit reached")
@@ -49,7 +75,7 @@ class JobService:
             )
             for index, payload in enumerate(chunks)
         ]
-        uow.jobs.add(job, tasks)
+        uow.jobs.add(job, tasks, dependencies)
         uow.enqueue_event(
             {"type": "job.submitted", "job_id": str(job.id), "task_count": len(tasks)}
         )
@@ -88,6 +114,28 @@ class JobService:
 
             raise ConflictError("job result is not ready")
         return {"job_id": job.id, "job_type": job.job_type, "result": job.result}
+
+    def dag(self, uow: UnitOfWork, job_id: UUID) -> dict:
+        """Return the persisted task graph and its unit-cost critical path."""
+        job = uow.jobs.get(job_id)
+        if job is None:
+            raise NotFoundError(f"job {job_id} not found")
+        edges = uow.tasks.dependencies_for_job(job_id)
+        stages = [
+            Stage(
+                str(index), 1.0, tuple(str(source) for source, target in edges if target == index)
+            )
+            for index in range(job.chunk_count)
+        ]
+        plan = plan_dag(stages)
+        return {
+            "job_id": job.id,
+            "task_count": job.chunk_count,
+            "dependencies": edges,
+            "topological_order": [int(item) for item in plan.topological_order],
+            "critical_path": [int(item) for item in plan.critical_path],
+            "estimated_seconds": plan.estimated_seconds,
+        }
 
     def cancel(self, uow: UnitOfWork, job_id: UUID) -> dict:
         """Cancel a submitted or running job."""

@@ -75,6 +75,7 @@ class TaskService:
         if worker is not None and worker.current_task_id == task.id:
             worker.current_task_id = None
         if not retry:
+            uow.tasks.cancel_descendants(task.id, now)
             AggregationService(self.clock).finalize_if_ready(uow, task.job_id)
         uow.enqueue_event(
             {

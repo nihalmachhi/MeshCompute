@@ -22,6 +22,10 @@ Use `Authorization: Bearer <MESH_COMPUTE_ADMIN_TOKEN>` for job submission, job c
 
 Attempts are at least once. A worker may repeat a handler after a lease expires, so external side effects must be idempotent. Results use attempt fencing and a unique task-result key. Outbox events are committed with state changes and delivered at least once; a crash after a live notification but before marking the outbox row can cause a duplicate. WebSocket subscribers are process-local, so run one coordinator instance for this demo.
 
+## Task dependency graphs
+
+`POST /api/v1/jobs` accepts optional `task_dependencies` pairs of task indices. Indices refer to the deterministic chunks returned by the selected handler's planner. Use the same `input_ref` and `options` you submit to estimate chunking; malformed indices, duplicate edges, and cycles are rejected. A dependent task becomes claimable only after every prerequisite completes. A terminal prerequisite failure cancels queued descendants. This is ordering only: task outputs are not injected into downstream task inputs. `GET /api/v1/jobs/{job_id}/dag` reports edges and a unit-cost critical path, not a runtime forecast.
+
 ## Verification
 
 Run `uv run pytest -q --cov=meshcompute --cov-fail-under=80`, `uv run alembic upgrade head && uv run alembic check`, and `docker compose config -q`. The PostgreSQL integration tests require a reachable PostgreSQL database configured by `MESH_COMPUTE_DATABASE_URL`.

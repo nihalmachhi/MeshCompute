@@ -24,6 +24,7 @@ class AggregationService:
         counts = uow.jobs.task_counts(job_id)
         completed = counts.get("COMPLETED", 0)
         failed = counts.get("FAILED", 0)
+        cancelled = counts.get("CANCELLED", 0)
         if completed == job.chunk_count:
             from meshcompute.handlers.registry import get_handler
 
@@ -33,7 +34,7 @@ class AggregationService:
             uow.jobs.set_status(job, JobStatus.COMPLETED, finished_at)
             job.expires_at = finished_at + timedelta(seconds=self.settings.result_retention_seconds)
             uow.enqueue_event({"type": "job.completed", "job_id": str(job_id)})
-        elif completed + failed == job.chunk_count and failed:
+        elif completed + failed + cancelled == job.chunk_count and failed:
             finished_at = self.clock.now()
             uow.jobs.set_status(job, JobStatus.FAILED, finished_at)
             job.expires_at = finished_at + timedelta(seconds=self.settings.result_retention_seconds)

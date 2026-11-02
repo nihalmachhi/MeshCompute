@@ -15,6 +15,7 @@ class JobSubmission(BaseModel):
     job_type: JobType
     input_ref: str = Field(min_length=1, max_length=1024)
     options: dict[str, Any] = Field(default_factory=dict)
+    task_dependencies: list[tuple[int, int]] = Field(default_factory=list, max_length=10_000)
 
 
 class JobAccepted(BaseModel):

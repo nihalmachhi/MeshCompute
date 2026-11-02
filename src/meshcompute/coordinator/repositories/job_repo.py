@@ -5,7 +5,7 @@ from uuid import UUID
 from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
-from meshcompute.coordinator.db.tables import JobRecord, TaskRecord
+from meshcompute.coordinator.db.tables import JobRecord, TaskDependencyRecord, TaskRecord
 from meshcompute.coordinator.domain.models import JobStatus
 from meshcompute.coordinator.domain.states import transition_job
 
@@ -16,10 +16,23 @@ class JobRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def add(self, job: JobRecord, tasks: list[TaskRecord]) -> None:
+    def add(
+        self,
+        job: JobRecord,
+        tasks: list[TaskRecord],
+        dependencies: list[tuple[int, int]] | None = None,
+    ) -> None:
         """Add a job and all of its pending tasks in the current unit of work."""
         self.session.add(job)
         self.session.add_all(tasks)
+        self.session.flush()
+        self.session.add_all(
+            TaskDependencyRecord(
+                task_id=tasks[dependent].id,
+                depends_on_task_id=tasks[prerequisite].id,
+            )
+            for prerequisite, dependent in dependencies or []
+        )
         self.session.flush()
 
     def get(self, job_id: UUID, lock: bool = False) -> JobRecord | None:

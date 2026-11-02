@@ -6,6 +6,7 @@ from uuid import UUID, uuid4
 
 from sqlalchemy import (
     BigInteger,
+    CheckConstraint,
     DateTime,
     Float,
     ForeignKey,
@@ -92,6 +93,22 @@ class TaskRecord(Base):
     )
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class TaskDependencyRecord(Base):
+    """Persist a directed edge from a prerequisite task to its dependent task."""
+
+    __tablename__ = "task_dependencies"
+    __table_args__ = (
+        CheckConstraint("task_id <> depends_on_task_id", name="ck_task_dependencies_no_self"),
+        Index("ix_task_dependencies_prerequisite", "depends_on_task_id"),
+    )
+    task_id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True), ForeignKey("tasks.id", ondelete="CASCADE"), primary_key=True
+    )
+    depends_on_task_id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True), ForeignKey("tasks.id", ondelete="CASCADE"), primary_key=True
+    )
 
 
 class TaskResultRecord(Base):

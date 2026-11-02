@@ -46,6 +46,12 @@ def get_job_tasks(job_id: UUID, uow: UnitOfWork = Depends(get_uow)):
     return JobService().tasks(uow, job_id)
 
 
+@router.get("/{job_id}/dag")
+def get_job_dag(job_id: UUID, uow: UnitOfWork = Depends(get_uow)):
+    """Return dependency lineage and a unit-cost critical-path estimate."""
+    return JobService().dag(uow, job_id)
+
+
 @router.get("/{job_id}", response_model=JobView)
 def get_job(job_id: UUID, uow: UnitOfWork = Depends(get_uow)):
     """Return progress counts for a submitted job."""

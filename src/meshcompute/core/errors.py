@@ -27,3 +27,7 @@ class TaskExecutionError(MeshComputeError):
 
 class PayloadTooLargeError(MeshComputeError):
     """A serialized worker result exceeds the configured persistence limit."""
+
+
+class InvalidDAGError(MeshComputeError):
+    """Task dependency edges do not form a valid DAG."""

@@ -71,6 +71,7 @@ Use `uv sync --frozen --extra dev --all-extras` to install dependencies. Run `uv
 | Oversized results are rejected; expired terminal jobs are purged | `tests/unit/test_result_limit.py`, `tests/integration/test_job_retention.py` |
 | Cancellation fences active attempts and clears worker ownership | `tests/integration/test_job_cancel.py` |
 | Stale workers transition offline and expire from storage | `tests/integration/test_worker_retention.py` |
+| DAG submissions reject cycles; claims wait for prerequisites and terminal failure cancels descendants | `tests/unit/test_dag.py`, `tests/integration/test_dag_dependencies.py` |
 
 ## Scope
 

@@ -4,9 +4,9 @@ from datetime import datetime
 from uuid import UUID
 
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, aliased
 
-from meshcompute.coordinator.db.tables import TaskEventRecord, TaskRecord
+from meshcompute.coordinator.db.tables import TaskDependencyRecord, TaskEventRecord, TaskRecord
 from meshcompute.coordinator.domain.models import TaskStatus
 from meshcompute.coordinator.domain.states import transition
 
@@ -23,11 +23,19 @@ class TaskRepository:
         """Lock and assign the next pending task with per-job fair round-robin."""
         from sqlalchemy import func
 
+        blocked_tasks = (
+            select(TaskDependencyRecord.task_id)
+            .join(TaskRecord, TaskRecord.id == TaskDependencyRecord.depends_on_task_id)
+            .where(TaskRecord.status != TaskStatus.COMPLETED.value)
+        )
         pending_jobs = [
             row[0]
             for row in self.session.execute(
                 select(TaskRecord.job_id)
-                .where(TaskRecord.status == TaskStatus.PENDING.value)
+                .where(
+                    TaskRecord.status == TaskStatus.PENDING.value,
+                    TaskRecord.id.not_in(blocked_tasks),
+                )
                 .distinct()
             )
         ]
@@ -54,7 +62,11 @@ class TaskRepository:
                 best_job = job_id
         statement = (
             select(TaskRecord)
-            .where(TaskRecord.status == TaskStatus.PENDING.value, TaskRecord.job_id == best_job)
+            .where(
+                TaskRecord.status == TaskStatus.PENDING.value,
+                TaskRecord.job_id == best_job,
+                TaskRecord.id.not_in(blocked_tasks),
+            )
             .order_by(TaskRecord.queued_at, TaskRecord.task_index)
             .limit(1)
             .with_for_update(skip_locked=True)
@@ -101,6 +113,53 @@ class TaskRepository:
             .with_for_update()
         )
         return list(self.session.scalars(statement))
+
+    def cancel_descendants(self, failed_task_id: UUID, now: datetime) -> list[TaskRecord]:
+        """Cancel queued descendants when a prerequisite exhausts its retries."""
+        edges = list(
+            self.session.execute(
+                select(TaskDependencyRecord.task_id, TaskDependencyRecord.depends_on_task_id)
+            )
+        )
+        children: dict[UUID, list[UUID]] = {}
+        for task_id, prerequisite_id in edges:
+            children.setdefault(prerequisite_id, []).append(task_id)
+        descendants: set[UUID] = set()
+        pending = [failed_task_id]
+        while pending:
+            for child_id in children.get(pending.pop(), []):
+                if child_id not in descendants:
+                    descendants.add(child_id)
+                    pending.append(child_id)
+        if not descendants:
+            return []
+        tasks = list(
+            self.session.scalars(
+                select(TaskRecord)
+                .where(
+                    TaskRecord.id.in_(descendants),
+                    TaskRecord.status == TaskStatus.PENDING.value,
+                )
+                .order_by(TaskRecord.task_index)
+                .with_for_update()
+            )
+        )
+        for task in tasks:
+            self.set_status(task, TaskStatus.CANCELLED, now)
+        return tasks
+
+    def dependencies_for_job(self, job_id: UUID) -> list[tuple[int, int]]:
+        """Return dependency edges as stable task-index pairs for lineage views."""
+        dependent = aliased(TaskRecord)
+        prerequisite = aliased(TaskRecord)
+        rows = self.session.execute(
+            select(prerequisite.task_index, dependent.task_index)
+            .join(TaskDependencyRecord, TaskDependencyRecord.depends_on_task_id == prerequisite.id)
+            .join(dependent, dependent.id == TaskDependencyRecord.task_id)
+            .where(dependent.job_id == job_id)
+            .order_by(prerequisite.task_index, dependent.task_index)
+        )
+        return [(source, target) for source, target in rows]
 
     def expired(self, now: datetime) -> list[TaskRecord]:
         """Lock expired assigned and running tasks without blocking other reapers."""

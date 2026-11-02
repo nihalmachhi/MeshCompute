@@ -20,6 +20,7 @@ from meshcompute.coordinator.background.purger import run_purger
 from meshcompute.core.errors import (
     BackpressureError,
     ConflictError,
+    InvalidDAGError,
     MeshComputeError,
     NotFoundError,
     PayloadTooLargeError,
@@ -68,6 +69,8 @@ def create_app() -> FastAPI:
         status = (
             413
             if isinstance(exc, PayloadTooLargeError)
+            else 422
+            if isinstance(exc, InvalidDAGError)
             else 404
             if isinstance(exc, NotFoundError)
             else 429
