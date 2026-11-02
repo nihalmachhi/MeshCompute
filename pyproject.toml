@@ -25,7 +25,7 @@ dependencies = [
 vision = ["Pillow>=10", "opencv-python-headless>=4.10"]
 nlp = []
 dev = [
-  "pytest>=8.3,<9",
+  "pytest>=8.3,<10",
   "pytest-asyncio>=0.24,<1",
   "pytest-cov>=5,<7",
   "testcontainers[postgres]>=4.8,<5",
