@@ -5,7 +5,7 @@ export function Footer() {
         <div className="fcols">
           <div>
             <a className="brand" href="#top">MeshCompute</a>
-            <p className="tg">A contained defensive deception and behavior analysis lab.</p>
+            <p className="tg">A reproducible lab for distributed machine-learning workloads and scheduling.</p>
           </div>
           <div>
             <h5>Product</h5>
@@ -22,7 +22,7 @@ export function Footer() {
         </div>
         <div className="fbot">
           <span>Synthetic demo. Scores, costs and latencies are illustrative, not real model quality or provider pricing.</span>
-          <span>Python · SQLite · JSON · MIT License</span>
+          <span>Python · TypeScript · pytest · MIT License</span>
         </div>
         <div className="mark" aria-hidden="true">MeshCompute</div>
       </div>

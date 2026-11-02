@@ -1,40 +1,51 @@
+"""Generate deterministic simulator fixtures and reported site results."""
+
 from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
-from cipherscope.features.beacon import periodicity_score
+from meshcompute.sim.engine import simulate
+from meshcompute.sim.workloads import make_workload
 
 ROOT = Path(__file__).resolve().parents[2]
-REPORT = ROOT / "output" / "reports" / "synthetic-evaluation.json"
-OUT = Path(__file__).resolve().parents[1] / "src" / "features" / "simulator" / "__fixtures__"
-DATA = Path(__file__).resolve().parents[1] / "src" / "data"
+FIXTURE = ROOT / "site/src/features/simulator/__fixtures__/cluster.json"
+RESULTS = ROOT / "site/src/data/results.generated.json"
+SCHEDULERS = ("fifo", "fair", "sjf")
+
+
+def generate() -> tuple[dict[str, Any], dict[str, Any]]:
+    """Run the checked-in simulator over a fixed synthetic cluster workload."""
+    jobs, _ = make_workload(seed=42, num_jobs=6, tasks_per_job=8)
+    parity = {
+        scheduler: {
+            "normal": simulate(4, jobs, scheduler),
+            "worker_failure": simulate(4, jobs, scheduler, kill_worker=True),
+        }
+        for scheduler in SCHEDULERS
+    }
+    results = {
+        "synthetic": True,
+        "seed": 42,
+        "workers": 4,
+        "scheduler_comparison": parity,
+        "note": (
+            "Seeded simulation only. These values compare scheduling behavior; "
+            "they are not production throughput measurements."
+        ),
+    }
+    fixture = {"seed": 42, "workers": 4, "jobs": jobs, "expected": parity}
+    return fixture, results
 
 
 def main() -> None:
-    OUT.mkdir(parents=True, exist_ok=True)
-    DATA.mkdir(parents=True, exist_ok=True)
-
-    cases = {
-        "regular_beacon": [0.0, 30.0, 60.0, 90.0, 120.0, 150.0],
-        "jittered": [0.0, 28.0, 63.0, 89.0, 125.0, 148.0],
-        "web_burst": [0.0, 0.2, 0.4, 5.0, 5.1, 10.0],
-    }
-    fixtures = {
-        name: {"times": times, "result": periodicity_score(times)} for name, times in cases.items()
-    }
-    (OUT / "beacon.json").write_text(json.dumps(fixtures, indent=2), encoding="utf-8")
-
-    report = json.loads(REPORT.read_text(encoding="utf-8"))
-    s1 = report["splits"]["S1_random_caution_only"]["summary"]["macro_f1"]
-    s4 = report["splits"]["S4_cross_dataset"]["summary"]["macro_f1"]
-    results = {
-        "random_split": {"macro_f1": s1["mean"], "std": s1["std"]},
-        "cross_environment": {"macro_f1": s4["mean"], "std": s4["std"]},
-        "robustness": report["robustness"],
-        "data_kind": report["data_kind"],
-    }
-    (DATA / "results.generated.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
+    """Write the Python-derived parity fixture and report consumed by the site."""
+    fixture, results = generate()
+    FIXTURE.parent.mkdir(parents=True, exist_ok=True)
+    RESULTS.parent.mkdir(parents=True, exist_ok=True)
+    FIXTURE.write_text(json.dumps(fixture, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    RESULTS.write_text(json.dumps(results, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

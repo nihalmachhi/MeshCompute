@@ -1,57 +1,3560 @@
 {
-  "random_split": {
-    "macro_f1": 0.992162223741171,
-    "std": 0.0
-  },
-  "cross_environment": {
-    "macro_f1": 0.9444088987676841,
-    "std": 0.00551422685617025
-  },
-  "robustness": {
-    "clean": {
-      "macro_f1": 0.9388846447669977,
-      "accuracy": 0.9266666666666666
+  "note": "Seeded simulation only. These values compare scheduling behavior; they are not production throughput measurements.",
+  "scheduler_comparison": {
+    "fair": {
+      "normal": {
+        "fairness": 0.643,
+        "makespan": 48.688,
+        "mean_wait": 24.69,
+        "p95_wait": 43.467,
+        "retries": 0,
+        "schedule": [
+          {
+            "end": 1.0767700176220387,
+            "job_id": "job-0",
+            "start": 0.0,
+            "success": true,
+            "task_id": 0,
+            "worker": 0
+          },
+          {
+            "end": 1.9656781684607267,
+            "job_id": "job-1",
+            "start": 0.0,
+            "success": true,
+            "task_id": 32,
+            "worker": 1
+          },
+          {
+            "end": 2.3791621532291174,
+            "job_id": "job-2",
+            "start": 0.0,
+            "success": true,
+            "task_id": 40,
+            "worker": 2
+          },
+          {
+            "end": 1.2194233369082212,
+            "job_id": "job-3",
+            "start": 0.0,
+            "success": true,
+            "task_id": 48,
+            "worker": 3
+          },
+          {
+            "end": 3.8540973286144435,
+            "job_id": "job-0",
+            "start": 1.0767700176220387,
+            "success": true,
+            "task_id": 1,
+            "worker": 0
+          },
+          {
+            "end": 5.420560196042061,
+            "job_id": "job-0",
+            "start": 1.2194233369082212,
+            "success": true,
+            "task_id": 2,
+            "worker": 3
+          },
+          {
+            "end": 3.3973210686817765,
+            "job_id": "job-0",
+            "start": 1.9656781684607267,
+            "success": true,
+            "task_id": 3,
+            "worker": 1
+          },
+          {
+            "end": 7.464578964514658,
+            "job_id": "job-0",
+            "start": 2.3791621532291174,
+            "success": true,
+            "task_id": 4,
+            "worker": 2
+          },
+          {
+            "end": 8.832066672621295,
+            "job_id": "job-0",
+            "start": 3.3973210686817765,
+            "success": true,
+            "task_id": 5,
+            "worker": 1
+          },
+          {
+            "end": 9.014399352716282,
+            "job_id": "job-0",
+            "start": 3.8540973286144435,
+            "success": true,
+            "task_id": 6,
+            "worker": 0
+          },
+          {
+            "end": 8.349685437045991,
+            "job_id": "job-0",
+            "start": 5.420560196042061,
+            "success": true,
+            "task_id": 7,
+            "worker": 3
+          },
+          {
+            "end": 12.958879261743277,
+            "job_id": "job-0",
+            "start": 7.464578964514658,
+            "success": true,
+            "task_id": 8,
+            "worker": 2
+          },
+          {
+            "end": 11.516558938892558,
+            "job_id": "job-0",
+            "start": 8.349685437045991,
+            "success": true,
+            "task_id": 9,
+            "worker": 3
+          },
+          {
+            "end": 11.211663695517927,
+            "job_id": "job-0",
+            "start": 8.832066672621295,
+            "success": true,
+            "task_id": 10,
+            "worker": 1
+          },
+          {
+            "end": 12.718843215610832,
+            "job_id": "job-0",
+            "start": 9.014399352716282,
+            "success": true,
+            "task_id": 11,
+            "worker": 0
+          },
+          {
+            "end": 14.16722043696791,
+            "job_id": "job-0",
+            "start": 11.211663695517927,
+            "success": true,
+            "task_id": 12,
+            "worker": 1
+          },
+          {
+            "end": 14.65541377919726,
+            "job_id": "job-0",
+            "start": 11.516558938892558,
+            "success": true,
+            "task_id": 13,
+            "worker": 3
+          },
+          {
+            "end": 16.522995830746368,
+            "job_id": "job-0",
+            "start": 12.718843215610832,
+            "success": true,
+            "task_id": 14,
+            "worker": 0
+          },
+          {
+            "end": 14.791654375847429,
+            "job_id": "job-0",
+            "start": 12.958879261743277,
+            "success": true,
+            "task_id": 15,
+            "worker": 2
+          },
+          {
+            "end": 17.81317840400152,
+            "job_id": "job-0",
+            "start": 14.16722043696791,
+            "success": true,
+            "task_id": 16,
+            "worker": 1
+          },
+          {
+            "end": 16.310354866320267,
+            "job_id": "job-0",
+            "start": 14.65541377919726,
+            "success": true,
+            "task_id": 17,
+            "worker": 3
+          },
+          {
+            "end": 18.786443550838158,
+            "job_id": "job-0",
+            "start": 14.791654375847429,
+            "success": true,
+            "task_id": 18,
+            "worker": 2
+          },
+          {
+            "end": 18.267717249225825,
+            "job_id": "job-0",
+            "start": 16.310354866320267,
+            "success": true,
+            "task_id": 19,
+            "worker": 3
+          },
+          {
+            "end": 20.760655011050403,
+            "job_id": "job-0",
+            "start": 16.522995830746368,
+            "success": true,
+            "task_id": 20,
+            "worker": 0
+          },
+          {
+            "end": 23.78450989117846,
+            "job_id": "job-0",
+            "start": 17.81317840400152,
+            "success": true,
+            "task_id": 21,
+            "worker": 1
+          },
+          {
+            "end": 21.15852753026411,
+            "job_id": "job-0",
+            "start": 18.267717249225825,
+            "success": true,
+            "task_id": 22,
+            "worker": 3
+          },
+          {
+            "end": 20.467780081089586,
+            "job_id": "job-0",
+            "start": 18.786443550838158,
+            "success": true,
+            "task_id": 23,
+            "worker": 2
+          },
+          {
+            "end": 24.358032965334132,
+            "job_id": "job-0",
+            "start": 20.467780081089586,
+            "success": true,
+            "task_id": 24,
+            "worker": 2
+          },
+          {
+            "end": 26.130003040190786,
+            "job_id": "job-0",
+            "start": 20.760655011050403,
+            "success": true,
+            "task_id": 25,
+            "worker": 0
+          },
+          {
+            "end": 24.58749231416732,
+            "job_id": "job-0",
+            "start": 21.15852753026411,
+            "success": true,
+            "task_id": 26,
+            "worker": 3
+          },
+          {
+            "end": 25.2146268368233,
+            "job_id": "job-0",
+            "start": 23.78450989117846,
+            "success": true,
+            "task_id": 27,
+            "worker": 1
+          },
+          {
+            "end": 26.827009172877297,
+            "job_id": "job-0",
+            "start": 24.358032965334132,
+            "success": true,
+            "task_id": 28,
+            "worker": 2
+          },
+          {
+            "end": 28.693976406008005,
+            "job_id": "job-0",
+            "start": 24.58749231416732,
+            "success": true,
+            "task_id": 29,
+            "worker": 3
+          },
+          {
+            "end": 30.118039465975016,
+            "job_id": "job-0",
+            "start": 25.2146268368233,
+            "success": true,
+            "task_id": 30,
+            "worker": 1
+          },
+          {
+            "end": 27.898931166389957,
+            "job_id": "job-0",
+            "start": 26.130003040190786,
+            "success": true,
+            "task_id": 31,
+            "worker": 0
+          },
+          {
+            "end": 29.178288822760805,
+            "job_id": "job-1",
+            "start": 26.827009172877297,
+            "success": true,
+            "task_id": 33,
+            "worker": 2
+          },
+          {
+            "end": 30.119369772495702,
+            "job_id": "job-1",
+            "start": 27.898931166389957,
+            "success": true,
+            "task_id": 34,
+            "worker": 0
+          },
+          {
+            "end": 30.949497348163277,
+            "job_id": "job-1",
+            "start": 28.693976406008005,
+            "success": true,
+            "task_id": 35,
+            "worker": 3
+          },
+          {
+            "end": 31.508977595483884,
+            "job_id": "job-1",
+            "start": 29.178288822760805,
+            "success": true,
+            "task_id": 36,
+            "worker": 2
+          },
+          {
+            "end": 31.56671090889722,
+            "job_id": "job-1",
+            "start": 30.118039465975016,
+            "success": true,
+            "task_id": 37,
+            "worker": 1
+          },
+          {
+            "end": 33.01770150731318,
+            "job_id": "job-1",
+            "start": 30.119369772495702,
+            "success": true,
+            "task_id": 38,
+            "worker": 0
+          },
+          {
+            "end": 33.93483736086637,
+            "job_id": "job-1",
+            "start": 30.949497348163277,
+            "success": true,
+            "task_id": 39,
+            "worker": 3
+          },
+          {
+            "end": 33.42167013627477,
+            "job_id": "job-2",
+            "start": 31.508977595483884,
+            "success": true,
+            "task_id": 41,
+            "worker": 2
+          },
+          {
+            "end": 34.55754412896931,
+            "job_id": "job-2",
+            "start": 31.56671090889722,
+            "success": true,
+            "task_id": 42,
+            "worker": 1
+          },
+          {
+            "end": 34.29719911259599,
+            "job_id": "job-2",
+            "start": 33.01770150731318,
+            "success": true,
+            "task_id": 43,
+            "worker": 0
+          },
+          {
+            "end": 35.883484297664836,
+            "job_id": "job-2",
+            "start": 33.42167013627477,
+            "success": true,
+            "task_id": 44,
+            "worker": 2
+          },
+          {
+            "end": 35.182927089277655,
+            "job_id": "job-2",
+            "start": 33.93483736086637,
+            "success": true,
+            "task_id": 45,
+            "worker": 3
+          },
+          {
+            "end": 36.59933145274408,
+            "job_id": "job-2",
+            "start": 34.29719911259599,
+            "success": true,
+            "task_id": 46,
+            "worker": 0
+          },
+          {
+            "end": 36.44138107448816,
+            "job_id": "job-2",
+            "start": 34.55754412896931,
+            "success": true,
+            "task_id": 47,
+            "worker": 1
+          },
+          {
+            "end": 36.81240586657077,
+            "job_id": "job-3",
+            "start": 35.182927089277655,
+            "success": true,
+            "task_id": 49,
+            "worker": 3
+          },
+          {
+            "end": 36.97663883329369,
+            "job_id": "job-3",
+            "start": 35.883484297664836,
+            "success": true,
+            "task_id": 50,
+            "worker": 2
+          },
+          {
+            "end": 37.60974267637357,
+            "job_id": "job-3",
+            "start": 36.44138107448816,
+            "success": true,
+            "task_id": 51,
+            "worker": 1
+          },
+          {
+            "end": 38.340393155114725,
+            "job_id": "job-3",
+            "start": 36.59933145274408,
+            "success": true,
+            "task_id": 52,
+            "worker": 0
+          },
+          {
+            "end": 38.638342400081456,
+            "job_id": "job-3",
+            "start": 36.81240586657077,
+            "success": true,
+            "task_id": 53,
+            "worker": 3
+          },
+          {
+            "end": 38.14620040846057,
+            "job_id": "job-3",
+            "start": 36.97663883329369,
+            "success": true,
+            "task_id": 54,
+            "worker": 2
+          },
+          {
+            "end": 40.11770306015387,
+            "job_id": "job-3",
+            "start": 37.60974267637357,
+            "success": true,
+            "task_id": 55,
+            "worker": 1
+          },
+          {
+            "end": 40.17041307431646,
+            "job_id": "job-4",
+            "start": 38.14620040846057,
+            "success": true,
+            "task_id": 56,
+            "worker": 2
+          },
+          {
+            "end": 40.25814495491795,
+            "job_id": "job-4",
+            "start": 38.340393155114725,
+            "success": true,
+            "task_id": 57,
+            "worker": 0
+          },
+          {
+            "end": 40.00113205611706,
+            "job_id": "job-4",
+            "start": 38.638342400081456,
+            "success": true,
+            "task_id": 58,
+            "worker": 3
+          },
+          {
+            "end": 41.25802714563906,
+            "job_id": "job-4",
+            "start": 40.00113205611706,
+            "success": true,
+            "task_id": 59,
+            "worker": 3
+          },
+          {
+            "end": 41.358624189626426,
+            "job_id": "job-4",
+            "start": 40.11770306015387,
+            "success": true,
+            "task_id": 60,
+            "worker": 1
+          },
+          {
+            "end": 42.90949701028876,
+            "job_id": "job-4",
+            "start": 40.17041307431646,
+            "success": true,
+            "task_id": 61,
+            "worker": 2
+          },
+          {
+            "end": 42.31372578791343,
+            "job_id": "job-4",
+            "start": 40.25814495491795,
+            "success": true,
+            "task_id": 62,
+            "worker": 0
+          },
+          {
+            "end": 44.073836252558976,
+            "job_id": "job-4",
+            "start": 41.25802714563906,
+            "success": true,
+            "task_id": 63,
+            "worker": 3
+          },
+          {
+            "end": 44.166335398796946,
+            "job_id": "job-5",
+            "start": 41.358624189626426,
+            "success": true,
+            "task_id": 64,
+            "worker": 1
+          },
+          {
+            "end": 43.467329245759174,
+            "job_id": "job-5",
+            "start": 42.31372578791343,
+            "success": true,
+            "task_id": 65,
+            "worker": 0
+          },
+          {
+            "end": 45.74072482693009,
+            "job_id": "job-5",
+            "start": 42.90949701028876,
+            "success": true,
+            "task_id": 66,
+            "worker": 2
+          },
+          {
+            "end": 46.28331738268025,
+            "job_id": "job-5",
+            "start": 43.467329245759174,
+            "success": true,
+            "task_id": 67,
+            "worker": 0
+          },
+          {
+            "end": 45.97049267869443,
+            "job_id": "job-5",
+            "start": 44.073836252558976,
+            "success": true,
+            "task_id": 68,
+            "worker": 3
+          },
+          {
+            "end": 46.85423953644931,
+            "job_id": "job-5",
+            "start": 44.166335398796946,
+            "success": true,
+            "task_id": 69,
+            "worker": 1
+          },
+          {
+            "end": 48.6881254108157,
+            "job_id": "job-5",
+            "start": 45.74072482693009,
+            "success": true,
+            "task_id": 70,
+            "worker": 2
+          },
+          {
+            "end": 47.68723166966811,
+            "job_id": "job-5",
+            "start": 45.97049267869443,
+            "success": true,
+            "task_id": 71,
+            "worker": 3
+          }
+        ],
+        "tasks": 72,
+        "utilization": 0.973
+      },
+      "worker_failure": {
+        "fairness": 0.643,
+        "makespan": 63.438,
+        "mean_wait": 32.983,
+        "p95_wait": 57.675,
+        "retries": 1,
+        "schedule": [
+          {
+            "end": 1.0767700176220387,
+            "job_id": "job-0",
+            "start": 0.0,
+            "success": true,
+            "task_id": 0,
+            "worker": 0
+          },
+          {
+            "end": 1.9656781684607267,
+            "job_id": "job-1",
+            "start": 0.0,
+            "success": true,
+            "task_id": 32,
+            "worker": 1
+          },
+          {
+            "end": 2.3791621532291174,
+            "job_id": "job-2",
+            "start": 0.0,
+            "success": true,
+            "task_id": 40,
+            "worker": 2
+          },
+          {
+            "end": 1.2194233369082212,
+            "job_id": "job-3",
+            "start": 0.0,
+            "success": true,
+            "task_id": 48,
+            "worker": 3
+          },
+          {
+            "end": 3.8540973286144435,
+            "job_id": "job-0",
+            "start": 1.0767700176220387,
+            "success": true,
+            "task_id": 1,
+            "worker": 0
+          },
+          {
+            "end": 2.0,
+            "job_id": "job-0",
+            "start": 1.2194233369082212,
+            "success": false,
+            "task_id": 2,
+            "worker": 3
+          },
+          {
+            "end": 3.3973210686817765,
+            "job_id": "job-0",
+            "start": 1.9656781684607267,
+            "success": true,
+            "task_id": 3,
+            "worker": 1
+          },
+          {
+            "end": 6.580299012362957,
+            "job_id": "job-0",
+            "start": 2.3791621532291174,
+            "success": true,
+            "task_id": 2,
+            "worker": 2
+          },
+          {
+            "end": 8.482737879967317,
+            "job_id": "job-0",
+            "start": 3.3973210686817765,
+            "success": true,
+            "task_id": 4,
+            "worker": 1
+          },
+          {
+            "end": 9.288842932553962,
+            "job_id": "job-0",
+            "start": 3.8540973286144435,
+            "success": true,
+            "task_id": 5,
+            "worker": 0
+          },
+          {
+            "end": 11.740601036464795,
+            "job_id": "job-0",
+            "start": 6.580299012362957,
+            "success": true,
+            "task_id": 6,
+            "worker": 2
+          },
+          {
+            "end": 11.411863120971248,
+            "job_id": "job-0",
+            "start": 8.482737879967317,
+            "success": true,
+            "task_id": 7,
+            "worker": 1
+          },
+          {
+            "end": 14.783143229782581,
+            "job_id": "job-0",
+            "start": 9.288842932553962,
+            "success": true,
+            "task_id": 8,
+            "worker": 0
+          },
+          {
+            "end": 14.578736622817814,
+            "job_id": "job-0",
+            "start": 11.411863120971248,
+            "success": true,
+            "task_id": 9,
+            "worker": 1
+          },
+          {
+            "end": 14.120198059361428,
+            "job_id": "job-0",
+            "start": 11.740601036464795,
+            "success": true,
+            "task_id": 10,
+            "worker": 2
+          },
+          {
+            "end": 17.824641922255978,
+            "job_id": "job-0",
+            "start": 14.120198059361428,
+            "success": true,
+            "task_id": 11,
+            "worker": 2
+          },
+          {
+            "end": 17.534293364267796,
+            "job_id": "job-0",
+            "start": 14.578736622817814,
+            "success": true,
+            "task_id": 12,
+            "worker": 1
+          },
+          {
+            "end": 17.921998070087284,
+            "job_id": "job-0",
+            "start": 14.783143229782581,
+            "success": true,
+            "task_id": 13,
+            "worker": 0
+          },
+          {
+            "end": 21.338445979403332,
+            "job_id": "job-0",
+            "start": 17.534293364267796,
+            "success": true,
+            "task_id": 14,
+            "worker": 1
+          },
+          {
+            "end": 19.65741703636013,
+            "job_id": "job-0",
+            "start": 17.824641922255978,
+            "success": true,
+            "task_id": 15,
+            "worker": 2
+          },
+          {
+            "end": 21.567956037120894,
+            "job_id": "job-0",
+            "start": 17.921998070087284,
+            "success": true,
+            "task_id": 16,
+            "worker": 0
+          },
+          {
+            "end": 21.312358123483136,
+            "job_id": "job-0",
+            "start": 19.65741703636013,
+            "success": true,
+            "task_id": 17,
+            "worker": 2
+          },
+          {
+            "end": 25.307147298473865,
+            "job_id": "job-0",
+            "start": 21.312358123483136,
+            "success": true,
+            "task_id": 18,
+            "worker": 2
+          },
+          {
+            "end": 23.29580836230889,
+            "job_id": "job-0",
+            "start": 21.338445979403332,
+            "success": true,
+            "task_id": 19,
+            "worker": 1
+          },
+          {
+            "end": 25.80561521742493,
+            "job_id": "job-0",
+            "start": 21.567956037120894,
+            "success": true,
+            "task_id": 20,
+            "worker": 0
+          },
+          {
+            "end": 29.26713984948583,
+            "job_id": "job-0",
+            "start": 23.29580836230889,
+            "success": true,
+            "task_id": 21,
+            "worker": 1
+          },
+          {
+            "end": 28.19795757951215,
+            "job_id": "job-0",
+            "start": 25.307147298473865,
+            "success": true,
+            "task_id": 22,
+            "worker": 2
+          },
+          {
+            "end": 27.486951747676358,
+            "job_id": "job-0",
+            "start": 25.80561521742493,
+            "success": true,
+            "task_id": 23,
+            "worker": 0
+          },
+          {
+            "end": 31.377204631920904,
+            "job_id": "job-0",
+            "start": 27.486951747676358,
+            "success": true,
+            "task_id": 24,
+            "worker": 0
+          },
+          {
+            "end": 33.56730560865253,
+            "job_id": "job-0",
+            "start": 28.19795757951215,
+            "success": true,
+            "task_id": 25,
+            "worker": 2
+          },
+          {
+            "end": 32.69610463338904,
+            "job_id": "job-0",
+            "start": 29.26713984948583,
+            "success": true,
+            "task_id": 26,
+            "worker": 1
+          },
+          {
+            "end": 32.807321577565745,
+            "job_id": "job-0",
+            "start": 31.377204631920904,
+            "success": true,
+            "task_id": 27,
+            "worker": 0
+          },
+          {
+            "end": 35.165080840932205,
+            "job_id": "job-0",
+            "start": 32.69610463338904,
+            "success": true,
+            "task_id": 28,
+            "worker": 1
+          },
+          {
+            "end": 36.91380566940643,
+            "job_id": "job-0",
+            "start": 32.807321577565745,
+            "success": true,
+            "task_id": 29,
+            "worker": 0
+          },
+          {
+            "end": 38.47071823780425,
+            "job_id": "job-0",
+            "start": 33.56730560865253,
+            "success": true,
+            "task_id": 30,
+            "worker": 2
+          },
+          {
+            "end": 36.934008967131376,
+            "job_id": "job-0",
+            "start": 35.165080840932205,
+            "success": true,
+            "task_id": 31,
+            "worker": 1
+          },
+          {
+            "end": 39.26508531928994,
+            "job_id": "job-1",
+            "start": 36.91380566940643,
+            "success": true,
+            "task_id": 33,
+            "worker": 0
+          },
+          {
+            "end": 39.15444757323712,
+            "job_id": "job-1",
+            "start": 36.934008967131376,
+            "success": true,
+            "task_id": 34,
+            "worker": 1
+          },
+          {
+            "end": 40.72623917995952,
+            "job_id": "job-1",
+            "start": 38.47071823780425,
+            "success": true,
+            "task_id": 35,
+            "worker": 2
+          },
+          {
+            "end": 41.4851363459602,
+            "job_id": "job-1",
+            "start": 39.15444757323712,
+            "success": true,
+            "task_id": 36,
+            "worker": 1
+          },
+          {
+            "end": 40.71375676221214,
+            "job_id": "job-1",
+            "start": 39.26508531928994,
+            "success": true,
+            "task_id": 37,
+            "worker": 0
+          },
+          {
+            "end": 43.61208849702962,
+            "job_id": "job-1",
+            "start": 40.71375676221214,
+            "success": true,
+            "task_id": 38,
+            "worker": 0
+          },
+          {
+            "end": 43.71157919266261,
+            "job_id": "job-1",
+            "start": 40.72623917995952,
+            "success": true,
+            "task_id": 39,
+            "worker": 2
+          },
+          {
+            "end": 43.397828886751086,
+            "job_id": "job-2",
+            "start": 41.4851363459602,
+            "success": true,
+            "task_id": 41,
+            "worker": 1
+          },
+          {
+            "end": 46.388662106823176,
+            "job_id": "job-2",
+            "start": 43.397828886751086,
+            "success": true,
+            "task_id": 42,
+            "worker": 1
+          },
+          {
+            "end": 44.89158610231243,
+            "job_id": "job-2",
+            "start": 43.61208849702962,
+            "success": true,
+            "task_id": 43,
+            "worker": 0
+          },
+          {
+            "end": 46.17339335405268,
+            "job_id": "job-2",
+            "start": 43.71157919266261,
+            "success": true,
+            "task_id": 44,
+            "worker": 2
+          },
+          {
+            "end": 46.13967583072372,
+            "job_id": "job-2",
+            "start": 44.89158610231243,
+            "success": true,
+            "task_id": 45,
+            "worker": 0
+          },
+          {
+            "end": 48.44180817087181,
+            "job_id": "job-2",
+            "start": 46.13967583072372,
+            "success": true,
+            "task_id": 46,
+            "worker": 0
+          },
+          {
+            "end": 48.05723029957153,
+            "job_id": "job-2",
+            "start": 46.17339335405268,
+            "success": true,
+            "task_id": 47,
+            "worker": 2
+          },
+          {
+            "end": 48.01814088411629,
+            "job_id": "job-3",
+            "start": 46.388662106823176,
+            "success": true,
+            "task_id": 49,
+            "worker": 1
+          },
+          {
+            "end": 49.11129541974515,
+            "job_id": "job-3",
+            "start": 48.01814088411629,
+            "success": true,
+            "task_id": 50,
+            "worker": 1
+          },
+          {
+            "end": 49.22559190145694,
+            "job_id": "job-3",
+            "start": 48.05723029957153,
+            "success": true,
+            "task_id": 51,
+            "worker": 2
+          },
+          {
+            "end": 50.18286987324245,
+            "job_id": "job-3",
+            "start": 48.44180817087181,
+            "success": true,
+            "task_id": 52,
+            "worker": 0
+          },
+          {
+            "end": 50.93723195325583,
+            "job_id": "job-3",
+            "start": 49.11129541974515,
+            "success": true,
+            "task_id": 53,
+            "worker": 1
+          },
+          {
+            "end": 50.39515347662382,
+            "job_id": "job-3",
+            "start": 49.22559190145694,
+            "success": true,
+            "task_id": 54,
+            "worker": 2
+          },
+          {
+            "end": 52.69083025702275,
+            "job_id": "job-3",
+            "start": 50.18286987324245,
+            "success": true,
+            "task_id": 55,
+            "worker": 0
+          },
+          {
+            "end": 52.4193661424797,
+            "job_id": "job-4",
+            "start": 50.39515347662382,
+            "success": true,
+            "task_id": 56,
+            "worker": 2
+          },
+          {
+            "end": 52.85498375305906,
+            "job_id": "job-4",
+            "start": 50.93723195325583,
+            "success": true,
+            "task_id": 57,
+            "worker": 1
+          },
+          {
+            "end": 53.782155798515305,
+            "job_id": "job-4",
+            "start": 52.4193661424797,
+            "success": true,
+            "task_id": 58,
+            "worker": 2
+          },
+          {
+            "end": 53.94772534654476,
+            "job_id": "job-4",
+            "start": 52.69083025702275,
+            "success": true,
+            "task_id": 59,
+            "worker": 0
+          },
+          {
+            "end": 54.09590488253161,
+            "job_id": "job-4",
+            "start": 52.85498375305906,
+            "success": true,
+            "task_id": 60,
+            "worker": 1
+          },
+          {
+            "end": 56.52123973448761,
+            "job_id": "job-4",
+            "start": 53.782155798515305,
+            "success": true,
+            "task_id": 61,
+            "worker": 2
+          },
+          {
+            "end": 56.00330617954023,
+            "job_id": "job-4",
+            "start": 53.94772534654476,
+            "success": true,
+            "task_id": 62,
+            "worker": 0
+          },
+          {
+            "end": 56.91171398945153,
+            "job_id": "job-4",
+            "start": 54.09590488253161,
+            "success": true,
+            "task_id": 63,
+            "worker": 1
+          },
+          {
+            "end": 58.81101738871075,
+            "job_id": "job-5",
+            "start": 56.00330617954023,
+            "success": true,
+            "task_id": 64,
+            "worker": 0
+          },
+          {
+            "end": 57.674843192333356,
+            "job_id": "job-5",
+            "start": 56.52123973448761,
+            "success": true,
+            "task_id": 65,
+            "worker": 2
+          },
+          {
+            "end": 59.74294180609286,
+            "job_id": "job-5",
+            "start": 56.91171398945153,
+            "success": true,
+            "task_id": 66,
+            "worker": 1
+          },
+          {
+            "end": 60.49083132925443,
+            "job_id": "job-5",
+            "start": 57.674843192333356,
+            "success": true,
+            "task_id": 67,
+            "worker": 2
+          },
+          {
+            "end": 60.7076738148462,
+            "job_id": "job-5",
+            "start": 58.81101738871075,
+            "success": true,
+            "task_id": 68,
+            "worker": 0
+          },
+          {
+            "end": 62.430845943745226,
+            "job_id": "job-5",
+            "start": 59.74294180609286,
+            "success": true,
+            "task_id": 69,
+            "worker": 1
+          },
+          {
+            "end": 63.438231913140044,
+            "job_id": "job-5",
+            "start": 60.49083132925443,
+            "success": true,
+            "task_id": 70,
+            "worker": 2
+          },
+          {
+            "end": 62.424412805819884,
+            "job_id": "job-5",
+            "start": 60.7076738148462,
+            "success": true,
+            "task_id": 71,
+            "worker": 0
+          }
+        ],
+        "tasks": 72,
+        "utilization": 0.989
+      }
     },
-    "padding_10pct": {
-      "macro_f1": 0.9388846447669977,
-      "accuracy": 0.9266666666666666
+    "fifo": {
+      "normal": {
+        "fairness": 0.643,
+        "makespan": 48.695,
+        "mean_wait": 25.244,
+        "p95_wait": 43.514,
+        "retries": 0,
+        "schedule": [
+          {
+            "end": 1.0767700176220387,
+            "job_id": "job-0",
+            "start": 0.0,
+            "success": true,
+            "task_id": 0,
+            "worker": 0
+          },
+          {
+            "end": 2.777327310992405,
+            "job_id": "job-0",
+            "start": 0.0,
+            "success": true,
+            "task_id": 1,
+            "worker": 1
+          },
+          {
+            "end": 4.20113685913384,
+            "job_id": "job-0",
+            "start": 0.0,
+            "success": true,
+            "task_id": 2,
+            "worker": 2
+          },
+          {
+            "end": 1.4316429002210498,
+            "job_id": "job-0",
+            "start": 0.0,
+            "success": true,
+            "task_id": 3,
+            "worker": 3
+          },
+          {
+            "end": 6.162186828907579,
+            "job_id": "job-0",
+            "start": 1.0767700176220387,
+            "success": true,
+            "task_id": 4,
+            "worker": 0
+          },
+          {
+            "end": 6.866388504160568,
+            "job_id": "job-0",
+            "start": 1.4316429002210498,
+            "success": true,
+            "task_id": 5,
+            "worker": 3
+          },
+          {
+            "end": 7.937629335094243,
+            "job_id": "job-0",
+            "start": 2.777327310992405,
+            "success": true,
+            "task_id": 6,
+            "worker": 1
+          },
+          {
+            "end": 7.13026210013777,
+            "job_id": "job-0",
+            "start": 4.20113685913384,
+            "success": true,
+            "task_id": 7,
+            "worker": 2
+          },
+          {
+            "end": 11.656487126136199,
+            "job_id": "job-0",
+            "start": 6.162186828907579,
+            "success": true,
+            "task_id": 8,
+            "worker": 0
+          },
+          {
+            "end": 10.033262006007135,
+            "job_id": "job-0",
+            "start": 6.866388504160568,
+            "success": true,
+            "task_id": 9,
+            "worker": 3
+          },
+          {
+            "end": 9.509859123034403,
+            "job_id": "job-0",
+            "start": 7.13026210013777,
+            "success": true,
+            "task_id": 10,
+            "worker": 2
+          },
+          {
+            "end": 11.642073197988793,
+            "job_id": "job-0",
+            "start": 7.937629335094243,
+            "success": true,
+            "task_id": 11,
+            "worker": 1
+          },
+          {
+            "end": 12.465415864484385,
+            "job_id": "job-0",
+            "start": 9.509859123034403,
+            "success": true,
+            "task_id": 12,
+            "worker": 2
+          },
+          {
+            "end": 13.172116846311837,
+            "job_id": "job-0",
+            "start": 10.033262006007135,
+            "success": true,
+            "task_id": 13,
+            "worker": 3
+          },
+          {
+            "end": 15.446225813124329,
+            "job_id": "job-0",
+            "start": 11.642073197988793,
+            "success": true,
+            "task_id": 14,
+            "worker": 1
+          },
+          {
+            "end": 13.48926224024035,
+            "job_id": "job-0",
+            "start": 11.656487126136199,
+            "success": true,
+            "task_id": 15,
+            "worker": 0
+          },
+          {
+            "end": 16.111373831517994,
+            "job_id": "job-0",
+            "start": 12.465415864484385,
+            "success": true,
+            "task_id": 16,
+            "worker": 2
+          },
+          {
+            "end": 14.827057933434844,
+            "job_id": "job-0",
+            "start": 13.172116846311837,
+            "success": true,
+            "task_id": 17,
+            "worker": 3
+          },
+          {
+            "end": 17.48405141523108,
+            "job_id": "job-0",
+            "start": 13.48926224024035,
+            "success": true,
+            "task_id": 18,
+            "worker": 0
+          },
+          {
+            "end": 16.7844203163404,
+            "job_id": "job-0",
+            "start": 14.827057933434844,
+            "success": true,
+            "task_id": 19,
+            "worker": 3
+          },
+          {
+            "end": 19.683884993428364,
+            "job_id": "job-0",
+            "start": 15.446225813124329,
+            "success": true,
+            "task_id": 20,
+            "worker": 1
+          },
+          {
+            "end": 22.082705318694934,
+            "job_id": "job-0",
+            "start": 16.111373831517994,
+            "success": true,
+            "task_id": 21,
+            "worker": 2
+          },
+          {
+            "end": 19.675230597378686,
+            "job_id": "job-0",
+            "start": 16.7844203163404,
+            "success": true,
+            "task_id": 22,
+            "worker": 3
+          },
+          {
+            "end": 19.165387945482507,
+            "job_id": "job-0",
+            "start": 17.48405141523108,
+            "success": true,
+            "task_id": 23,
+            "worker": 0
+          },
+          {
+            "end": 23.055640829727054,
+            "job_id": "job-0",
+            "start": 19.165387945482507,
+            "success": true,
+            "task_id": 24,
+            "worker": 0
+          },
+          {
+            "end": 25.04457862651907,
+            "job_id": "job-0",
+            "start": 19.675230597378686,
+            "success": true,
+            "task_id": 25,
+            "worker": 3
+          },
+          {
+            "end": 23.112849777331576,
+            "job_id": "job-0",
+            "start": 19.683884993428364,
+            "success": true,
+            "task_id": 26,
+            "worker": 1
+          },
+          {
+            "end": 23.512822264339775,
+            "job_id": "job-0",
+            "start": 22.082705318694934,
+            "success": true,
+            "task_id": 27,
+            "worker": 2
+          },
+          {
+            "end": 25.524617037270218,
+            "job_id": "job-0",
+            "start": 23.055640829727054,
+            "success": true,
+            "task_id": 28,
+            "worker": 0
+          },
+          {
+            "end": 27.21933386917226,
+            "job_id": "job-0",
+            "start": 23.112849777331576,
+            "success": true,
+            "task_id": 29,
+            "worker": 1
+          },
+          {
+            "end": 28.41623489349149,
+            "job_id": "job-0",
+            "start": 23.512822264339775,
+            "success": true,
+            "task_id": 30,
+            "worker": 2
+          },
+          {
+            "end": 26.81350675271824,
+            "job_id": "job-0",
+            "start": 25.04457862651907,
+            "success": true,
+            "task_id": 31,
+            "worker": 3
+          },
+          {
+            "end": 27.490295205730945,
+            "job_id": "job-1",
+            "start": 25.524617037270218,
+            "success": true,
+            "task_id": 32,
+            "worker": 0
+          },
+          {
+            "end": 29.16478640260175,
+            "job_id": "job-1",
+            "start": 26.81350675271824,
+            "success": true,
+            "task_id": 33,
+            "worker": 3
+          },
+          {
+            "end": 29.439772475278005,
+            "job_id": "job-1",
+            "start": 27.21933386917226,
+            "success": true,
+            "task_id": 34,
+            "worker": 1
+          },
+          {
+            "end": 29.745816147886217,
+            "job_id": "job-1",
+            "start": 27.490295205730945,
+            "success": true,
+            "task_id": 35,
+            "worker": 0
+          },
+          {
+            "end": 30.74692366621457,
+            "job_id": "job-1",
+            "start": 28.41623489349149,
+            "success": true,
+            "task_id": 36,
+            "worker": 2
+          },
+          {
+            "end": 30.613457845523953,
+            "job_id": "job-1",
+            "start": 29.16478640260175,
+            "success": true,
+            "task_id": 37,
+            "worker": 3
+          },
+          {
+            "end": 32.33810421009548,
+            "job_id": "job-1",
+            "start": 29.439772475278005,
+            "success": true,
+            "task_id": 38,
+            "worker": 1
+          },
+          {
+            "end": 32.73115616058931,
+            "job_id": "job-1",
+            "start": 29.745816147886217,
+            "success": true,
+            "task_id": 39,
+            "worker": 0
+          },
+          {
+            "end": 32.99261999875307,
+            "job_id": "job-2",
+            "start": 30.613457845523953,
+            "success": true,
+            "task_id": 40,
+            "worker": 3
+          },
+          {
+            "end": 32.659616207005456,
+            "job_id": "job-2",
+            "start": 30.74692366621457,
+            "success": true,
+            "task_id": 41,
+            "worker": 2
+          },
+          {
+            "end": 35.32893743016757,
+            "job_id": "job-2",
+            "start": 32.33810421009548,
+            "success": true,
+            "task_id": 42,
+            "worker": 1
+          },
+          {
+            "end": 33.93911381228827,
+            "job_id": "job-2",
+            "start": 32.659616207005456,
+            "success": true,
+            "task_id": 43,
+            "worker": 2
+          },
+          {
+            "end": 35.192970321979374,
+            "job_id": "job-2",
+            "start": 32.73115616058931,
+            "success": true,
+            "task_id": 44,
+            "worker": 0
+          },
+          {
+            "end": 34.24070972716436,
+            "job_id": "job-2",
+            "start": 32.99261999875307,
+            "success": true,
+            "task_id": 45,
+            "worker": 3
+          },
+          {
+            "end": 36.24124615243636,
+            "job_id": "job-2",
+            "start": 33.93911381228827,
+            "success": true,
+            "task_id": 46,
+            "worker": 2
+          },
+          {
+            "end": 36.12454667268321,
+            "job_id": "job-2",
+            "start": 34.24070972716436,
+            "success": true,
+            "task_id": 47,
+            "worker": 3
+          },
+          {
+            "end": 36.412393658887595,
+            "job_id": "job-3",
+            "start": 35.192970321979374,
+            "success": true,
+            "task_id": 48,
+            "worker": 0
+          },
+          {
+            "end": 36.95841620746069,
+            "job_id": "job-3",
+            "start": 35.32893743016757,
+            "success": true,
+            "task_id": 49,
+            "worker": 1
+          },
+          {
+            "end": 37.217701208312064,
+            "job_id": "job-3",
+            "start": 36.12454667268321,
+            "success": true,
+            "task_id": 50,
+            "worker": 3
+          },
+          {
+            "end": 37.40960775432177,
+            "job_id": "job-3",
+            "start": 36.24124615243636,
+            "success": true,
+            "task_id": 51,
+            "worker": 2
+          },
+          {
+            "end": 38.15345536125824,
+            "job_id": "job-3",
+            "start": 36.412393658887595,
+            "success": true,
+            "task_id": 52,
+            "worker": 0
+          },
+          {
+            "end": 38.78435274097137,
+            "job_id": "job-3",
+            "start": 36.95841620746069,
+            "success": true,
+            "task_id": 53,
+            "worker": 1
+          },
+          {
+            "end": 38.387262783478945,
+            "job_id": "job-3",
+            "start": 37.217701208312064,
+            "success": true,
+            "task_id": 54,
+            "worker": 3
+          },
+          {
+            "end": 39.91756813810207,
+            "job_id": "job-3",
+            "start": 37.40960775432177,
+            "success": true,
+            "task_id": 55,
+            "worker": 2
+          },
+          {
+            "end": 40.17766802711412,
+            "job_id": "job-4",
+            "start": 38.15345536125824,
+            "success": true,
+            "task_id": 56,
+            "worker": 0
+          },
+          {
+            "end": 40.30501458328217,
+            "job_id": "job-4",
+            "start": 38.387262783478945,
+            "success": true,
+            "task_id": 57,
+            "worker": 3
+          },
+          {
+            "end": 40.147142397006974,
+            "job_id": "job-4",
+            "start": 38.78435274097137,
+            "success": true,
+            "task_id": 58,
+            "worker": 1
+          },
+          {
+            "end": 41.174463227624074,
+            "job_id": "job-4",
+            "start": 39.91756813810207,
+            "success": true,
+            "task_id": 59,
+            "worker": 2
+          },
+          {
+            "end": 41.38806352647953,
+            "job_id": "job-4",
+            "start": 40.147142397006974,
+            "success": true,
+            "task_id": 60,
+            "worker": 1
+          },
+          {
+            "end": 42.916751963086426,
+            "job_id": "job-4",
+            "start": 40.17766802711412,
+            "success": true,
+            "task_id": 61,
+            "worker": 0
+          },
+          {
+            "end": 42.36059541627765,
+            "job_id": "job-4",
+            "start": 40.30501458328217,
+            "success": true,
+            "task_id": 62,
+            "worker": 3
+          },
+          {
+            "end": 43.99027233454399,
+            "job_id": "job-4",
+            "start": 41.174463227624074,
+            "success": true,
+            "task_id": 63,
+            "worker": 2
+          },
+          {
+            "end": 44.19577473565005,
+            "job_id": "job-5",
+            "start": 41.38806352647953,
+            "success": true,
+            "task_id": 64,
+            "worker": 1
+          },
+          {
+            "end": 43.514198874123394,
+            "job_id": "job-5",
+            "start": 42.36059541627765,
+            "success": true,
+            "task_id": 65,
+            "worker": 3
+          },
+          {
+            "end": 45.74797977972776,
+            "job_id": "job-5",
+            "start": 42.916751963086426,
+            "success": true,
+            "task_id": 66,
+            "worker": 0
+          },
+          {
+            "end": 46.33018701104447,
+            "job_id": "job-5",
+            "start": 43.514198874123394,
+            "success": true,
+            "task_id": 67,
+            "worker": 3
+          },
+          {
+            "end": 45.88692876067944,
+            "job_id": "job-5",
+            "start": 43.99027233454399,
+            "success": true,
+            "task_id": 68,
+            "worker": 2
+          },
+          {
+            "end": 46.883678873302415,
+            "job_id": "job-5",
+            "start": 44.19577473565005,
+            "success": true,
+            "task_id": 69,
+            "worker": 1
+          },
+          {
+            "end": 48.69538036361337,
+            "job_id": "job-5",
+            "start": 45.74797977972776,
+            "success": true,
+            "task_id": 70,
+            "worker": 0
+          },
+          {
+            "end": 47.60366775165312,
+            "job_id": "job-5",
+            "start": 45.88692876067944,
+            "success": true,
+            "task_id": 71,
+            "worker": 2
+          }
+        ],
+        "tasks": 72,
+        "utilization": 0.973
+      },
+      "worker_failure": {
+        "fairness": 0.643,
+        "makespan": 63.379,
+        "mean_wait": 33.652,
+        "p95_wait": 57.616,
+        "retries": 1,
+        "schedule": [
+          {
+            "end": 1.0767700176220387,
+            "job_id": "job-0",
+            "start": 0.0,
+            "success": true,
+            "task_id": 0,
+            "worker": 0
+          },
+          {
+            "end": 2.777327310992405,
+            "job_id": "job-0",
+            "start": 0.0,
+            "success": true,
+            "task_id": 1,
+            "worker": 1
+          },
+          {
+            "end": 4.20113685913384,
+            "job_id": "job-0",
+            "start": 0.0,
+            "success": true,
+            "task_id": 2,
+            "worker": 2
+          },
+          {
+            "end": 1.4316429002210498,
+            "job_id": "job-0",
+            "start": 0.0,
+            "success": true,
+            "task_id": 3,
+            "worker": 3
+          },
+          {
+            "end": 6.162186828907579,
+            "job_id": "job-0",
+            "start": 1.0767700176220387,
+            "success": true,
+            "task_id": 4,
+            "worker": 0
+          },
+          {
+            "end": 2.0,
+            "job_id": "job-0",
+            "start": 1.4316429002210498,
+            "success": false,
+            "task_id": 5,
+            "worker": 3
+          },
+          {
+            "end": 8.212072914931923,
+            "job_id": "job-0",
+            "start": 2.777327310992405,
+            "success": true,
+            "task_id": 5,
+            "worker": 1
+          },
+          {
+            "end": 9.361438883235678,
+            "job_id": "job-0",
+            "start": 4.20113685913384,
+            "success": true,
+            "task_id": 6,
+            "worker": 2
+          },
+          {
+            "end": 9.09131206991151,
+            "job_id": "job-0",
+            "start": 6.162186828907579,
+            "success": true,
+            "task_id": 7,
+            "worker": 0
+          },
+          {
+            "end": 13.706373212160543,
+            "job_id": "job-0",
+            "start": 8.212072914931923,
+            "success": true,
+            "task_id": 8,
+            "worker": 1
+          },
+          {
+            "end": 12.258185571758077,
+            "job_id": "job-0",
+            "start": 9.09131206991151,
+            "success": true,
+            "task_id": 9,
+            "worker": 0
+          },
+          {
+            "end": 11.74103590613231,
+            "job_id": "job-0",
+            "start": 9.361438883235678,
+            "success": true,
+            "task_id": 10,
+            "worker": 2
+          },
+          {
+            "end": 15.44547976902686,
+            "job_id": "job-0",
+            "start": 11.74103590613231,
+            "success": true,
+            "task_id": 11,
+            "worker": 2
+          },
+          {
+            "end": 15.213742313208058,
+            "job_id": "job-0",
+            "start": 12.258185571758077,
+            "success": true,
+            "task_id": 12,
+            "worker": 0
+          },
+          {
+            "end": 16.845228052465245,
+            "job_id": "job-0",
+            "start": 13.706373212160543,
+            "success": true,
+            "task_id": 13,
+            "worker": 1
+          },
+          {
+            "end": 19.017894928343594,
+            "job_id": "job-0",
+            "start": 15.213742313208058,
+            "success": true,
+            "task_id": 14,
+            "worker": 0
+          },
+          {
+            "end": 17.278254883131012,
+            "job_id": "job-0",
+            "start": 15.44547976902686,
+            "success": true,
+            "task_id": 15,
+            "worker": 2
+          },
+          {
+            "end": 20.491186019498855,
+            "job_id": "job-0",
+            "start": 16.845228052465245,
+            "success": true,
+            "task_id": 16,
+            "worker": 1
+          },
+          {
+            "end": 18.93319597025402,
+            "job_id": "job-0",
+            "start": 17.278254883131012,
+            "success": true,
+            "task_id": 17,
+            "worker": 2
+          },
+          {
+            "end": 22.927985145244747,
+            "job_id": "job-0",
+            "start": 18.93319597025402,
+            "success": true,
+            "task_id": 18,
+            "worker": 2
+          },
+          {
+            "end": 20.975257311249152,
+            "job_id": "job-0",
+            "start": 19.017894928343594,
+            "success": true,
+            "task_id": 19,
+            "worker": 0
+          },
+          {
+            "end": 24.72884519980289,
+            "job_id": "job-0",
+            "start": 20.491186019498855,
+            "success": true,
+            "task_id": 20,
+            "worker": 1
+          },
+          {
+            "end": 26.94658879842609,
+            "job_id": "job-0",
+            "start": 20.975257311249152,
+            "success": true,
+            "task_id": 21,
+            "worker": 0
+          },
+          {
+            "end": 25.81879542628303,
+            "job_id": "job-0",
+            "start": 22.927985145244747,
+            "success": true,
+            "task_id": 22,
+            "worker": 2
+          },
+          {
+            "end": 26.41018173005432,
+            "job_id": "job-0",
+            "start": 24.72884519980289,
+            "success": true,
+            "task_id": 23,
+            "worker": 1
+          },
+          {
+            "end": 29.709048310527578,
+            "job_id": "job-0",
+            "start": 25.81879542628303,
+            "success": true,
+            "task_id": 24,
+            "worker": 2
+          },
+          {
+            "end": 31.779529759194702,
+            "job_id": "job-0",
+            "start": 26.41018173005432,
+            "success": true,
+            "task_id": 25,
+            "worker": 1
+          },
+          {
+            "end": 30.375553582329303,
+            "job_id": "job-0",
+            "start": 26.94658879842609,
+            "success": true,
+            "task_id": 26,
+            "worker": 0
+          },
+          {
+            "end": 31.13916525617242,
+            "job_id": "job-0",
+            "start": 29.709048310527578,
+            "success": true,
+            "task_id": 27,
+            "worker": 2
+          },
+          {
+            "end": 32.84452978987247,
+            "job_id": "job-0",
+            "start": 30.375553582329303,
+            "success": true,
+            "task_id": 28,
+            "worker": 0
+          },
+          {
+            "end": 35.2456493480131,
+            "job_id": "job-0",
+            "start": 31.13916525617242,
+            "success": true,
+            "task_id": 29,
+            "worker": 2
+          },
+          {
+            "end": 36.68294238834642,
+            "job_id": "job-0",
+            "start": 31.779529759194702,
+            "success": true,
+            "task_id": 30,
+            "worker": 1
+          },
+          {
+            "end": 34.61345791607164,
+            "job_id": "job-0",
+            "start": 32.84452978987247,
+            "success": true,
+            "task_id": 31,
+            "worker": 0
+          },
+          {
+            "end": 36.579136084532365,
+            "job_id": "job-1",
+            "start": 34.61345791607164,
+            "success": true,
+            "task_id": 32,
+            "worker": 0
+          },
+          {
+            "end": 37.59692899789661,
+            "job_id": "job-1",
+            "start": 35.2456493480131,
+            "success": true,
+            "task_id": 33,
+            "worker": 2
+          },
+          {
+            "end": 38.79957469063811,
+            "job_id": "job-1",
+            "start": 36.579136084532365,
+            "success": true,
+            "task_id": 34,
+            "worker": 0
+          },
+          {
+            "end": 38.93846333050169,
+            "job_id": "job-1",
+            "start": 36.68294238834642,
+            "success": true,
+            "task_id": 35,
+            "worker": 1
+          },
+          {
+            "end": 39.92761777061969,
+            "job_id": "job-1",
+            "start": 37.59692899789661,
+            "success": true,
+            "task_id": 36,
+            "worker": 2
+          },
+          {
+            "end": 40.248246133560315,
+            "job_id": "job-1",
+            "start": 38.79957469063811,
+            "success": true,
+            "task_id": 37,
+            "worker": 0
+          },
+          {
+            "end": 41.836795065319166,
+            "job_id": "job-1",
+            "start": 38.93846333050169,
+            "success": true,
+            "task_id": 38,
+            "worker": 1
+          },
+          {
+            "end": 42.91295778332278,
+            "job_id": "job-1",
+            "start": 39.92761777061969,
+            "success": true,
+            "task_id": 39,
+            "worker": 2
+          },
+          {
+            "end": 42.62740828678943,
+            "job_id": "job-2",
+            "start": 40.248246133560315,
+            "success": true,
+            "task_id": 40,
+            "worker": 0
+          },
+          {
+            "end": 43.74948760611005,
+            "job_id": "job-2",
+            "start": 41.836795065319166,
+            "success": true,
+            "task_id": 41,
+            "worker": 1
+          },
+          {
+            "end": 45.61824150686152,
+            "job_id": "job-2",
+            "start": 42.62740828678943,
+            "success": true,
+            "task_id": 42,
+            "worker": 0
+          },
+          {
+            "end": 44.192455388605595,
+            "job_id": "job-2",
+            "start": 42.91295778332278,
+            "success": true,
+            "task_id": 43,
+            "worker": 2
+          },
+          {
+            "end": 46.21130176750012,
+            "job_id": "job-2",
+            "start": 43.74948760611005,
+            "success": true,
+            "task_id": 44,
+            "worker": 1
+          },
+          {
+            "end": 45.44054511701688,
+            "job_id": "job-2",
+            "start": 44.192455388605595,
+            "success": true,
+            "task_id": 45,
+            "worker": 2
+          },
+          {
+            "end": 47.74267745716497,
+            "job_id": "job-2",
+            "start": 45.44054511701688,
+            "success": true,
+            "task_id": 46,
+            "worker": 2
+          },
+          {
+            "end": 47.502078452380374,
+            "job_id": "job-2",
+            "start": 45.61824150686152,
+            "success": true,
+            "task_id": 47,
+            "worker": 0
+          },
+          {
+            "end": 47.43072510440834,
+            "job_id": "job-3",
+            "start": 46.21130176750012,
+            "success": true,
+            "task_id": 48,
+            "worker": 1
+          },
+          {
+            "end": 49.060203881701455,
+            "job_id": "job-3",
+            "start": 47.43072510440834,
+            "success": true,
+            "task_id": 49,
+            "worker": 1
+          },
+          {
+            "end": 48.59523298800923,
+            "job_id": "job-3",
+            "start": 47.502078452380374,
+            "success": true,
+            "task_id": 50,
+            "worker": 0
+          },
+          {
+            "end": 48.91103905905038,
+            "job_id": "job-3",
+            "start": 47.74267745716497,
+            "success": true,
+            "task_id": 51,
+            "worker": 2
+          },
+          {
+            "end": 50.33629469037987,
+            "job_id": "job-3",
+            "start": 48.59523298800923,
+            "success": true,
+            "task_id": 52,
+            "worker": 0
+          },
+          {
+            "end": 50.736975592561066,
+            "job_id": "job-3",
+            "start": 48.91103905905038,
+            "success": true,
+            "task_id": 53,
+            "worker": 2
+          },
+          {
+            "end": 50.229765456868336,
+            "job_id": "job-3",
+            "start": 49.060203881701455,
+            "success": true,
+            "task_id": 54,
+            "worker": 1
+          },
+          {
+            "end": 52.737725840648636,
+            "job_id": "job-3",
+            "start": 50.229765456868336,
+            "success": true,
+            "task_id": 55,
+            "worker": 1
+          },
+          {
+            "end": 52.36050735623576,
+            "job_id": "job-4",
+            "start": 50.33629469037987,
+            "success": true,
+            "task_id": 56,
+            "worker": 0
+          },
+          {
+            "end": 52.65472739236429,
+            "job_id": "job-4",
+            "start": 50.736975592561066,
+            "success": true,
+            "task_id": 57,
+            "worker": 2
+          },
+          {
+            "end": 53.72329701227136,
+            "job_id": "job-4",
+            "start": 52.36050735623576,
+            "success": true,
+            "task_id": 58,
+            "worker": 0
+          },
+          {
+            "end": 53.9116224818863,
+            "job_id": "job-4",
+            "start": 52.65472739236429,
+            "success": true,
+            "task_id": 59,
+            "worker": 2
+          },
+          {
+            "end": 53.97864697012119,
+            "job_id": "job-4",
+            "start": 52.737725840648636,
+            "success": true,
+            "task_id": 60,
+            "worker": 1
+          },
+          {
+            "end": 56.46238094824366,
+            "job_id": "job-4",
+            "start": 53.72329701227136,
+            "success": true,
+            "task_id": 61,
+            "worker": 0
+          },
+          {
+            "end": 55.96720331488177,
+            "job_id": "job-4",
+            "start": 53.9116224818863,
+            "success": true,
+            "task_id": 62,
+            "worker": 2
+          },
+          {
+            "end": 56.794456077041104,
+            "job_id": "job-4",
+            "start": 53.97864697012119,
+            "success": true,
+            "task_id": 63,
+            "worker": 1
+          },
+          {
+            "end": 58.77491452405229,
+            "job_id": "job-5",
+            "start": 55.96720331488177,
+            "success": true,
+            "task_id": 64,
+            "worker": 2
+          },
+          {
+            "end": 57.61598440608941,
+            "job_id": "job-5",
+            "start": 56.46238094824366,
+            "success": true,
+            "task_id": 65,
+            "worker": 0
+          },
+          {
+            "end": 59.625683893682435,
+            "job_id": "job-5",
+            "start": 56.794456077041104,
+            "success": true,
+            "task_id": 66,
+            "worker": 1
+          },
+          {
+            "end": 60.43197254301049,
+            "job_id": "job-5",
+            "start": 57.61598440608941,
+            "success": true,
+            "task_id": 67,
+            "worker": 0
+          },
+          {
+            "end": 60.67157095018774,
+            "job_id": "job-5",
+            "start": 58.77491452405229,
+            "success": true,
+            "task_id": 68,
+            "worker": 2
+          },
+          {
+            "end": 62.3135880313348,
+            "job_id": "job-5",
+            "start": 59.625683893682435,
+            "success": true,
+            "task_id": 69,
+            "worker": 1
+          },
+          {
+            "end": 63.3793731268961,
+            "job_id": "job-5",
+            "start": 60.43197254301049,
+            "success": true,
+            "task_id": 70,
+            "worker": 0
+          },
+          {
+            "end": 62.388309941161424,
+            "job_id": "job-5",
+            "start": 60.67157095018774,
+            "success": true,
+            "task_id": 71,
+            "worker": 2
+          }
+        ],
+        "tasks": 72,
+        "utilization": 0.989
+      }
     },
-    "padding_30pct": {
-      "macro_f1": 0.9333148096693527,
-      "accuracy": 0.92
-    },
-    "padding_50pct": {
-      "macro_f1": 0.9333148096693527,
-      "accuracy": 0.92
-    },
-    "jitter_50ms": {
-      "macro_f1": 0.9054964908623445,
-      "accuracy": 0.8866666666666667
-    },
-    "jitter_200ms": {
-      "macro_f1": 0.9166608792277241,
-      "accuracy": 0.9
-    },
-    "jitter_500ms": {
-      "macro_f1": 0.9720650883441581,
-      "accuracy": 0.9666666666666667
-    },
-    "first_4_packets": {
-      "macro_f1": 0.6196520061214984,
-      "accuracy": 0.72
-    },
-    "first_8_packets": {
-      "macro_f1": 0.9388846447669977,
-      "accuracy": 0.9266666666666666
-    },
-    "first_16_packets": {
-      "macro_f1": 0.9388846447669977,
-      "accuracy": 0.9266666666666666
-    },
-    "first_32_packets": {
-      "macro_f1": 0.9388846447669977,
-      "accuracy": 0.9266666666666666
+    "sjf": {
+      "normal": {
+        "fairness": 0.643,
+        "makespan": 49.233,
+        "mean_wait": 16.415,
+        "p95_wait": 38.102,
+        "retries": 0,
+        "schedule": [
+          {
+            "end": 1.0767700176220387,
+            "job_id": "job-0",
+            "start": 0.0,
+            "success": true,
+            "task_id": 0,
+            "worker": 0
+          },
+          {
+            "end": 1.0931545356288552,
+            "job_id": "job-3",
+            "start": 0.0,
+            "success": true,
+            "task_id": 50,
+            "worker": 1
+          },
+          {
+            "end": 1.1536034578457475,
+            "job_id": "job-5",
+            "start": 0.0,
+            "success": true,
+            "task_id": 65,
+            "worker": 2
+          },
+          {
+            "end": 1.1683616018854082,
+            "job_id": "job-3",
+            "start": 0.0,
+            "success": true,
+            "task_id": 51,
+            "worker": 3
+          },
+          {
+            "end": 2.24633159278892,
+            "job_id": "job-3",
+            "start": 1.0767700176220387,
+            "success": true,
+            "task_id": 54,
+            "worker": 0
+          },
+          {
+            "end": 2.3125778725370765,
+            "job_id": "job-3",
+            "start": 1.0931545356288552,
+            "success": true,
+            "task_id": 48,
+            "worker": 1
+          },
+          {
+            "end": 2.394524587318301,
+            "job_id": "job-4",
+            "start": 1.1536034578457475,
+            "success": true,
+            "task_id": 60,
+            "worker": 2
+          },
+          {
+            "end": 2.4164513302966952,
+            "job_id": "job-2",
+            "start": 1.1683616018854082,
+            "success": true,
+            "task_id": 45,
+            "worker": 3
+          },
+          {
+            "end": 3.503226682310924,
+            "job_id": "job-4",
+            "start": 2.24633159278892,
+            "success": true,
+            "task_id": 59,
+            "worker": 0
+          },
+          {
+            "end": 3.59207547781989,
+            "job_id": "job-2",
+            "start": 2.3125778725370765,
+            "success": true,
+            "task_id": 43,
+            "worker": 1
+          },
+          {
+            "end": 3.7573142433539033,
+            "job_id": "job-4",
+            "start": 2.394524587318301,
+            "success": true,
+            "task_id": 58,
+            "worker": 2
+          },
+          {
+            "end": 3.846568275941536,
+            "job_id": "job-0",
+            "start": 2.4164513302966952,
+            "success": true,
+            "task_id": 27,
+            "worker": 3
+          },
+          {
+            "end": 4.934869582531974,
+            "job_id": "job-0",
+            "start": 3.503226682310924,
+            "success": true,
+            "task_id": 3,
+            "worker": 0
+          },
+          {
+            "end": 5.0407469207420945,
+            "job_id": "job-1",
+            "start": 3.59207547781989,
+            "success": true,
+            "task_id": 37,
+            "worker": 1
+          },
+          {
+            "end": 5.386793020647019,
+            "job_id": "job-3",
+            "start": 3.7573142433539033,
+            "success": true,
+            "task_id": 49,
+            "worker": 2
+          },
+          {
+            "end": 5.501509363064542,
+            "job_id": "job-0",
+            "start": 3.846568275941536,
+            "success": true,
+            "task_id": 17,
+            "worker": 3
+          },
+          {
+            "end": 6.616206112783402,
+            "job_id": "job-0",
+            "start": 4.934869582531974,
+            "success": true,
+            "task_id": 23,
+            "worker": 0
+          },
+          {
+            "end": 6.757485911715776,
+            "job_id": "job-5",
+            "start": 5.0407469207420945,
+            "success": true,
+            "task_id": 71,
+            "worker": 1
+          },
+          {
+            "end": 7.127854723017663,
+            "job_id": "job-3",
+            "start": 5.386793020647019,
+            "success": true,
+            "task_id": 52,
+            "worker": 2
+          },
+          {
+            "end": 7.270437489263713,
+            "job_id": "job-0",
+            "start": 5.501509363064542,
+            "success": true,
+            "task_id": 31,
+            "worker": 3
+          },
+          {
+            "end": 8.442142646294087,
+            "job_id": "job-3",
+            "start": 6.616206112783402,
+            "success": true,
+            "task_id": 53,
+            "worker": 0
+          },
+          {
+            "end": 8.590261025819927,
+            "job_id": "job-0",
+            "start": 6.757485911715776,
+            "success": true,
+            "task_id": 15,
+            "worker": 1
+          },
+          {
+            "end": 9.011691668536514,
+            "job_id": "job-2",
+            "start": 7.127854723017663,
+            "success": true,
+            "task_id": 47,
+            "worker": 2
+          },
+          {
+            "end": 9.167093915399164,
+            "job_id": "job-5",
+            "start": 7.270437489263713,
+            "success": true,
+            "task_id": 68,
+            "worker": 3
+          },
+          {
+            "end": 10.354835187084973,
+            "job_id": "job-2",
+            "start": 8.442142646294087,
+            "success": true,
+            "task_id": 41,
+            "worker": 0
+          },
+          {
+            "end": 10.508012825623155,
+            "job_id": "job-4",
+            "start": 8.590261025819927,
+            "success": true,
+            "task_id": 57,
+            "worker": 1
+          },
+          {
+            "end": 10.969054051442072,
+            "job_id": "job-0",
+            "start": 9.011691668536514,
+            "success": true,
+            "task_id": 19,
+            "worker": 2
+          },
+          {
+            "end": 11.13277208385989,
+            "job_id": "job-1",
+            "start": 9.167093915399164,
+            "success": true,
+            "task_id": 32,
+            "worker": 3
+          },
+          {
+            "end": 12.379047852940857,
+            "job_id": "job-4",
+            "start": 10.354835187084973,
+            "success": true,
+            "task_id": 56,
+            "worker": 0
+          },
+          {
+            "end": 12.563593658618629,
+            "job_id": "job-4",
+            "start": 10.508012825623155,
+            "success": true,
+            "task_id": 62,
+            "worker": 1
+          },
+          {
+            "end": 13.189492657547817,
+            "job_id": "job-1",
+            "start": 10.969054051442072,
+            "success": true,
+            "task_id": 34,
+            "worker": 2
+          },
+          {
+            "end": 13.388293026015162,
+            "job_id": "job-1",
+            "start": 11.13277208385989,
+            "success": true,
+            "task_id": 35,
+            "worker": 3
+          },
+          {
+            "end": 14.681180193088949,
+            "job_id": "job-2",
+            "start": 12.379047852940857,
+            "success": true,
+            "task_id": 46,
+            "worker": 0
+          },
+          {
+            "end": 14.894282431341708,
+            "job_id": "job-1",
+            "start": 12.563593658618629,
+            "success": true,
+            "task_id": 36,
+            "worker": 1
+          },
+          {
+            "end": 15.540772307431325,
+            "job_id": "job-1",
+            "start": 13.189492657547817,
+            "success": true,
+            "task_id": 33,
+            "worker": 2
+          },
+          {
+            "end": 15.76745517924428,
+            "job_id": "job-2",
+            "start": 13.388293026015162,
+            "success": true,
+            "task_id": 40,
+            "worker": 3
+          },
+          {
+            "end": 17.06077721598558,
+            "job_id": "job-0",
+            "start": 14.681180193088949,
+            "success": true,
+            "task_id": 10,
+            "worker": 0
+          },
+          {
+            "end": 17.356096592731774,
+            "job_id": "job-2",
+            "start": 14.894282431341708,
+            "success": true,
+            "task_id": 44,
+            "worker": 1
+          },
+          {
+            "end": 18.00974851497449,
+            "job_id": "job-0",
+            "start": 15.540772307431325,
+            "success": true,
+            "task_id": 28,
+            "worker": 2
+          },
+          {
+            "end": 18.27541556302458,
+            "job_id": "job-3",
+            "start": 15.76745517924428,
+            "success": true,
+            "task_id": 55,
+            "worker": 3
+          },
+          {
+            "end": 19.74868135363795,
+            "job_id": "job-5",
+            "start": 17.06077721598558,
+            "success": true,
+            "task_id": 69,
+            "worker": 0
+          },
+          {
+            "end": 20.095180528704077,
+            "job_id": "job-4",
+            "start": 17.356096592731774,
+            "success": true,
+            "task_id": 61,
+            "worker": 1
+          },
+          {
+            "end": 20.787075825966895,
+            "job_id": "job-0",
+            "start": 18.00974851497449,
+            "success": true,
+            "task_id": 1,
+            "worker": 2
+          },
+          {
+            "end": 21.0831267721951,
+            "job_id": "job-5",
+            "start": 18.27541556302458,
+            "success": true,
+            "task_id": 64,
+            "worker": 3
+          },
+          {
+            "end": 22.564490460557863,
+            "job_id": "job-4",
+            "start": 19.74868135363795,
+            "success": true,
+            "task_id": 63,
+            "worker": 0
+          },
+          {
+            "end": 22.911168665625155,
+            "job_id": "job-5",
+            "start": 20.095180528704077,
+            "success": true,
+            "task_id": 67,
+            "worker": 1
+          },
+          {
+            "end": 23.618303642608225,
+            "job_id": "job-5",
+            "start": 20.787075825966895,
+            "success": true,
+            "task_id": 66,
+            "worker": 2
+          },
+          {
+            "end": 23.973937053233385,
+            "job_id": "job-0",
+            "start": 21.0831267721951,
+            "success": true,
+            "task_id": 22,
+            "worker": 3
+          },
+          {
+            "end": 25.462822195375338,
+            "job_id": "job-1",
+            "start": 22.564490460557863,
+            "success": true,
+            "task_id": 38,
+            "worker": 0
+          },
+          {
+            "end": 25.840293906629086,
+            "job_id": "job-0",
+            "start": 22.911168665625155,
+            "success": true,
+            "task_id": 7,
+            "worker": 1
+          },
+          {
+            "end": 26.565704226493835,
+            "job_id": "job-5",
+            "start": 23.618303642608225,
+            "success": true,
+            "task_id": 70,
+            "worker": 2
+          },
+          {
+            "end": 26.929493794683367,
+            "job_id": "job-0",
+            "start": 23.973937053233385,
+            "success": true,
+            "task_id": 12,
+            "worker": 3
+          },
+          {
+            "end": 28.44816220807843,
+            "job_id": "job-1",
+            "start": 25.462822195375338,
+            "success": true,
+            "task_id": 39,
+            "worker": 0
+          },
+          {
+            "end": 28.831127126701176,
+            "job_id": "job-2",
+            "start": 25.840293906629086,
+            "success": true,
+            "task_id": 42,
+            "worker": 1
+          },
+          {
+            "end": 29.704559066798538,
+            "job_id": "job-0",
+            "start": 26.565704226493835,
+            "success": true,
+            "task_id": 13,
+            "worker": 2
+          },
+          {
+            "end": 30.096367296529934,
+            "job_id": "job-0",
+            "start": 26.929493794683367,
+            "success": true,
+            "task_id": 9,
+            "worker": 3
+          },
+          {
+            "end": 31.87712699198164,
+            "job_id": "job-0",
+            "start": 28.44816220807843,
+            "success": true,
+            "task_id": 26,
+            "worker": 0
+          },
+          {
+            "end": 32.477085093734786,
+            "job_id": "job-0",
+            "start": 28.831127126701176,
+            "success": true,
+            "task_id": 16,
+            "worker": 1
+          },
+          {
+            "end": 33.40900292969309,
+            "job_id": "job-0",
+            "start": 29.704559066798538,
+            "success": true,
+            "task_id": 11,
+            "worker": 2
+          },
+          {
+            "end": 33.90051991166547,
+            "job_id": "job-0",
+            "start": 30.096367296529934,
+            "success": true,
+            "task_id": 14,
+            "worker": 3
+          },
+          {
+            "end": 35.76737987622619,
+            "job_id": "job-0",
+            "start": 31.87712699198164,
+            "success": true,
+            "task_id": 24,
+            "worker": 0
+          },
+          {
+            "end": 36.471874268725514,
+            "job_id": "job-0",
+            "start": 32.477085093734786,
+            "success": true,
+            "task_id": 18,
+            "worker": 1
+          },
+          {
+            "end": 37.51548702153377,
+            "job_id": "job-0",
+            "start": 33.40900292969309,
+            "success": true,
+            "task_id": 29,
+            "worker": 2
+          },
+          {
+            "end": 38.10165677079931,
+            "job_id": "job-0",
+            "start": 33.90051991166547,
+            "success": true,
+            "task_id": 2,
+            "worker": 3
+          },
+          {
+            "end": 40.00503905653022,
+            "job_id": "job-0",
+            "start": 35.76737987622619,
+            "success": true,
+            "task_id": 20,
+            "worker": 0
+          },
+          {
+            "end": 41.37528689787723,
+            "job_id": "job-0",
+            "start": 36.471874268725514,
+            "success": true,
+            "task_id": 30,
+            "worker": 1
+          },
+          {
+            "end": 42.60090383281931,
+            "job_id": "job-0",
+            "start": 37.51548702153377,
+            "success": true,
+            "task_id": 4,
+            "worker": 2
+          },
+          {
+            "end": 43.26195879490115,
+            "job_id": "job-0",
+            "start": 38.10165677079931,
+            "success": true,
+            "task_id": 6,
+            "worker": 3
+          },
+          {
+            "end": 45.374387085670605,
+            "job_id": "job-0",
+            "start": 40.00503905653022,
+            "success": true,
+            "task_id": 25,
+            "worker": 0
+          },
+          {
+            "end": 46.81003250181675,
+            "job_id": "job-0",
+            "start": 41.37528689787723,
+            "success": true,
+            "task_id": 5,
+            "worker": 1
+          },
+          {
+            "end": 48.09520413004793,
+            "job_id": "job-0",
+            "start": 42.60090383281931,
+            "success": true,
+            "task_id": 8,
+            "worker": 2
+          },
+          {
+            "end": 49.23329028207809,
+            "job_id": "job-0",
+            "start": 43.26195879490115,
+            "success": true,
+            "task_id": 21,
+            "worker": 3
+          }
+        ],
+        "tasks": 72,
+        "utilization": 0.962
+      },
+      "worker_failure": {
+        "fairness": 0.643,
+        "makespan": 65.199,
+        "mean_wait": 21.94,
+        "p95_wait": 51.996,
+        "retries": 1,
+        "schedule": [
+          {
+            "end": 1.0767700176220387,
+            "job_id": "job-0",
+            "start": 0.0,
+            "success": true,
+            "task_id": 0,
+            "worker": 0
+          },
+          {
+            "end": 1.0931545356288552,
+            "job_id": "job-3",
+            "start": 0.0,
+            "success": true,
+            "task_id": 50,
+            "worker": 1
+          },
+          {
+            "end": 1.1536034578457475,
+            "job_id": "job-5",
+            "start": 0.0,
+            "success": true,
+            "task_id": 65,
+            "worker": 2
+          },
+          {
+            "end": 1.1683616018854082,
+            "job_id": "job-3",
+            "start": 0.0,
+            "success": true,
+            "task_id": 51,
+            "worker": 3
+          },
+          {
+            "end": 2.24633159278892,
+            "job_id": "job-3",
+            "start": 1.0767700176220387,
+            "success": true,
+            "task_id": 54,
+            "worker": 0
+          },
+          {
+            "end": 2.3125778725370765,
+            "job_id": "job-3",
+            "start": 1.0931545356288552,
+            "success": true,
+            "task_id": 48,
+            "worker": 1
+          },
+          {
+            "end": 2.394524587318301,
+            "job_id": "job-4",
+            "start": 1.1536034578457475,
+            "success": true,
+            "task_id": 60,
+            "worker": 2
+          },
+          {
+            "end": 2.0,
+            "job_id": "job-2",
+            "start": 1.1683616018854082,
+            "success": false,
+            "task_id": 45,
+            "worker": 3
+          },
+          {
+            "end": 3.494421321200207,
+            "job_id": "job-2",
+            "start": 2.24633159278892,
+            "success": true,
+            "task_id": 45,
+            "worker": 0
+          },
+          {
+            "end": 3.5694729620590806,
+            "job_id": "job-4",
+            "start": 2.3125778725370765,
+            "success": true,
+            "task_id": 59,
+            "worker": 1
+          },
+          {
+            "end": 3.6740221926011145,
+            "job_id": "job-2",
+            "start": 2.394524587318301,
+            "success": true,
+            "task_id": 43,
+            "worker": 2
+          },
+          {
+            "end": 4.857210977235809,
+            "job_id": "job-4",
+            "start": 3.494421321200207,
+            "success": true,
+            "task_id": 58,
+            "worker": 0
+          },
+          {
+            "end": 4.999589907703921,
+            "job_id": "job-0",
+            "start": 3.5694729620590806,
+            "success": true,
+            "task_id": 27,
+            "worker": 1
+          },
+          {
+            "end": 5.105665092822164,
+            "job_id": "job-0",
+            "start": 3.6740221926011145,
+            "success": true,
+            "task_id": 3,
+            "worker": 2
+          },
+          {
+            "end": 6.305882420158014,
+            "job_id": "job-1",
+            "start": 4.857210977235809,
+            "success": true,
+            "task_id": 37,
+            "worker": 0
+          },
+          {
+            "end": 6.629068684997037,
+            "job_id": "job-3",
+            "start": 4.999589907703921,
+            "success": true,
+            "task_id": 49,
+            "worker": 1
+          },
+          {
+            "end": 6.760606179945171,
+            "job_id": "job-0",
+            "start": 5.105665092822164,
+            "success": true,
+            "task_id": 17,
+            "worker": 2
+          },
+          {
+            "end": 7.987218950409442,
+            "job_id": "job-0",
+            "start": 6.305882420158014,
+            "success": true,
+            "task_id": 23,
+            "worker": 0
+          },
+          {
+            "end": 8.345807675970718,
+            "job_id": "job-5",
+            "start": 6.629068684997037,
+            "success": true,
+            "task_id": 71,
+            "worker": 1
+          },
+          {
+            "end": 8.501667882315814,
+            "job_id": "job-3",
+            "start": 6.760606179945171,
+            "success": true,
+            "task_id": 52,
+            "worker": 2
+          },
+          {
+            "end": 9.756147076608613,
+            "job_id": "job-0",
+            "start": 7.987218950409442,
+            "success": true,
+            "task_id": 31,
+            "worker": 0
+          },
+          {
+            "end": 10.171744209481403,
+            "job_id": "job-3",
+            "start": 8.345807675970718,
+            "success": true,
+            "task_id": 53,
+            "worker": 1
+          },
+          {
+            "end": 10.334442996419966,
+            "job_id": "job-0",
+            "start": 8.501667882315814,
+            "success": true,
+            "task_id": 15,
+            "worker": 2
+          },
+          {
+            "end": 11.639984022127464,
+            "job_id": "job-2",
+            "start": 9.756147076608613,
+            "success": true,
+            "task_id": 47,
+            "worker": 0
+          },
+          {
+            "end": 12.068400635616854,
+            "job_id": "job-5",
+            "start": 10.171744209481403,
+            "success": true,
+            "task_id": 68,
+            "worker": 1
+          },
+          {
+            "end": 12.247135537210852,
+            "job_id": "job-2",
+            "start": 10.334442996419966,
+            "success": true,
+            "task_id": 41,
+            "worker": 2
+          },
+          {
+            "end": 13.557735821930692,
+            "job_id": "job-4",
+            "start": 11.639984022127464,
+            "success": true,
+            "task_id": 57,
+            "worker": 0
+          },
+          {
+            "end": 14.025763018522412,
+            "job_id": "job-0",
+            "start": 12.068400635616854,
+            "success": true,
+            "task_id": 19,
+            "worker": 1
+          },
+          {
+            "end": 14.212813705671579,
+            "job_id": "job-1",
+            "start": 12.247135537210852,
+            "success": true,
+            "task_id": 32,
+            "worker": 2
+          },
+          {
+            "end": 15.581948487786576,
+            "job_id": "job-4",
+            "start": 13.557735821930692,
+            "success": true,
+            "task_id": 56,
+            "worker": 0
+          },
+          {
+            "end": 16.081343851517886,
+            "job_id": "job-4",
+            "start": 14.025763018522412,
+            "success": true,
+            "task_id": 62,
+            "worker": 1
+          },
+          {
+            "end": 16.433252311777323,
+            "job_id": "job-1",
+            "start": 14.212813705671579,
+            "success": true,
+            "task_id": 34,
+            "worker": 2
+          },
+          {
+            "end": 17.837469429941848,
+            "job_id": "job-1",
+            "start": 15.581948487786576,
+            "success": true,
+            "task_id": 35,
+            "worker": 0
+          },
+          {
+            "end": 18.383476191665977,
+            "job_id": "job-2",
+            "start": 16.081343851517886,
+            "success": true,
+            "task_id": 46,
+            "worker": 1
+          },
+          {
+            "end": 18.763941084500402,
+            "job_id": "job-1",
+            "start": 16.433252311777323,
+            "success": true,
+            "task_id": 36,
+            "worker": 2
+          },
+          {
+            "end": 20.188749079825357,
+            "job_id": "job-1",
+            "start": 17.837469429941848,
+            "success": true,
+            "task_id": 33,
+            "worker": 0
+          },
+          {
+            "end": 20.762638344895095,
+            "job_id": "job-2",
+            "start": 18.383476191665977,
+            "success": true,
+            "task_id": 40,
+            "worker": 1
+          },
+          {
+            "end": 21.143538107397035,
+            "job_id": "job-0",
+            "start": 18.763941084500402,
+            "success": true,
+            "task_id": 10,
+            "worker": 2
+          },
+          {
+            "end": 22.650563241215423,
+            "job_id": "job-2",
+            "start": 20.188749079825357,
+            "success": true,
+            "task_id": 44,
+            "worker": 0
+          },
+          {
+            "end": 23.23161455243826,
+            "job_id": "job-0",
+            "start": 20.762638344895095,
+            "success": true,
+            "task_id": 28,
+            "worker": 1
+          },
+          {
+            "end": 23.651498491177335,
+            "job_id": "job-3",
+            "start": 21.143538107397035,
+            "success": true,
+            "task_id": 55,
+            "worker": 2
+          },
+          {
+            "end": 25.33846737886779,
+            "job_id": "job-5",
+            "start": 22.650563241215423,
+            "success": true,
+            "task_id": 69,
+            "worker": 0
+          },
+          {
+            "end": 25.970698488410562,
+            "job_id": "job-4",
+            "start": 23.23161455243826,
+            "success": true,
+            "task_id": 61,
+            "worker": 1
+          },
+          {
+            "end": 26.42882580216974,
+            "job_id": "job-0",
+            "start": 23.651498491177335,
+            "success": true,
+            "task_id": 1,
+            "worker": 2
+          },
+          {
+            "end": 28.14617858803831,
+            "job_id": "job-5",
+            "start": 25.33846737886779,
+            "success": true,
+            "task_id": 64,
+            "worker": 0
+          },
+          {
+            "end": 28.786507595330477,
+            "job_id": "job-4",
+            "start": 25.970698488410562,
+            "success": true,
+            "task_id": 63,
+            "worker": 1
+          },
+          {
+            "end": 29.244813939090818,
+            "job_id": "job-5",
+            "start": 26.42882580216974,
+            "success": true,
+            "task_id": 67,
+            "worker": 2
+          },
+          {
+            "end": 30.97740640467964,
+            "job_id": "job-5",
+            "start": 28.14617858803831,
+            "success": true,
+            "task_id": 66,
+            "worker": 0
+          },
+          {
+            "end": 31.67731787636876,
+            "job_id": "job-0",
+            "start": 28.786507595330477,
+            "success": true,
+            "task_id": 22,
+            "worker": 1
+          },
+          {
+            "end": 32.14314567390829,
+            "job_id": "job-1",
+            "start": 29.244813939090818,
+            "success": true,
+            "task_id": 38,
+            "worker": 2
+          },
+          {
+            "end": 33.90653164568357,
+            "job_id": "job-0",
+            "start": 30.97740640467964,
+            "success": true,
+            "task_id": 7,
+            "worker": 0
+          },
+          {
+            "end": 34.62471846025437,
+            "job_id": "job-5",
+            "start": 31.67731787636876,
+            "success": true,
+            "task_id": 70,
+            "worker": 1
+          },
+          {
+            "end": 35.098702415358275,
+            "job_id": "job-0",
+            "start": 32.14314567390829,
+            "success": true,
+            "task_id": 12,
+            "worker": 2
+          },
+          {
+            "end": 36.89187165838666,
+            "job_id": "job-1",
+            "start": 33.90653164568357,
+            "success": true,
+            "task_id": 39,
+            "worker": 0
+          },
+          {
+            "end": 37.61555168032646,
+            "job_id": "job-2",
+            "start": 34.62471846025437,
+            "success": true,
+            "task_id": 42,
+            "worker": 1
+          },
+          {
+            "end": 38.23755725566298,
+            "job_id": "job-0",
+            "start": 35.098702415358275,
+            "success": true,
+            "task_id": 13,
+            "worker": 2
+          },
+          {
+            "end": 40.05874516023323,
+            "job_id": "job-0",
+            "start": 36.89187165838666,
+            "success": true,
+            "task_id": 9,
+            "worker": 0
+          },
+          {
+            "end": 41.04451646422967,
+            "job_id": "job-0",
+            "start": 37.61555168032646,
+            "success": true,
+            "task_id": 26,
+            "worker": 1
+          },
+          {
+            "end": 41.88351522269659,
+            "job_id": "job-0",
+            "start": 38.23755725566298,
+            "success": true,
+            "task_id": 16,
+            "worker": 2
+          },
+          {
+            "end": 43.76318902312778,
+            "job_id": "job-0",
+            "start": 40.05874516023323,
+            "success": true,
+            "task_id": 11,
+            "worker": 0
+          },
+          {
+            "end": 44.84866907936521,
+            "job_id": "job-0",
+            "start": 41.04451646422967,
+            "success": true,
+            "task_id": 14,
+            "worker": 1
+          },
+          {
+            "end": 45.773768106941134,
+            "job_id": "job-0",
+            "start": 41.88351522269659,
+            "success": true,
+            "task_id": 24,
+            "worker": 2
+          },
+          {
+            "end": 47.75797819811851,
+            "job_id": "job-0",
+            "start": 43.76318902312778,
+            "success": true,
+            "task_id": 18,
+            "worker": 0
+          },
+          {
+            "end": 48.95515317120589,
+            "job_id": "job-0",
+            "start": 44.84866907936521,
+            "success": true,
+            "task_id": 29,
+            "worker": 1
+          },
+          {
+            "end": 49.97490496607497,
+            "job_id": "job-0",
+            "start": 45.773768106941134,
+            "success": true,
+            "task_id": 2,
+            "worker": 2
+          },
+          {
+            "end": 51.99563737842254,
+            "job_id": "job-0",
+            "start": 47.75797819811851,
+            "success": true,
+            "task_id": 20,
+            "worker": 0
+          },
+          {
+            "end": 53.85856580035761,
+            "job_id": "job-0",
+            "start": 48.95515317120589,
+            "success": true,
+            "task_id": 30,
+            "worker": 1
+          },
+          {
+            "end": 55.060321777360514,
+            "job_id": "job-0",
+            "start": 49.97490496607497,
+            "success": true,
+            "task_id": 4,
+            "worker": 2
+          },
+          {
+            "end": 57.15593940252438,
+            "job_id": "job-0",
+            "start": 51.99563737842254,
+            "success": true,
+            "task_id": 6,
+            "worker": 0
+          },
+          {
+            "end": 59.22791382949799,
+            "job_id": "job-0",
+            "start": 53.85856580035761,
+            "success": true,
+            "task_id": 25,
+            "worker": 1
+          },
+          {
+            "end": 60.49506738130003,
+            "job_id": "job-0",
+            "start": 55.060321777360514,
+            "success": true,
+            "task_id": 5,
+            "worker": 2
+          },
+          {
+            "end": 62.650239699753,
+            "job_id": "job-0",
+            "start": 57.15593940252438,
+            "success": true,
+            "task_id": 8,
+            "worker": 0
+          },
+          {
+            "end": 65.19924531667493,
+            "job_id": "job-0",
+            "start": 59.22791382949799,
+            "success": true,
+            "task_id": 21,
+            "worker": 1
+          }
+        ],
+        "tasks": 72,
+        "utilization": 0.963
+      }
     }
   },
-  "data_kind": "synthetic"
+  "seed": 42,
+  "synthetic": true,
+  "workers": 4
 }

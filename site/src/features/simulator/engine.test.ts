@@ -1,14 +1,43 @@
-import { describe, it, expect } from "vitest";
-import { periodicityScore } from "./engine";
-import fixture from "./__fixtures__/beacon.json";
+import { describe, expect, it } from "vitest";
+import fixture from "./__fixtures__/cluster.json";
+import {
+  makeWorkload,
+  simulate,
+  type Job,
+} from "./engine";
 
-describe("periodicityScore parity", () => {
-  for (const [name, data] of Object.entries(fixture as Record<string, { times: number[]; result: Record<string, number> }>)) {
-    it(name, () => {
-      const got = periodicityScore(data.times);
-      expect(got.score).toBeCloseTo(data.result.score, 6);
-      expect(got.period_s).toBeCloseTo(data.result.period_s, 6);
-      expect(got.within_ten_percent).toBeCloseTo(data.result.within_ten_percent, 6);
+describe("cluster simulator parity", () => {
+  it("builds the same seeded task mix as Python", () => {
+    expect(makeWorkload(fixture.seed, fixture.jobs.length, 8)).toEqual(fixture.jobs);
+  });
+
+  for (const scheduler of ["fifo", "fair", "sjf"] as const) {
+    it("matches Python " + scheduler + " runs and failure recovery", () => {
+      const jobs = fixture.jobs as Job[];
+      const expected = fixture.expected[scheduler];
+      expect(simulate(jobs, fixture.workers, scheduler)).toEqual(expected.normal);
+      expect(simulate(jobs, fixture.workers, scheduler, true)).toEqual(
+        expected.worker_failure,
+      );
     });
   }
+
+  it("recovers a killed worker task and keeps utilization bounded", () => {
+    const jobs: Job[] = [
+      {
+        job_id: "long-job",
+        tasks: Array.from({ length: 4 }, (_, task_id) => ({
+          task_id,
+          job_id: "long-job",
+          duration: 6,
+          arrival: 0,
+        })),
+      },
+    ];
+    const recovered = simulate(jobs, 2, "fifo", true);
+    expect(recovered.retries).toBe(1);
+    expect(recovered.makespan).toBeGreaterThan(12);
+    expect(recovered.utilization).toBeLessThanOrEqual(1);
+    expect(recovered.schedule.filter((item) => !item.success)).toHaveLength(1);
+  });
 });

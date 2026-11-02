@@ -1,41 +1,140 @@
-import { useState } from "react";
-import { periodicityScore } from "../features/simulator/engine";
+import { useMemo, useState } from "react";
+import {
+  makeWorkload,
+  simulate,
+  type SchedulerName,
+} from "../features/simulator/engine";
 
-function buildBeacon(period: number, jitter: number, n: number): number[] {
-  const out: number[] = [];
-  for (let i = 0; i < n; i++) {
-    out.push(i * period + (Math.sin(i) * jitter * period) / 100);
-  }
-  return out;
-}
+const schedulers: { id: SchedulerName; label: string }[] = [
+  { id: "fifo", label: "FIFO" },
+  { id: "fair", label: "Fair share" },
+  { id: "sjf", label: "Shortest job first" },
+];
+
+const jobColors = ["#f472b6", "#4ade9a", "#38bdf8", "#fbbf24", "#a78bfa", "#fb7185"];
 
 export function Simulator() {
-  const [period, setPeriod] = useState(30);
-  const [jitter, setJitter] = useState(5);
-  const [threshold, setThreshold] = useState(0.75);
-  const [n, setN] = useState(8);
-  const times = buildBeacon(period, jitter, n);
-  const res = periodicityScore(times);
-  const fires = res.score >= threshold;
+  const [workers, setWorkers] = useState(4);
+  const [tasksPerJob, setTasksPerJob] = useState(8);
+  const [failedWorker, setFailedWorker] = useState(false);
+  const [scheduler, setScheduler] = useState<SchedulerName>("fair");
+  const jobs = useMemo(() => makeWorkload(42, 6, tasksPerJob), [tasksPerJob]);
+  const runs = useMemo(
+    () =>
+      Object.fromEntries(
+        schedulers.map(({ id }) => [
+          id,
+          simulate(jobs, workers, id, failedWorker),
+        ]),
+      ) as Record<SchedulerName, ReturnType<typeof simulate>>,
+    [failedWorker, jobs, workers],
+  );
+  const active = runs[scheduler];
+  const makespan = Math.max(1, active.makespan);
+
   return (
     <section className="sec" id="try">
       <div className="wrap">
-        <h2 style={{ fontSize: "clamp(1.8rem,4vw,2.6rem)", letterSpacing: "-0.035em", lineHeight: 1.05, maxWidth: "18ch" }}>Deception lab</h2>
-        <p style={{ marginTop: 12, color: "var(--mu)", maxWidth: "60ch" }}>Run scripted benign actors against three on-screen decoys with a TypeScript port of the session builder.</p>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 24 }}>
-          <div style={{ background: "var(--p)", border: "1px solid var(--ln)", borderRadius: 16, padding: 20 }}>
-            <label>Period (s): {period}<br /><input type="range" min={5} max={120} value={period} onChange={(e) => setPeriod(+e.target.value)} /></label><br />
-            <label>Jitter (%): {jitter}<br /><input type="range" min={0} max={60} value={jitter} onChange={(e) => setJitter(+e.target.value)} /></label><br />
-            <label>Connections: {n}<br /><input type="range" min={4} max={20} value={n} onChange={(e) => setN(+e.target.value)} /></label><br />
-            <label>Threshold: {threshold.toFixed(2)}<br /><input type="range" min={0.5} max={0.95} step={0.05} value={threshold} onChange={(e) => setThreshold(+e.target.value)} /></label>
-            <button onClick={() => { setJitter(60); setPeriod(30); }} style={{ marginTop: 12, padding: "6px 12px", borderRadius: 8, border: "1px solid var(--ln)", background: "var(--p2)", color: "var(--fg)", cursor: "pointer" }}>Make it evade</button>
+        <h2>Try the <span className="m">cluster lab.</span></h2>
+        <p className="lead2">
+          Change the worker pool, compare schedulers on the same seeded job mix, and inject a worker
+          failure. Everything runs locally in your browser.
+        </p>
+        <div className="lab">
+          <div className="lab-controls">
+            <label>
+              Workers <strong>{workers}</strong>
+              <input
+                type="range"
+                min="2"
+                max="8"
+                value={workers}
+                onChange={(event) => setWorkers(Number(event.currentTarget.value))}
+              />
+            </label>
+            <label>
+              Tasks per job <strong>{tasksPerJob}</strong>
+              <input
+                type="range"
+                min="4"
+                max="12"
+                value={tasksPerJob}
+                onChange={(event) => setTasksPerJob(Number(event.currentTarget.value))}
+              />
+            </label>
+            <label className="checkline">
+              <input
+                type="checkbox"
+                checked={failedWorker}
+                onChange={(event) => setFailedWorker(event.currentTarget.checked)}
+              />
+              Kill a worker at 2 seconds
+            </label>
+            <label>
+              Timeline policy
+              <select
+                value={scheduler}
+                onChange={(event) => setScheduler(event.currentTarget.value as SchedulerName)}
+              >
+                {schedulers.map((item) => (
+                  <option value={item.id} key={item.id}>{item.label}</option>
+                ))}
+              </select>
+            </label>
           </div>
-          <div style={{ background: "var(--p)", border: "1px solid var(--ln)", borderRadius: 16, padding: 20, fontFamily: "var(--fm)", fontSize: "0.85rem" }}>
-            <div>score: {res.score}</div>
-            <div>period_s: {res.period_s}</div>
-            <div>within 10%: {res.within_ten_percent}</div>
-            <div>robust_cv: {res.robust_cv}</div>
-            <div style={{ marginTop: 12, color: fires ? "var(--bad)" : "var(--ok)" }}>{fires ? "Alert fires" : "No alert"}</div>
+          <div className="lab-output" aria-live="polite">
+            <div className="metric-grid">
+              <div><span>MAKESPAN</span><strong>{active.makespan}s</strong></div>
+              <div><span>P95 QUEUE WAIT</span><strong>{active.p95_wait}s</strong></div>
+              <div><span>UTILIZATION</span><strong>{Math.round(active.utilization * 100)}%</strong></div>
+              <div><span>JAIN FAIRNESS</span><strong>{active.fairness}</strong></div>
+            </div>
+            <div className="compare-grid">
+              {schedulers.map((item) => (
+                <button
+                  className={scheduler === item.id ? "compare-card selected" : "compare-card"}
+                  key={item.id}
+                  onClick={() => setScheduler(item.id)}
+                  type="button"
+                >
+                  <span>{item.label}</span>
+                  <strong>{runs[item.id].makespan}s</strong>
+                  <small>p95 wait {runs[item.id].p95_wait}s · fairness {runs[item.id].fairness}</small>
+                </button>
+              ))}
+            </div>
+            <div className="gantt-wrap">
+              <h3>Task timeline <span>seed 42 · {workers} workers</span></h3>
+              <div className="gantt">
+                {active.schedule.map((task, index) => {
+                  const width = Math.max(0.4, ((task.end - task.start) / makespan) * 100);
+                  const left = (task.start / makespan) * 100;
+                  return (
+                    <div className="gantt-row" key={index}>
+                      <span>W{task.worker + 1}</span>
+                      <div className="gantt-track">
+                        <i
+                          className={task.success ? "" : "failed-attempt"}
+                          style={{
+                            left: left + "%",
+                            width: width + "%",
+                            backgroundColor: task.success
+                              ? jobColors[Number(task.job_id.slice(4)) % jobColors.length]
+                              : "var(--bad)",
+                          }}
+                          title={task.job_id + " · task " + task.task_id + (task.success ? "" : " · retried")}
+                        />
+                      </div>
+                      <small>{task.job_id}</small>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="note">
+                Seeded synthetic workload. The failure run retries an interrupted task; it does not
+                model network or database performance.
+              </p>
+            </div>
           </div>
         </div>
       </div>

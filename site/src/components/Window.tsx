@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTour } from "../features/tour/useTour";
 
-const TABS = ["Decoy", "Capture", "Classify", "Map", "Contain"];
+const TABS = ["Workload", "Schedule", "Dispatch", "Recover", "Measure"];
 
 export function Window() {
   const { index, setIndex, paused, setPaused } = useTour(TABS.length, 7000);
@@ -40,12 +40,12 @@ export function Window() {
             {i === index && !held && <span style={{ position: "absolute", left: 14, right: 14, bottom: 3, height: 2, background: "var(--wh)", transform: "scaleX(0)", transformOrigin: "left", animation: "fill 7s linear forwards" }} />}
           </button>
         ))}
-        <div style={{ marginTop: 18, fontSize: "0.78rem", color: "#62626b" }}>Prompt versions</div>
+        <div style={{ marginTop: 18, fontSize: "0.78rem", color: "#62626b" }}>Schedulers</div>
         <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "7px 10px", background: "var(--p2)", borderRadius: 9, marginBottom: 6, fontSize: "0.88rem", marginTop: 6 }}>
-          <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--ok)" }} /> baseline
+          <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--ok)" }} /> fair share
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "7px 10px", background: "var(--p2)", borderRadius: 9, fontSize: "0.88rem" }}>
-          <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--bad)" }} /> candidate
+          <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--bad)" }} /> shortest job
         </div>
       </aside>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 250px", minWidth: 0 }}>
@@ -53,26 +53,26 @@ export function Window() {
           <h3 style={{ fontSize: "1.02rem", fontWeight: 600 }}>{TABS[index]}</h3>
           <p style={{ fontSize: "0.8rem", color: "var(--mu)", marginTop: 1 }}>Auto-playing tour</p>
           <p style={{ margin: "16px 0", fontSize: "0.93rem", color: "var(--mu)" }}>
-            {index === 0 && "Inert web admin, SSH-like and fake DB services."}
-            {index === 1 && "Credentials reduced to length and keyed hash."}
-            {index === 2 && "Rule-based session labels with the rule that fired."}
-            {index === 3 && "Labels mapped to ATT&CK tactic/technique rows."}
-            {index === 4 && "Compose controls checked before and after start; panic."}
+            {index === 0 && "Split a seeded workload into independent jobs and tasks."}
+            {index === 1 && "Choose FIFO, fair-share, or shortest-job-first scheduling."}
+            {index === 2 && "Assign ready tasks to available workers."}
+            {index === 3 && "Requeue unfinished work when a worker fails."}
+            {index === 4 && "Compare makespan, wait time, fairness, and utilization."}
           </p>
           <div style={{ background: "#0a0a0b", border: "1px solid var(--ln)", borderRadius: 12, padding: 14, fontFamily: "var(--fm)", fontSize: "0.8rem", color: "var(--mu)" }}>
-            {index === 0 && "decoy › request › event"}
-            {index === 1 && 'password → [REDACTED]'}
-            {index === 2 && "rule fired · confidence"}
-            {index === 3 && "T1595.002 · T1110.001"}
-            {index === 4 && "panic requires STOP GHOSTNET"}
+            {index === 0 && "workload › jobs › tasks"}
+            {index === 1 && 'queue → scheduler → workers'}
+            {index === 2 && "task-014 · worker-2 · 2.8s"}
+            {index === 3 && "worker-2 lost · task requeued"}
+            {index === 4 && "makespan · retries · utilization"}
           </div>
         </div>
         <div style={{ padding: 20, borderLeft: "1px solid var(--ln)", background: "#101012" }}>
           <h4 style={{ margin: "0 0 8px", fontSize: "0.8rem", color: "var(--mu)" }}>Totals</h4>
           <ul style={{ listStyle: "none", margin: 0, padding: 0, fontSize: "0.86rem", color: "var(--mu)" }}>
-            <li style={{ padding: "7px 0", borderBottom: "1px solid var(--ln)" }}>Spans <b style={{ float: "right", color: "var(--fg)" }}>5</b></li>
-            <li style={{ padding: "7px 0", borderBottom: "1px solid var(--ln)" }}>Tokens in → out <b style={{ float: "right", color: "var(--fg)" }}>9 → 8</b></li>
-            <li style={{ padding: "7px 0" }}>Estimated cost <b style={{ float: "right", color: "var(--fg)" }}>$0.000187</b></li>
+            <li style={{ padding: "7px 0", borderBottom: "1px solid var(--ln)" }}>Tasks <b style={{ float: "right", color: "var(--fg)" }}>5</b></li>
+            <li style={{ padding: "7px 0", borderBottom: "1px solid var(--ln)" }}>Workers <b style={{ float: "right", color: "var(--fg)" }}>4</b></li>
+            <li style={{ padding: "7px 0" }}>Retries <b style={{ float: "right", color: "var(--fg)" }}>1</b></li>
           </ul>
         </div>
       </div>
