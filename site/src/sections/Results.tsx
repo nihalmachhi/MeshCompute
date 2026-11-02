@@ -2,21 +2,17 @@ import results from "../data/results.generated.json";
 
 export function Results() {
   return (
-    <section>
-      <h2>Results</h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16 }}>
-        {Object.entries(results).map(([k, v]) => (
-          <div key={k} className="card">
+    <section className="sec" id="results">
+      <h2>Compared on the same workload.</h2>
+      <div className="rg">
+        {Object.entries(results).map(([k, v]: [string, { makespan: number; p95_wait: number; fairness: number }]) => (
+          <div className="rc" key={k}>
             <h3>{k}</h3>
-            <p>makespan: {v.makespan}</p>
-            <p>p95 wait: {v.p95_wait}</p>
-            <p>fairness: {v.fairness}</p>
+            <p>Makespan {v.makespan}, p95 wait {v.p95_wait}, fairness {v.fairness}.</p>
           </div>
         ))}
       </div>
-      <p style={{ color: "var(--mu)", marginTop: 12 }}>
-        Simulated cluster and generated data. These results show how the schedulers behave, not production throughput.
-      </p>
+      <p className="note">Simulated cluster and generated data.</p>
     </section>
   );
 }

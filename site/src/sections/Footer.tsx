@@ -1,11 +1,21 @@
 export function Footer() {
   return (
-    <footer className="card" style={{ marginTop: 40 }}>
-      <img src="/readme-icon.png" alt="MeshCompute" width={32} height={32} />
-      <p>MIT License</p>
-      <p style={{ background: "linear-gradient(180deg,#f4f4f5 15%,#2c2c31 88%)", WebkitBackgroundClip: "text", color: "transparent", fontSize: "4rem" }}>
-        MeshCompute
-      </p>
+    <footer className="wrap">
+      <div className="foot">
+        <div className="fcols">
+          <div>
+            <a className="brand" href="#top">
+              <img src="/readme-icon.png" alt="" width="22" height="22" /> MeshCompute
+            </a>
+            <p className="tg">A durable distributed task processor.</p>
+          </div>
+        </div>
+        <div className="fbot">
+          <span>MIT License</span>
+          <span>Python · PostgreSQL</span>
+        </div>
+        <div className="mark" aria-hidden="true">MeshCompute</div>
+      </div>
     </footer>
   );
 }

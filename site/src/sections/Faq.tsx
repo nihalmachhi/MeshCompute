@@ -1,13 +1,17 @@
 import { faq } from "../data/faq";
-import { Disclosure } from "../components/Disclosure";
 
 export function Faq() {
   return (
-    <section>
+    <section className="sec" id="faq">
       <h2>FAQ</h2>
-      {faq.map((f) => (
-        <Disclosure key={f.q} question={f.q} answer={f.a} />
-      ))}
+      <div className="faq">
+        {faq.map((f) => (
+          <details key={f.q}>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
     </section>
   );
 }

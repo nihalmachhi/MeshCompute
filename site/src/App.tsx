@@ -18,8 +18,14 @@ export default function App() {
     <div className="wrap">
       <Nav />
       <Hero />
-      <Pipeline />
-      <Simulator />
+      <section className="sec" id="how">
+        <h2>Pipeline</h2>
+        <Pipeline />
+      </section>
+      <section className="sec" id="sim">
+        <h2>Cluster lab</h2>
+        <Simulator />
+      </section>
       <Results />
       <Features />
       <Architecture />

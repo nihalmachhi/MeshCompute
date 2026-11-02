@@ -5,16 +5,13 @@ export function Pipeline() {
     { title: "Merge", text: "Partial results aggregate into one answer." },
   ];
   return (
-    <section>
-      <h2>Pipeline</h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16 }}>
-        {steps.map((s) => (
-          <div key={s.title} className="card">
-            <h3>{s.title}</h3>
-            <p style={{ color: "var(--mu)" }}>{s.text}</p>
-          </div>
-        ))}
-      </div>
-    </section>
+    <div className="g3">
+      {steps.map((s) => (
+        <div key={s.title}>
+          <h3>{s.title}</h3>
+          <p>{s.text}</p>
+        </div>
+      ))}
+    </div>
   );
 }

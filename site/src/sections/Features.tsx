@@ -2,16 +2,17 @@ import { content } from "../data/content";
 
 export function Features() {
   return (
-    <section>
+    <section className="sec" id="features">
       <h2>Features</h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16 }}>
+      <div className="bento">
         {content.features.map((f) => (
-          <div key={f} className="card">
-            {f}
+          <div className="bc" key={f}>
+            <h3>{f}</h3>
           </div>
         ))}
-        <div className="card" style={{ gridColumn: "span 3" }}>
-          <strong>Not in this release</strong>: exactly-once execution, arbitrary user code, multi-region, GPU scheduling.
+        <div className="bc f">
+          <h3>Not in this release</h3>
+          <p>Exactly-once execution, arbitrary user code, multi-region, GPU scheduling.</p>
         </div>
       </div>
     </section>

@@ -1,17 +1,20 @@
 export function Nav() {
   return (
-    <nav style={{ height: 72, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <img src="/readme-icon.png" alt="MeshCompute" width={32} height={32} />
-        <strong>MeshCompute</strong>
+    <nav className="top" aria-label="Main">
+      <a className="brand" href="#top">
+        <img src="/readme-icon.png" alt="" width="22" height="22" /> MeshCompute
+      </a>
+      <div className="links">
+        <a href="#how">Pipeline</a>
+        <a href="#sim">Simulator</a>
+        <a href="#results">Results</a>
+        <a href="#features">Features</a>
+        <a href="#start">Quick start</a>
+        <a href="#faq">FAQ</a>
       </div>
-      <div style={{ display: "flex", gap: 12 }}>
-        <a href="#quickstart" className="pill">
-          Run it locally
-        </a>
-        <a href="https://github.com/nihalmachhi/MeshCompute" className="pill">
-          GitHub
-        </a>
+      <div className="sp">
+        <a className="pill" href="https://github.com/nihalmachhi/MeshCompute">GitHub</a>
+        <a className="pill w" href="#start">Run it locally</a>
       </div>
     </nav>
   );

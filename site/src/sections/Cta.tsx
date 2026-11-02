@@ -1,11 +1,10 @@
 export function Cta() {
   return (
-    <section>
-      <div className="card" style={{ textAlign: "center" }}>
-        <h2>Try MeshCompute</h2>
-        <a href="#quickstart" className="pill primary">
-          Run it locally
-        </a>
+    <section className="cta2">
+      <h2>Run it.</h2>
+      <div className="btns">
+        <a className="pill w" href="#start">Run it locally</a>
+        <a className="pill" href="https://github.com/nihalmachhi/MeshCompute">View on GitHub</a>
       </div>
     </section>
   );

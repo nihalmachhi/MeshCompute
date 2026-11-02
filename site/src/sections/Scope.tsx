@@ -1,15 +1,19 @@
 export function Scope() {
   return (
-    <section>
+    <section className="sec" id="scope">
       <h2>Scope</h2>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-        <div className="card">
-          <strong>In scope</strong>
-          <p>Compact PostgreSQL-backed distributed task processor.</p>
+      <div className="sc">
+        <div className="scc">
+          <h3>In scope</h3>
+          <ul>
+            <li>Compact PostgreSQL-backed distributed task processor</li>
+          </ul>
         </div>
-        <div className="card">
-          <strong>Out of scope</strong>
-          <p>Exactly-once side effects, arbitrary user code, GPU scheduling.</p>
+        <div className="scc">
+          <h3>Out of scope</h3>
+          <ul>
+            <li>Exactly-once side effects, arbitrary user code, GPU scheduling</li>
+          </ul>
         </div>
       </div>
     </section>
