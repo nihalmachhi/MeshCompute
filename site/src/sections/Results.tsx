@@ -2,6 +2,8 @@ import report from "../data/results.generated.json";
 
 export function Results() {
   const entries = Object.entries(report.scheduler_comparison);
+  const vision = report.handler_evaluation.vision_duplicate_detection;
+  const text = report.handler_evaluation.text_duplicate_detection;
   const maximum = Math.max(
     ...entries.flatMap(([, runs]) => [runs.normal.makespan, runs.worker_failure.makespan]),
   );
@@ -32,7 +34,23 @@ export function Results() {
             </article>
           ))}
         </div>
+        <h3>Generated duplicate detection</h3>
+        <div className="rg">
+          {[{ label: "Image pairs · dHash", metrics: vision }, { label: "Text pairs · MinHash", metrics: text }].map(({ label, metrics }) => (
+            <article className="rc" key={label}>
+              <h3>{label}</h3>
+              <p>{metrics.method}</p>
+              <div className="metric-grid">
+                <div><span>PRECISION</span><strong>{Math.round(metrics.precision * 100)}%</strong></div>
+                <div><span>RECALL</span><strong>{Math.round(metrics.recall * 100)}%</strong></div>
+                <div><span>PAIRS</span><strong>{metrics.pairs}</strong></div>
+              </div>
+              <small>{metrics.true_positives} matches · {metrics.false_positives} false positives · {metrics.false_negatives} missed</small>
+            </article>
+          ))}
+        </div>
         <p className="note">{report.note}</p>
+        <p className="note">The handler evaluation uses small generated inputs and does not represent general image or language understanding.</p>
       </div>
     </section>
   );

@@ -1,26 +1,26 @@
 """Perceptual hashing and union-find clustering (optional [vision] extra)."""
 
-try:
-    from PIL import Image
-except Exception:  # pragma: no cover
-    Image = None
+from meshcompute.handlers.vision.safety import open_safe_image
 
 
 def dhash(path: str, size: int = 8) -> int:
-    if Image is None:
-        raise RuntimeError("Pillow is required for vision handlers")
-    with Image.open(path) as im:
-        im = im.convert("L").resize(
+    from PIL import Image
+
+    im = (
+        open_safe_image(path)
+        .convert("L")
+        .resize(
             (size + 1, size),
             Image.Resampling.LANCZOS if hasattr(Image, "Resampling") else Image.LANCZOS,
         )
-        bits = 0
-        for y in range(size):
-            for x in range(size):
-                left = im.getpixel((x, y))
-                right = im.getpixel((x + 1, y))
-                bits = (bits << 1) | (1 if left > right else 0)
-        return bits
+    )
+    bits = 0
+    for y in range(size):
+        for x in range(size):
+            left = im.getpixel((x, y))
+            right = im.getpixel((x + 1, y))
+            bits = (bits << 1) | (1 if left > right else 0)
+    return bits
 
 
 def hamming(a: int, b: int) -> int:

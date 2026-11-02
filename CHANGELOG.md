@@ -18,6 +18,10 @@
 - CI gates for Ruff, mypy, coverage, PostgreSQL migrations, Compose validation, and the site.
 - Regression and PostgreSQL integration tests for the documented behaviors.
 - A MeshCompute cluster simulator site using Python-generated fixtures.
+- Dependency-aware task DAG submission, topological release, critical-path estimate, and failure descendant cancellation.
+- Generated synthetic vision and text duplicate-detection precision/recall in the site results.
+- Readiness endpoint checks PostgreSQL independently from liveness.
+- Pillow handlers enforce image format and pixel-count bounds for JPEG, PNG, and BMP inputs.
 
 ### Decisions
 - Delivery from the database outbox to process-local WebSocket subscribers is at least once; duplicate notifications are possible after a crash.

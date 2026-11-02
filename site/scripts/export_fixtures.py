@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from meshcompute.evaluation import generate_evaluation
 from meshcompute.sim.engine import simulate
 from meshcompute.sim.workloads import make_workload
 
@@ -30,6 +31,7 @@ def generate() -> tuple[dict[str, Any], dict[str, Any]]:
         "seed": 42,
         "workers": 4,
         "scheduler_comparison": parity,
+        "handler_evaluation": generate_evaluation(seed=42),
         "note": (
             "Seeded simulation only. These values compare scheduling behavior; "
             "they are not production throughput measurements."

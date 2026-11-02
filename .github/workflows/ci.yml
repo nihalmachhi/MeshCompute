@@ -32,6 +32,8 @@ jobs:
       - run: uv run ruff format --check .
       - run: uv run mypy src
       - run: uv run pytest -q --cov=meshcompute --cov-fail-under=80
+      - name: Regenerate synthetic evaluation data
+        run: make reproduce && git diff --exit-code -- site/src/features/simulator/__fixtures__/cluster.json site/src/data/results.generated.json
       - name: Prepare Compose environment
         run: cp .env.example .env
       - name: Validate Compose and build image

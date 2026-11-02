@@ -1,3 +1,12 @@
 # Evaluation
 
-Run make reproduce.
+`make reproduce` runs the fixed seeded scheduler workload and the generated vision/text
+duplicate-detection cases. It rewrites the Python/TypeScript parity fixture and
+`site/src/data/results.generated.json`; the site displays only the resulting metrics.
+
+The cluster measurements are simulated scheduling behavior, not production throughput.
+Vision inputs are synthetic geometric images transformed by resizing, cropping, brightness
+changes, and JPEG encoding. Text inputs are generated English, French, and Hindi sentences
+with small edits plus unrelated negatives. Precision and recall are pairwise and reflect
+these small fixtures only; they do not establish general detection quality. The text report
+uses MinHash signatures and a fixed similarity cutoff, not an external language model.

@@ -23,6 +23,6 @@ bench:
 bench-sim:
 	uv run python -m meshcompute.sim.report
 reproduce:
-	uv run python -m meshcompute.sim.report
+	uv run python site/scripts/export_fixtures.py
 site-fixtures:
 	python site/scripts/export_fixtures.py

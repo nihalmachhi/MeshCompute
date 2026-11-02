@@ -6,6 +6,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
 
 from meshcompute.coordinator.api import (
     routes_jobs,
@@ -17,6 +19,7 @@ from meshcompute.coordinator.api import (
 from meshcompute.coordinator.background.lease_reaper import run_reaper
 from meshcompute.coordinator.background.outbox_dispatcher import run_outbox_dispatcher
 from meshcompute.coordinator.background.purger import run_purger
+from meshcompute.coordinator.db.session import session_factory
 from meshcompute.core.errors import (
     BackpressureError,
     ConflictError,
@@ -62,6 +65,16 @@ def create_app() -> FastAPI:
     def health() -> dict[str, str]:
         """Expose process liveness for Compose health checks."""
         return {"status": "ok", "service": "coordinator"}
+
+    @app.get("/ready", tags=["health"])
+    def ready() -> JSONResponse:
+        """Report readiness only when the configured database answers a simple query."""
+        try:
+            with session_factory()() as session:
+                session.execute(text("SELECT 1"))
+        except SQLAlchemyError:
+            return JSONResponse(status_code=503, content={"status": "not_ready"})
+        return JSONResponse(content={"status": "ready", "service": "coordinator"})
 
     @app.exception_handler(MeshComputeError)
     async def handle_domain_error(request: Request, exc: MeshComputeError):

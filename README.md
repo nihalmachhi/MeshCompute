@@ -47,7 +47,7 @@ Task results are capped by `MESH_COMPUTE_MAX_RESULT_BYTES` (10 MB by default). T
 ## Repository map
 
 - `src/meshcompute/core`: settings, errors, clock, and logging.
-- `src/meshcompute/handlers`: registered word-count, CSV aggregation, graph, and NLP handlers.
+- `src/meshcompute/handlers`: allow-listed word-count, image-resize, and CSV handlers plus isolated graph, vision, and NLP utilities.
 - `src/meshcompute/coordinator`: API, domain, PostgreSQL repositories, outbox, and background workers.
 - `src/meshcompute/worker`: HTTP client, heartbeat loop, and process-isolated handler execution.
 - `src/meshcompute/sim`: seeded scheduler simulator and report generator.
@@ -72,6 +72,8 @@ Use `uv sync --frozen --extra dev --all-extras` to install dependencies. Run `uv
 | Cancellation fences active attempts and clears worker ownership | `tests/integration/test_job_cancel.py` |
 | Stale workers transition offline and expire from storage | `tests/integration/test_worker_retention.py` |
 | DAG submissions reject cycles; claims wait for prerequisites and terminal failure cancels descendants | `tests/unit/test_dag.py`, `tests/integration/test_dag_dependencies.py` |
+| Generated vision/text duplicate reports and image decoding bounds | `tests/unit/test_evaluation.py` |
+| Liveness remains up while readiness fails without PostgreSQL | `tests/unit/test_readiness.py` |
 
 ## Scope
 
