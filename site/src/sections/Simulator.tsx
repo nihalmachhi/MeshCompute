@@ -4,6 +4,8 @@ import {
   simulate,
   type SchedulerName,
 } from "../features/simulator/engine";
+import { canAddEdge, criticalPath, stages, type DagEdge } from "../features/simulator/dag";
+import dagStyles from "./DagPanel.module.css";
 
 const schedulers: { id: SchedulerName; label: string }[] = [
   { id: "fifo", label: "FIFO" },
@@ -12,6 +14,57 @@ const schedulers: { id: SchedulerName; label: string }[] = [
 ];
 
 const jobColors = ["#f472b6", "#4ade9a", "#38bdf8", "#fbbf24", "#a78bfa", "#fb7185"];
+const edgeChoices: DagEdge[] = [["map", "shuffle"], ["shuffle", "reduce"], ["map", "reduce"]];
+
+function DagPanel() {
+  const [edges, setEdges] = useState<DagEdge[]>([["map", "shuffle"], ["shuffle", "reduce"]]);
+  const path = criticalPath(edges);
+
+  function toggleEdge(edge: DagEdge) {
+    const exists = edges.some(([from, to]) => from === edge[0] && to === edge[1]);
+    if (exists) {
+      setEdges(edges.filter(([from, to]) => from !== edge[0] || to !== edge[1]));
+    } else if (canAddEdge(edges, edge)) {
+      setEdges([...edges, edge]);
+    }
+  }
+
+  return (
+    <div className={dagStyles.panel} aria-label="Interactive task DAG builder">
+      <div className={dagStyles.header}>
+        <div>
+          <h3>Build a three-stage DAG</h3>
+          <p>Toggle dependencies. Cycles are blocked; ETA uses fixed illustrative durations.</p>
+        </div>
+        <strong className={dagStyles.eta}>Critical path · {path.seconds}s</strong>
+      </div>
+      <div className={dagStyles.stages}>
+        {stages.map((stage) => (
+          <div className={`${dagStyles.stage} ${path.path.includes(stage.id) ? dagStyles.active : ""}`} key={stage.id}>
+            <b>{stage.label}</b><span>{stage.duration}s illustrative work</span>
+          </div>
+        ))}
+      </div>
+      <div className={dagStyles.edges} aria-label="Task dependencies">
+        {edgeChoices.map((edge) => {
+          const enabled = edges.some(([from, to]) => from === edge[0] && to === edge[1]);
+          return (
+            <button
+              aria-pressed={enabled}
+              className={dagStyles.edge}
+              key={edge.join("-")}
+              onClick={() => toggleEdge(edge)}
+              type="button"
+            >
+              {edge[0]} → {edge[1]}
+            </button>
+          );
+        })}
+      </div>
+      <p className={dagStyles.path}>Critical path: {path.path.map((id) => stages.find((stage) => stage.id === id)?.label).join(" → ") || "independent stages"}</p>
+    </div>
+  );
+}
 
 export function Simulator() {
   const [workers, setWorkers] = useState(4);
@@ -135,6 +188,7 @@ export function Simulator() {
                 model network or database performance.
               </p>
             </div>
+            <DagPanel />
           </div>
         </div>
       </div>

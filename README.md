@@ -74,6 +74,7 @@ Use `uv sync --frozen --extra dev --all-extras` to install dependencies. Run `uv
 | DAG submissions reject cycles; claims wait for prerequisites and terminal failure cancels descendants | `tests/unit/test_dag.py`, `tests/integration/test_dag_dependencies.py` |
 | Generated vision/text duplicate reports and image decoding bounds | `tests/unit/test_evaluation.py` |
 | Liveness remains up while readiness fails without PostgreSQL | `tests/unit/test_readiness.py` |
+| Browser DAG builder prevents cycles and calculates its displayed critical path | `site/src/features/simulator/dag.test.ts` |
 
 ## Scope
 

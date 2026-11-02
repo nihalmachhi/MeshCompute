@@ -22,6 +22,7 @@
 - Generated synthetic vision and text duplicate-detection precision/recall in the site results.
 - Readiness endpoint checks PostgreSQL independently from liveness.
 - Pillow handlers enforce image format and pixel-count bounds for JPEG, PNG, and BMP inputs.
+- Site cluster lab includes a cycle-safe three-stage DAG builder with a fixed-duration critical-path estimate.
 
 ### Decisions
 - Delivery from the database outbox to process-local WebSocket subscribers is at least once; duplicate notifications are possible after a crash.
