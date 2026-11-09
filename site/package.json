@@ -33,7 +33,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
     "jsdom": "^29.1.1",
-    "oxlint": "^1.89.0",
+    "oxlint": "^1.91.0",
     "prettier": "^3.9.10",
     "typescript": "~7.0.2",
     "vite": "^8.3.5",
